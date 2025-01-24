@@ -33,8 +33,8 @@ This project is being developed as part of the CEN5035 - Software Engineering co
 
 | Name | Student ID | Role |
 |------|------------|------|
-| [Dhruv Makwana] | [67272938] | Backend Developer |
-| [Pratham Rao] | [43695122] | Frontend Developer |
+| [Dhruv Makwana] | [67272938] | Frontend Developer |
+| [Pratham Rao] | [43695122] | Backend Developer |
 | [Akash Balaji] | [73539997] | Frontend Developer |
 | [Nikhil Dinesan] | [23060474] | Backend Developer |
 
