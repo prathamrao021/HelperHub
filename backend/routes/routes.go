@@ -43,10 +43,33 @@ func deleteUser(c *gin.Context, db *gorm.DB) {
 	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
 }
 
+func updateUser(c *gin.Context, db *gorm.DB) {
+	username := c.Param("username")
+	var user models.User
+
+	if err := db.Where("username = ?", username).First(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := db.Save(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User data updated successfully"})
+}
+
 func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 
 	// Routes for user management
 	userRouter := router.Group("/users")
 	userRouter.POST("/create", func(c *gin.Context) { createUser(c, db) })
 	userRouter.POST("/delete/:username", func(c *gin.Context) { deleteUser(c, db) })
+	userRouter.POST("/update/:username", func(c *gin.Context) { updateUser(c, db) })
 }
