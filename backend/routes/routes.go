@@ -55,10 +55,22 @@ func createUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User data created successfully"})
 }
 
+func deleteUser(c *gin.Context) {
+	username := c.Param("username")
+
+	if err := db.Where("username = ?", username).Delete(&models.User{}).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
+}
+
 func main() {
 	initDB()
 	r := gin.Default()
 	r.GET("/ping", Caller)
 	r.POST("/users/create", createUser)
+	r.POST("/users/delete/:username", deleteUser)
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
