@@ -103,6 +103,27 @@ func updateUser(c *gin.Context, db *gorm.DB) {
 	c.JSON(http.StatusOK, gin.H{"message": "User data updated successfully"})
 }
 
+// getUser godoc
+// @Summary Get user data
+// @Description Get user data with the provided username
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param username path string true "Username"
+// @Success 200 {object} models.User
+// @Router /users/get/{username} [get]
+
+func getUser(c *gin.Context, db *gorm.DB) {
+	username := c.Param("username")
+	var user models.User
+
+	if err := db.Where("username = ?", username).First(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "User Data Sent."})
+}
+
 func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 
 	// Routes for user management
@@ -110,4 +131,5 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	userRouter.POST("/create", func(c *gin.Context) { createUser(c, db) })
 	userRouter.DELETE("/delete/:username", func(c *gin.Context) { deleteUser(c, db) })
 	userRouter.PUT("/update/:username", func(c *gin.Context) { updateUser(c, db) })
+	userRouter.GET("/get/:username", func(c *gin.Context) { getUser(c, db) })
 }
