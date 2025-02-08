@@ -103,6 +103,17 @@ func updateUser(c *gin.Context, db *gorm.DB) {
 	c.JSON(http.StatusOK, gin.H{"message": "User data updated successfully"})
 }
 
+// updateUser godoc
+// @Summary Update an existing user
+// @Description Update an existing user with the provided details
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param username path string true "Username"
+// @Param user body models.User true "User data"
+// @Success 200 {object} models.User
+// @Router /users/update/{username} [put]
+
 func getUser(c *gin.Context, db *gorm.DB) {
 	username := c.Param("username")
 	var user models.User
