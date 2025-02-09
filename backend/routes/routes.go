@@ -9,7 +9,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// @BasePath /users
 // createUser godoc
 // @Summary Create a new user
 // @Description Create a new user with the provided details
@@ -42,7 +41,6 @@ func createUser(c *gin.Context, db *gorm.DB) {
 	c.JSON(http.StatusOK, gin.H{"message": "User data created successfully"})
 }
 
-// @BasePath /users
 // DeleteUser godoc
 // @Summary Delete a new user
 // @Description Delete a new user with the provided details
@@ -112,7 +110,6 @@ func updateUser(c *gin.Context, db *gorm.DB) {
 // @Param username path string true "Username"
 // @Success 200 {object} models.User
 // @Router /users/get/{username} [get]
-
 func getUser(c *gin.Context, db *gorm.DB) {
 	username := c.Param("username")
 	var user models.User
@@ -121,7 +118,7 @@ func getUser(c *gin.Context, db *gorm.DB) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "User Data Sent."})
+	c.JSON(http.StatusOK, gin.H{"message": "User Data Sent.", "data": user})
 }
 
 func SetupRoutes(router *gin.Engine, db *gorm.DB) {

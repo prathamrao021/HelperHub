@@ -27,7 +27,7 @@ This is the backend service for HelperHub, built using Go, Gin, and GORM. It pro
     - Ensure PostgreSQL is installed and running.
     - Create a PostgreSQL user and database.
 
-4. Update the database connection string in `routes.go`:
+4. Update the database connection string in `main.go`:
 
     ```go
     dsn := "host=localhost user=youruser password=yourpassword dbname=yourdb port=5432 sslmode=prefer TimeZone=Asia/Shanghai"
@@ -45,24 +45,14 @@ This is the backend service for HelperHub, built using Go, Gin, and GORM. It pro
 
 ## API Endpoints
 
-### Ping
-
-- **URL:** `/ping`
-- **Method:** `GET`
-- **Description:** Returns a pong message to check if the server is running.
-
-    ```sh
-    curl -X GET http://localhost:8080/ping
-    ```
-
 ### Create User
 
-- **URL:** [users](http://_vscodecontentref_/1)
+- **URL:** `/users/create`
 - **Method:** `POST`
 - **Description:** Creates a new user.
 
     ```sh
-    curl -X POST http://localhost:8080/users \
+    curl -X POST http://localhost:8080/users/create \
     -H "Content-Type: application/json" \
     -d '{
       "Username": "testuser",
@@ -70,8 +60,83 @@ This is the backend service for HelperHub, built using Go, Gin, and GORM. It pro
       "Password": "password123",
       "Volunteer": true,
       "Voluntee": false,
-      "Category": "General"
+      "Category": ["General", "Technology", "Health"]
     }'
+    ```
+
+### Update User
+
+- **URL:** `/users/update/{username}`
+- **Method:** `PUT`
+- **Description:** Updates an existing user.
+
+    ```sh
+    curl -X PUT http://localhost:8080/users/update/testuser \
+    -H "Content-Type: application/json" \
+    -d '{
+      "Username": "testuser",
+      "Email": "newemail@example.com",
+      "Password": "newpassword123",
+      "Volunteer": true,
+      "Voluntee": false,
+      "Category": ["General", "Technology", "Health"]
+    }'
+    ```
+
+### Delete User
+
+- **URL:** `/users/delete/{username}`
+- **Method:** `DELETE`
+- **Description:** Deletes an existing user.
+
+    ```sh
+    curl -X DELETE http://localhost:8080/users/delete/testuser
+    ```
+
+
+## Swagger Documentation
+
+### Generating Swagger Documentation
+
+1. Install the necessary packages:
+
+    ```sh
+    go get -u github.com/swaggo/swag/cmd/swag
+    go get -u github.com/swaggo/gin-swagger
+    go get -u github.com/swaggo/files
+    ```
+
+2. Generate the Swagger documentation:
+
+    ```sh
+    swag init
+    ```
+
+3. Import the generated docs in your `main.go` file:
+
+    ```go
+    import _ "github.com/yourusername/HelperHub/docs"
+    ```
+
+4. Add the Swagger setup to your `main.go` file:
+
+    ```go
+    swaggerFiles "github.com/swaggo/files"
+    ginSwagger "github.com/swaggo/gin-swagger"
+    ```
+
+5. Add the Swagger route in your `main.go` file:
+
+    ```go
+    r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+    ```
+
+### Accessing Swagger Documentation
+
+Once the server is running, you can access the Swagger UI at:
+
+    ```
+    http://localhost:8080/swagger/index.html
     ```
 
 ## Project Structure
