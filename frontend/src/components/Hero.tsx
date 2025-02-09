@@ -16,13 +16,9 @@ export const HeroSection = () => {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
         height: '100%',
         position: 'relative',
         overflow: 'hidden',
-        pt: 16,
-        pb: 28,
-        px: 4,
         background: 'linear-gradient(45deg, #f8f9fa 0%, #e9ecef 100%)'
       }}
     >
