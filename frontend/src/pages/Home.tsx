@@ -1,11 +1,10 @@
-import Navbar from "../components/Navbar"
-import { HeroSection } from "../components/Hero"
+import Navbar from "@/components/Navbar"
 const Home = () => {
     return (
         <div>
-        <Navbar/>
-        <HeroSection/>
+            <Navbar />
+            <div>Home</div>
         </div>
     )
-    }
+}
 export default Home
