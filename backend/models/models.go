@@ -4,6 +4,7 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
+	"time"
 )
 
 // StringList is a custom type for a list of strings
@@ -26,11 +27,22 @@ func (s *StringList) Scan(value interface{}) error {
 
 // User struct
 type User struct {
-	ID        uint       `gorm:"primaryKey"`
-	Username  string     `gorm:"unique;not null"`
-	Email     string     `gorm:"unique;not null"`
-	Password  string     `gorm:"not null"`
-	Volunteer bool       `gorm:"default:false"`
-	Voluntee  bool       `gorm:"default:false"`
-	Category  StringList `gorm:"type:jsonb;not null"`
+	ID            uint   `gorm:"primaryKey"`
+	Email         string `gorm:"unique;not null"`
+	Password_Hash string `gorm:"not null"`
+	Full_Name     string `gorm:"not null"`
+	Role          string `gorm:"not null"`
+	Created_At    time.Time
+	Updated_At    time.Time
+}
+
+// Volunteer struct
+type Volunteer struct {
+	ID               uint   `gorm:"primaryKey"`
+	Phone            string `gorm:"unique;not null"`
+	Location         string `gorm:"not null"`
+	Bio_Data         string `gorm:"not null"`
+	Availabile_Hours int    `gorm:"not null"`
+	Created_At       time.Time
+	Updated_At       time.Time
 }
