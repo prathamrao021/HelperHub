@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { UserCircle2, Mail, Lock, Users } from "lucide-react"
 import { Navbar } from "@/components/Navbar"
+import { Upload } from "lucide-react"
+import { Label } from "@/components/ui/label"
 
 const userRegistrationSchema = z.object({
     fullName: z
@@ -19,7 +21,14 @@ const userRegistrationSchema = z.object({
         .string()
         .min(6, { message: "Password must be at least 6 characters." }),
     userRole: z.enum(["VOLUNTEER", "ORGANIZATION_ADMIN"]).default("VOLUNTEER"),
+    profilePicture: z.instanceof(File).optional(),
 })
+
+const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, onChange: (...event: any[]) => void) => {
+    if (e.target.files?.[0]) {
+        onChange(e.target.files[0])
+    }
+}
 
 type UserRegistrationFormValues = z.infer<typeof userRegistrationSchema>
 
@@ -66,6 +75,43 @@ export function Register() {
                                                     <div className="relative">
                                                         <UserCircle2 className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
                                                         <Input placeholder="John Doe" className="pl-10" {...field} />
+                                                    </div>
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="profilePicture"
+                                        render={({ field: { onChange, value, ...field } }) => (
+                                            <FormItem>
+                                                <FormLabel>Profile Picture</FormLabel>
+                                                <FormControl>
+                                                    <div className="grid w-full items-center gap-1.5">
+                                                        <Label
+                                                            htmlFor="picture"
+                                                            className="relative flex w-full cursor-pointer appearance-none items-center justify-center rounded-md border-2 border-dashed border-muted-foreground/25 px-6 py-8 hover:border-primary transition-colors"
+                                                        >
+                                                            <div className="space-y-2 text-center">
+                                                                <Upload className="mx-auto h-6 w-6 text-muted-foreground" />
+                                                                <div className="text-sm text-muted-foreground">
+                                                                    {value?.name || "Drop your image here or click to upload"}
+                                                                </div>
+                                                                <div className="text-xs text-muted-foreground">
+                                                                    PNG, JPG or WEBP (max. 2MB)
+                                                                </div>
+                                                            </div>
+                                                            <Input
+                                                                id="picture"
+                                                                type="file"
+                                                                accept="image/png,image/jpeg,image/webp"
+                                                                className="sr-only"
+                                                                onChange={(e) => handleImageUpload(e, onChange)}
+                                                                {...field}
+                                                            />
+                                                        </Label>
                                                     </div>
                                                 </FormControl>
                                                 <FormMessage />
