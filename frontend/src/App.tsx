@@ -3,6 +3,7 @@ import { Home } from '@pages/Home'
 import Login from '@pages/Login'
 import { Register } from '@pages/Register'
 import { ThemeProvider } from '@components/theme-provider'
+import {VolunteerRegistration} from '@pages/VoluteerRegistration'
 
 export function App() {
   return (
@@ -12,6 +13,7 @@ export function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/volunteer-registration" element={<VolunteerRegistration />} />
         </Routes>
       </Router>
     </ThemeProvider>
