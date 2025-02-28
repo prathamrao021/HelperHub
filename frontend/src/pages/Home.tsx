@@ -1,4 +1,5 @@
 import { Navbar } from "@/components/Navbar"
+import { HeroSection } from "@/components/Hero"
 
 const navigationItems = [
     {
@@ -22,7 +23,7 @@ const navigationItems = [
     }
 ]
 
-const Home = () => {
+export const Home = () => {
     return (
         <div className="h-screen w-full">
             <Navbar
@@ -31,8 +32,7 @@ const Home = () => {
                 showLoginButton={true}
                 onLoginClick={() => console.log("Login button clicked")}
             />
-            <div>Home</div>
+            <HeroSection />
         </div>
     )
 }
-export default Home

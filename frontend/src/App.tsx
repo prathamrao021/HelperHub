@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Home from './pages/Home'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import { ThemeProvider } from './components/theme-provider'
+import {Home} from '@pages/Home'
+import Login from '@pages/Login'
+import Register from '@pages/Register'
+import { ThemeProvider } from '@components/theme-provider'
 
 export function App() {
   return (

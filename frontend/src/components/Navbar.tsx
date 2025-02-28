@@ -88,7 +88,7 @@ export function Navbar({
     onLoginClick,
 }: NavbarProps) {
     return (
-        <nav className="container flex items-center justify-between px-14 py-5 w-full">
+        <nav className="container flex items-center justify-between px-14 py-5 w-full absolute top-0 left-0 z-50">
             {/* Left: Logo */}
             <div className="text-3xl font-bold italic font-[cursive] tracking-wide">
                 {logo}
@@ -136,7 +136,7 @@ export function Navbar({
             <div className="flex items-center space-x-2">
                 {showThemeToggle && <ModeToggle />}
                 {showLoginButton && (
-                    <Button onClick={onLoginClick}>Login</Button>
+                    <Button onClick={onLoginClick} className="cursor-pointer">Login</Button>
                 )}
             </div>
         </nav>
