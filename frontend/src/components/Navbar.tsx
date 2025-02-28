@@ -4,6 +4,5 @@ const Navbar = () => {
             Navbar
         </div>
     )
-}
 
 export default Navbar
