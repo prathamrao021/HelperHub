@@ -14,6 +14,7 @@ export function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/volunteer-registration" element={<VolunteerRegistration />} />
+          <Route path="/organization-registration" element={<OrganizationRegistration />} />
         </Routes>
       </Router>
     </ThemeProvider>
