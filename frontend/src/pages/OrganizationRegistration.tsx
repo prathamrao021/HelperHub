@@ -11,25 +11,25 @@ import { Textarea } from "@/components/ui/textarea"
 import { Upload, Phone, Building, MapPin } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
+import { Mail, Lock } from "lucide-react"
 
 const organizationFormSchema = z.object({
-  organizationName: z
-    .string()
-    .min(2, "Organization name must be at least 2 characters")
-    .max(100, "Organization name must not exceed 100 characters"),
-  phoneNumber: z
-    .string()
-    .min(10, "Phone number must be at least 10 digits"),
-  address: z
-    .string()
-    .min(10, "Address must be at least 10 characters")
-    .max(200, "Address must not exceed 200 characters"),
-  description: z
-    .string()
-    .min(100, "Description must be at least 100 characters")
-    .max(1000, "Description must not exceed 1000 characters"),
-  profilePicture: z.instanceof(File).optional(),
-})
+    email: z
+      .string()
+      .email("Please enter a valid email address"),
+    password: z
+      .string()
+      .min(6, "Password must be at least 6 characters"),
+    organizationName: z
+      .string()
+      .min(2, "Organization name must be at least 2 characters")
+      .max(100, "Organization name must not exceed 100 characters"),
+    // Rest of your schema remains the same
+    phoneNumber: z.string().min(10),
+    address: z.string().min(10).max(200),
+    description: z.string().min(100).max(1000),
+    profilePicture: z.instanceof(File).optional(),
+  })
 
 type OrganizationFormValues = z.infer<typeof organizationFormSchema>
 
@@ -73,6 +73,38 @@ export function OrganizationRegistration() {
             <CardContent>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                            <div className="relative">
+                            <Mail className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                            <Input placeholder="you@example.com" className="pl-10" {...field} />
+                            </div>
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                        <div className="relative">
+                        <Lock className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                        <Input type="password" placeholder="••••••••" className="pl-10" {...field} />
+                        </div>
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
                   <FormField
                     control={form.control}
                     name="organizationName"
