@@ -23,7 +23,7 @@ func initDB() *gorm.DB {
 		log.Fatal("Failed to connect to database:", err)
 	}
 
-	db.AutoMigrate(&models.User{}, &models.Volunteer{}, &models.Organization{})
+	db.AutoMigrate(&models.User{}, &models.Volunteer{}, &models.Organization{}, &models.Category{})
 	fmt.Println("Database connection successfully opened")
 	return db
 }
@@ -59,6 +59,13 @@ func main() {
 	}))
 
 	db := initDB()
+	router.Use(func(c *gin.Context) {
+		c.Set("db", db)
+		c.Next()
+	})
+
+	// Initialize static categories
+	// routes.CreateCategory(nil, db)
 
 	routes.SetupRoutes(router, db)
 
