@@ -40,7 +40,7 @@ type User struct {
 type Volunteer struct {
 	ID               uint   `gorm:"primaryKey"`
 	Email            string `gorm:"unique;not null"`
-	Password_Hash    string `gorm:"not null"`
+	Password         string `gorm:"not null"`
 	Name             string `gorm:"not null"`
 	Phone            string `gorm:"unique;not null"`
 	Location         string
@@ -52,16 +52,16 @@ type Volunteer struct {
 
 // Organization struct
 type Organization struct {
-	ID            uint   `gorm:"primaryKey"`
-	Email         string `gorm:"unique;not null"`
-	Password_Hash string `gorm:"not null"`
-	Name          string `gorm:"unique;not null"`
-	Phone         string `gorm:"not null"`
-	Location      string `gorm:"not null"`
-	Description   string `gorm:"not null"`
-	Website_Url   string `gorm:"not null"`
-	Created_At    time.Time
-	Updated_At    time.Time
+	ID          uint   `gorm:"primaryKey"`
+	Email       string `gorm:"unique;not null"`
+	Password    string `gorm:"not null"`
+	Name        string `gorm:"unique;not null"`
+	Phone       string `gorm:"not null"`
+	Location    string `gorm:"not null"`
+	Description string `gorm:"not null"`
+	Website_Url string `gorm:"not null"`
+	Created_At  time.Time
+	Updated_At  time.Time
 }
 
 // Category struct

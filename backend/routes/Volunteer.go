@@ -27,12 +27,12 @@ func createVolunteer(c *gin.Context, db *gorm.DB) {
 	}
 
 	// Hash the password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(volunteer.Password_Hash), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(volunteer.Password), bcrypt.DefaultCost)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
 		return
 	}
-	volunteer.Password_Hash = string(hashedPassword)
+	volunteer.Password = string(hashedPassword)
 	volunteer.Created_At = time.Now()
 	volunteer.Updated_At = time.Now()
 
@@ -83,13 +83,13 @@ func updateVolunteer(c *gin.Context, db *gorm.DB) {
 	}
 
 	// Hash the password if it is provided
-	if volunteer.Password_Hash != "" {
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(volunteer.Password_Hash), bcrypt.DefaultCost)
+	if volunteer.Password != "" {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(volunteer.Password), bcrypt.DefaultCost)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
 			return
 		}
-		volunteer.Password_Hash = string(hashedPassword)
+		volunteer.Password = string(hashedPassword)
 	}
 
 	volunteer.Updated_At = time.Now()
