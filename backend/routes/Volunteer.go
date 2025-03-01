@@ -52,7 +52,7 @@ func createVolunteer(c *gin.Context, db *gorm.DB) {
 // @Produce json
 // @Param username path string true "Username"
 // @Success 200 {object} models.Volunteer
-// @Router /volunteers/delete/{username} [delete]
+// @Router /volunteers/delete/{volunteer} [delete]
 func deleteVolunteer(c *gin.Context, db *gorm.DB) {
 	username := c.Param("username")
 
@@ -73,7 +73,7 @@ func deleteVolunteer(c *gin.Context, db *gorm.DB) {
 // @Param username path string true "Username"
 // @Param volunteer body models.Volunteer true "Volunteer data"
 // @Success 200 {object} models.Volunteer
-// @Router /volunteers/update/{username} [put]
+// @Router /volunteers/update/{volunteer} [put]
 func updateVolunteer(c *gin.Context, db *gorm.DB) {
 	username := c.Param("username")
 	var volunteer models.Volunteer
@@ -110,7 +110,7 @@ func updateVolunteer(c *gin.Context, db *gorm.DB) {
 // @Produce json
 // @Param username path string true "Username"
 // @Success 200 {object} models.Volunteer
-// @Router /volunteers/get/{username} [get]
+// @Router /volunteers/get/{volunteer} [get]
 func getVolunteer(c *gin.Context, db *gorm.DB) {
 	username := c.Param("username")
 	var volunteer models.Volunteer
