@@ -93,13 +93,13 @@ type Opportunity struct {
 	Updated_At      time.Time
 }
 
-// // Application struct
-// type Application struct {
-// 	ID             uint   `gorm:"primaryKey"`
-// 	Volunteer_ID   uint   `gorm:"not null"`
-// 	Opportunity_ID uint   `gorm:"not null"`
-// 	Status         string `gorm:"not null"`
-// 	Cover_Letter   string `gorm:"not null"`
-// 	Created_At     time.Time
-// 	Updated_At     time.Time
-// }
+// Application struct
+type Application struct {
+	ID             uint   `gorm:"primaryKey"`
+	Volunteer_ID   uint   `gorm:"not null"`
+	Opportunity_ID uint   `gorm:"not null"`
+	Status         string `gorm:"not null"`
+	Cover_Letter   string `gorm:"not null"`
+	Created_At     time.Time
+	Updated_At     time.Time
+}
