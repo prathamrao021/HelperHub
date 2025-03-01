@@ -60,6 +60,8 @@ func main() {
 
 	db := initDB()
 
+	routes.CreateCategory(nil, db)
+
 	routes.SetupRoutes(router, db)
 
 	docs.SwaggerInfo.BasePath = "/"

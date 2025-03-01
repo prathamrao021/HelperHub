@@ -27,4 +27,9 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	organizationRouter.DELETE("/delete/:organization", func(c *gin.Context) { deleteOrganization(c, db) })
 	organizationRouter.PUT("/update/:organization", func(c *gin.Context) { updateOrganization(c, db) })
 	organizationRouter.GET("/get/:organization", func(c *gin.Context) { getOrganization(c, db) })
+
+	// Routes for category management
+	categoryRouter := router.Group("/categories")
+	// createCategory(categoryRouter, db)
+	categoryRouter.GET("/get", func(c *gin.Context) { getCategories(c, db) })
 }
