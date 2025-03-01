@@ -64,13 +64,13 @@ type Organization struct {
 	Updated_At    time.Time
 }
 
-// // Category struct
-// type Category struct {
-// 	ID         uint   `gorm:"primaryKey"`
-// 	Category   string `gorm:"unique;not null"`
-// 	Created_At time.Time
-// 	Updated_At time.Time
-// }
+// Category struct
+type Category struct {
+	ID         uint   `gorm:"primaryKey"`
+	Category   string `gorm:"unique;not null"`
+	Created_At time.Time
+	Updated_At time.Time
+}
 
 // // Volunteer_Category struct
 // type Volunteer_Category struct {
