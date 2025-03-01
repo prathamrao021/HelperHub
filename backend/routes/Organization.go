@@ -27,12 +27,12 @@ func createOrganization(c *gin.Context, db *gorm.DB) {
 	}
 
 	// Hash the password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(organization.Password_Hash), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(organization.Password), bcrypt.DefaultCost)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
 		return
 	}
-	organization.Password_Hash = string(hashedPassword)
+	organization.Password = string(hashedPassword)
 	organization.Created_At = time.Now()
 	organization.Updated_At = time.Now()
 
@@ -80,13 +80,13 @@ func updateOrganization(c *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	if organization.Password_Hash != "" {
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(organization.Password_Hash), bcrypt.DefaultCost)
+	if organization.Password != "" {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(organization.Password), bcrypt.DefaultCost)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
 			return
 		}
-		organization.Password_Hash = string(hashedPassword)
+		organization.Password = string(hashedPassword)
 	}
 
 	organization.Updated_At = time.Now()
