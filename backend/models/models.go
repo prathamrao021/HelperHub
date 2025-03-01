@@ -79,19 +79,19 @@ type Volunteer_Category struct {
 	Category_ID  uint `gorm:"not null"`
 }
 
-// // Opportunity struct
-// type Opportunity struct {
-// 	ID              uint      `gorm:"primaryKey"`
-// 	Organization_ID uint      `gorm:"not null"`
-// 	Category_ID     uint      `gorm:"not null"`
-// 	Title           string    `gorm:"not null"`
-// 	Description     string    `gorm:"not null"`
-// 	Location        string    `gorm:"not null"`
-// 	Start_Date      time.Time `gorm:"not null"`
-// 	End_Date        time.Time `gorm:"not null"`
-// 	Created_At      time.Time
-// 	Updated_At      time.Time
-// }
+// Opportunity struct
+type Opportunity struct {
+	ID              uint      `gorm:"primaryKey"`
+	Organization_ID uint      `gorm:"not null"`
+	Category_ID     uint      `gorm:"not null"`
+	Title           string    `gorm:"not null"`
+	Description     string    `gorm:"not null"`
+	Location        string    `gorm:"not null"`
+	Start_Date      time.Time `gorm:"not null"`
+	End_Date        time.Time `gorm:"not null"`
+	Created_At      time.Time
+	Updated_At      time.Time
+}
 
 // // Application struct
 // type Application struct {
