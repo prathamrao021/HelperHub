@@ -30,6 +30,6 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 
 	// Routes for category management
 	categoryRouter := router.Group("/categories")
-	// createCategory(categoryRouter, db)
+	categoryRouter.POST("/create", func(c *gin.Context) { CreateCategory(c, db) })
 	categoryRouter.GET("/get", func(c *gin.Context) { getCategories(c, db) })
 }

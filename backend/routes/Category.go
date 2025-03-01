@@ -9,7 +9,15 @@ import (
 	"gorm.io/gorm"
 )
 
-func createCategory(c *gin.Context, db *gorm.DB) {
+// CreateCategory godoc
+// @Summary Create static categories
+// @Description Create static categories in the database
+// @Tags categories
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]string
+// @Router /categories/create [post]
+func CreateCategory(c *gin.Context, db *gorm.DB) {
 	// Define the static categories
 	categories := []string{
 		"Web Development",
@@ -22,7 +30,6 @@ func createCategory(c *gin.Context, db *gorm.DB) {
 		"Translation",
 		"First Aid",
 		"Project Management",
-		"Others",
 	}
 
 	// Iterate over the categories and insert them into the database if they do not already exist
@@ -35,17 +42,23 @@ func createCategory(c *gin.Context, db *gorm.DB) {
 					Created_At: time.Now(),
 				}
 				if err := db.Create(&newCategory).Error; err != nil {
-					c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+					if c != nil {
+						c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+					}
 					return
 				}
 			} else {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				if c != nil {
+					c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				}
 				return
 			}
 		}
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Categories created successfully"})
+	if c != nil {
+		c.JSON(http.StatusOK, gin.H{"message": "Categories created successfully"})
+	}
 }
 
 // getCategories godoc
@@ -55,7 +68,7 @@ func createCategory(c *gin.Context, db *gorm.DB) {
 // @Accept json
 // @Produce json
 // @Success 200 {object} models.Category
-// @Router /categories [get]
+// @Router /categories/get [get]
 func getCategories(c *gin.Context, db *gorm.DB) {
 	var categories []models.Category
 	if err := db.Find(&categories).Error; err != nil {
