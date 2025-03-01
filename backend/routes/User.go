@@ -41,7 +41,7 @@ func createUser(c *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "User data created successfully"})
+	c.JSON(http.StatusOK, user)
 }
 
 // deleteUser godoc
@@ -51,9 +51,7 @@ func createUser(c *gin.Context, db *gorm.DB) {
 // @Accept json
 // @Produce json
 // @Param username path string true "Username"
-// @Success 200 {object} gin.H{"message": "User deleted successfully"}
-// @Failure 404 {object} gin.H{"error": "User not found"}
-// @Failure 500 {object} gin.H{"error": "Internal Server Error"}
+// @Success 200 {object} models.User
 // @Router /users/delete/{username} [delete]
 func deleteUser(c *gin.Context, db *gorm.DB) {
 	username := c.Param("username")
@@ -75,9 +73,6 @@ func deleteUser(c *gin.Context, db *gorm.DB) {
 // @Param username path string true "Username"
 // @Param user body models.User true "User data"
 // @Success 200 {object} models.User
-// @Failure 400 {object} gin.H{"error": "Bad Request"}
-// @Failure 404 {object} gin.H{"error": "User not found"}
-// @Failure 500 {object} gin.H{"error": "Internal Server Error"}
 // @Router /users/update/{username} [put]
 func updateUser(c *gin.Context, db *gorm.DB) {
 	username := c.Param("username")
