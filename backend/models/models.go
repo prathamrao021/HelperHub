@@ -25,6 +25,24 @@ func (s *StringList) Scan(value interface{}) error {
 	return json.Unmarshal(bytes, s)
 }
 
+// UintList is a custom type for a list of uints
+type UintList []uint
+
+// driver.Valuer interface for UintList (GO -> DB)
+func (u UintList) Value() (driver.Value, error) {
+	return json.Marshal(u)
+}
+
+// sql.Scanner interface for UintList (DB -> GO)
+func (u *UintList) Scan(value interface{}) error {
+	bytes, ok := value.([]byte)
+	if !ok {
+		return errors.New("type assertion to []byte failed")
+	}
+
+	return json.Unmarshal(bytes, u)
+}
+
 // User struct
 type User struct {
 	ID            uint   `gorm:"primaryKey"`
@@ -73,9 +91,9 @@ type Category struct {
 
 // Volunteer_Category struct
 type Volunteer_Category struct {
-	ID           uint `gorm:"primaryKey"`
-	Volunteer_ID uint `gorm:"not null"`
-	Category_ID  uint `gorm:"not null"`
+	ID           uint       `gorm:"primaryKey"`
+	Volunteer_ID uint       `gorm:"not null"`
+	Category_ID  StringList `gorm:"type:json;not null"`
 }
 
 // Opportunity struct
