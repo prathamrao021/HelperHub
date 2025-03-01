@@ -43,9 +43,9 @@ type Volunteer struct {
 	Password_Hash    string `gorm:"not null"`
 	Name             string `gorm:"not null"`
 	Phone            string `gorm:"unique;not null"`
-	Location         string `gorm:"not null"`
-	Bio_Data         string `gorm:"not null"`
-	Availabile_Hours uint   `gorm:"not null"`
+	Location         string
+	Bio_Data         string
+	Availabile_Hours uint `gorm:"not null"`
 	Created_At       time.Time
 	Updated_At       time.Time
 }
