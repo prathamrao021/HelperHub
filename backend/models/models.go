@@ -72,12 +72,12 @@ type Category struct {
 	Updated_At time.Time
 }
 
-// // Volunteer_Category struct
-// type Volunteer_Category struct {
-// 	ID           uint `gorm:"primaryKey"`
-// 	Volunteer_ID uint `gorm:"not null"`
-// 	Category_ID  uint `gorm:"not null"`
-// }
+// Volunteer_Category struct
+type Volunteer_Category struct {
+	ID           uint `gorm:"primaryKey"`
+	Volunteer_ID uint `gorm:"not null"`
+	Category_ID  uint `gorm:"not null"`
+}
 
 // // Opportunity struct
 // type Opportunity struct {
