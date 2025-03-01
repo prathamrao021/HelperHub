@@ -8,12 +8,12 @@ const navigationItems = [
         subItems: [
             {
                 title: "Register as Organization",
-                href: "/register",
+                href: "/register/organization",
                 description: "Manage projects, events, and recruit volunteers."
             },
             {
                 title: "Register as Volunteer",
-                href: "/register",
+                href: "/register/volunteer",
                 description: "Explore opportunities and track your volunteer hours."
             }
         ]

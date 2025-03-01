@@ -26,7 +26,7 @@ export function HeroSection() {
           <div className="flex flex-col space-y-8">
             {/* Join callout */}
             <div className="inline-flex items-center space-x-2 rounded-full bg-muted/50 p-1 pr-6 backdrop-blur-sm">
-              <Link to="/register">
+              <Link to="/register/volunteer">
                 <Button variant="default" className="rounded-full px-5 hover:scale-105 transition-transform cursor-pointer">
                   Join the Movement
                 </Button>
@@ -53,15 +53,20 @@ export function HeroSection() {
 
             {/* CTA buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/register">
-                <Button size="lg" className="group cursor-pointer">
-                  Get Started
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Button>
-              </Link>
-              <Button size="lg" variant="outline" className="group cursor-pointer">
-                Learn More
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link to="/register/volunteer">
+                  <Button size="lg" className="group cursor-pointer">
+                    Join as Volunteer
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </Link>
+                <Link to="/register/organization">
+                  <Button size="lg" variant="outline" className="group cursor-pointer">
+                    Register Organization
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </Link>
+              </div>
             </div>
 
             {/* Stats */}
