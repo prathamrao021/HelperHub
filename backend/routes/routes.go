@@ -40,4 +40,15 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	opportunityRouter.PUT("/update/:id", func(c *gin.Context) { updateOpportunity(c, db) })
 	opportunityRouter.GET("/get/:id", func(c *gin.Context) { getOpportunity(c, db) })
 
+	// Routes for application management
+	applicationRouter := router.Group("/applications")
+	applicationRouter.POST("/", func(c *gin.Context) { createApplication(c, db) })
+	applicationRouter.GET("/", func(c *gin.Context) { getAllApplications(c, db) })
+	applicationRouter.GET("/:id", func(c *gin.Context) { getApplicationByID(c, db) })
+	applicationRouter.GET("/", func(c *gin.Context) { getApplicationsByVolunteerID(c, db) })
+	applicationRouter.GET("/", func(c *gin.Context) { getApplicationsByOpportunityID(c, db) })
+	applicationRouter.GET("/", func(c *gin.Context) { getApplicationsByStatus(c, db) })
+	applicationRouter.PUT("/:id", func(c *gin.Context) { updateApplication(c, db) })
+	applicationRouter.DELETE("/:id", func(c *gin.Context) { deleteApplication(c, db) })
+
 }
