@@ -80,14 +80,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const registerVolunteer = async (volunteerData: any) => {
     try {
       setIsLoading(true)
-      // const response = await fetch("/volunteers/create", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({
-      //     ...volunteerData,
-      //     userRole: "VOLUNTEER"
-      //   }),
-      // })
       const response = api.post("/volunteers/create", {
         ...volunteerData,
         userRole: "VOLUNTEER"
