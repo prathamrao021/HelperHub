@@ -46,27 +46,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(false)
   }, [])
 
-  const login = async (email: string, password: string, role?: string) => {
+    const login = async (email: string, password: string, role?: string) => {
     try {
       setIsLoading(true)
       let userData
+      
       if (role === "VOLUNTEER") {
         const response = await api.post("/login/volunteer", {
           email,
           password,
           role
         })
-        userData = response.data
+        // Create enhanced user data with role
+        userData = {
+          ...response.data,
+          userRole: "VOLUNTEER"
+        }
       } else {
         const response = await api.post("/login/organization", {
           email,
           password,
           role
         })
-        userData = response.data
+        // Create enhanced user data with role
+        userData = {
+          ...response.data,
+          userRole: "ORGANIZATION_ADMIN"
+        }
+        console.log("Organization login data:", userData)
       }
-      console.log(userData)
-      // Save to state and localStorage
+      
+      // Save to state and localStorage - now userData includes the userRole
       setUser(userData)
       localStorage.setItem("user", JSON.stringify(userData))
     } catch (error) {
