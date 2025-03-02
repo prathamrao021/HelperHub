@@ -59,6 +59,7 @@ func deleteOrganization(c *gin.Context, db *gorm.DB) {
 	if err := db.Where("email = ?", mail).Delete(&models.Organization{}).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
+	c.JSON(http.StatusOK, gin.H{"message": "Organization data deleted successfully"})
 }
 
 // updateOrganization godoc
@@ -117,4 +118,33 @@ func getOrganization(c *gin.Context, db *gorm.DB) {
 		return
 	}
 	c.JSON(http.StatusOK, organization)
+}
+
+// loginOrganization godoc
+// @Summary Login an organization
+// @Description Login an organization with the provided credentials
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param credentials body models.LoginRequest true "Login credentials"
+// @Success 200 {object} models.Organization
+// @Router /login/organization [post]
+func loginOrganization(c *gin.Context, db *gorm.DB) {
+	var credentials models.LoginRequest
+	if err := c.ShouldBindJSON(&credentials); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var organization models.Organization
+	if err := db.Where("email = ?", credentials.Email).First(&organization).Error; err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		return
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(organization.Password), []byte(credentials.Password)); err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"user": organization})
 }

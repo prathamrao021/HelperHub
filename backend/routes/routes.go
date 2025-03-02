@@ -20,6 +20,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	volunteerRouter.DELETE("/delete/:volunteer_mail", func(c *gin.Context) { deleteVolunteer(c, db) })
 	volunteerRouter.PUT("/update/:volunteer_mail", func(c *gin.Context) { updateVolunteer(c, db) })
 	volunteerRouter.GET("/get/:volunteer_mail", func(c *gin.Context) { getVolunteer(c, db) })
+	router.POST("/login/volunteer", func(c *gin.Context) { loginVolunteer(c, db) })
 
 	// Routes for organization management
 	organizationRouter := router.Group("/organizations")
@@ -27,6 +28,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	organizationRouter.DELETE("/delete/:organization_mail", func(c *gin.Context) { deleteOrganization(c, db) })
 	organizationRouter.PUT("/update/:organization_mail", func(c *gin.Context) { updateOrganization(c, db) })
 	organizationRouter.GET("/get/:organization_mail", func(c *gin.Context) { getOrganization(c, db) })
+	router.POST("/login/organization", func(c *gin.Context) { loginOrganization(c, db) })
 
 	// Routes for category management
 	categoryRouter := router.Group("/categories")
@@ -45,10 +47,11 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	applicationRouter.POST("/", func(c *gin.Context) { createApplication(c, db) })
 	applicationRouter.GET("/", func(c *gin.Context) { getAllApplications(c, db) })
 	applicationRouter.GET("/:id", func(c *gin.Context) { getApplicationByID(c, db) })
-	applicationRouter.GET("/", func(c *gin.Context) { getApplicationsByVolunteerID(c, db) })
-	applicationRouter.GET("/", func(c *gin.Context) { getApplicationsByOpportunityID(c, db) })
-	applicationRouter.GET("/", func(c *gin.Context) { getApplicationsByStatus(c, db) })
+	applicationRouter.GET("/volunteer/:volunteer_id", func(c *gin.Context) { getApplicationsByVolunteerID(c, db) })
+	applicationRouter.GET("/opportunity/:opportunity_id", func(c *gin.Context) { getApplicationsByOpportunityID(c, db) })
+	applicationRouter.GET("/status/:status", func(c *gin.Context) { getApplicationsByStatus(c, db) })
 	applicationRouter.PUT("/:id", func(c *gin.Context) { updateApplication(c, db) })
 	applicationRouter.DELETE("/:id", func(c *gin.Context) { deleteApplication(c, db) })
+	applicationRouter.GET("/volunteer/:volunteer_id/approved", func(c *gin.Context) { getLastNApprovedApplications(c, db) })
 
 }

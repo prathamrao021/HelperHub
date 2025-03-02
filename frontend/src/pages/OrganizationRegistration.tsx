@@ -12,6 +12,7 @@ import { Upload, Phone, Building, MapPin } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
 import { Mail, Lock } from "lucide-react"
+import { useAuth } from "@/contexts/auth-context"
 
 const organizationFormSchema = z.object({
     email: z
@@ -20,14 +21,14 @@ const organizationFormSchema = z.object({
     password: z
       .string()
       .min(6, "Password must be at least 6 characters"),
-    organizationName: z
+    name: z
       .string()
       .min(2, "Organization name must be at least 2 characters")
       .max(100, "Organization name must not exceed 100 characters"),
     // Rest of your schema remains the same
-    phoneNumber: z.string().min(10),
-    address: z.string().min(10).max(200),
-    description: z.string().min(100).max(1000),
+    phone: z.string().min(10),
+    location: z.string().min(10).max(200),
+    description: z.string().min(10).max(1000),
     profilePicture: z.instanceof(File).optional(),
   })
 
@@ -35,6 +36,7 @@ type OrganizationFormValues = z.infer<typeof organizationFormSchema>
 
 export function OrganizationRegistration() {
   const navigate = useNavigate()
+  const { registerOrganization } = useAuth()
   const form = useForm<OrganizationFormValues>({
     resolver: zodResolver(organizationFormSchema),
   })
@@ -48,9 +50,14 @@ export function OrganizationRegistration() {
     }
   }
 
-  function onSubmit(data: OrganizationFormValues) {
-    console.log(data)
-    // Handle form submission
+  async function onSubmit(data: OrganizationFormValues) {
+    
+    try {
+      await registerOrganization(data);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error registering organization:", error);
+    }
   }
 
   return (
@@ -107,7 +114,7 @@ export function OrganizationRegistration() {
                 />
                   <FormField
                     control={form.control}
-                    name="organizationName"
+                    name="name"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Organization Name</FormLabel>
@@ -165,7 +172,7 @@ export function OrganizationRegistration() {
 
                   <FormField
                     control={form.control}
-                    name="phoneNumber"
+                    name="phone"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Phone Number</FormLabel>
@@ -182,7 +189,7 @@ export function OrganizationRegistration() {
 
                   <FormField
                     control={form.control}
-                    name="address"
+                    name="location"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Address</FormLabel>

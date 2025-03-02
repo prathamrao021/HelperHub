@@ -8,12 +8,18 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Check, ChevronsUpDown } from "lucide-react"
-import { cn } from "@/lib/utils"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { ChevronsUpDown } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { X } from "lucide-react"
+import { useAuth } from "@/contexts/auth-context"
 
 const skills = [
   "Web Development",
@@ -26,33 +32,44 @@ const skills = [
   "Translation",
   "First Aid",
   "Project Management",
+  "Other"
 ] as const
 
 const volunteerFormSchema = z.object({
-  fullname: z.string().min(2, "Full name must be at least 2 characters"),
+  name: z.string().min(2, "Full name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  phoneNumber: z.string().min(10, "Phone number must be at least 10 digits"),
-  bio: z.string().min(50, "Bio must be at least 50 characters").max(500, "Bio must not exceed 500 characters"),
-  weeklyHours: z.number().min(1).max(40),
+  phone: z.string().min(10, "Phone number must be at least 10 digits"),
+  bio_Data: z.string().min(50, "Bio must be at least 50 characters").max(500, "Bio must not exceed 500 characters"),
+  available_Hours: z.number().min(1).max(40),
   location: z.string().min(3, "Location must be at least 3 characters"),
-  skills: z.array(z.string()).min(1, "Select at least one skill")
+  category_List: z.array(z.string()).min(1, "Select at least one skill")
 })
 
 type VolunteerFormValues = z.infer<typeof volunteerFormSchema>
 
 export function VolunteerRegistration() {
   const navigate = useNavigate()
+  const { registerVolunteer } = useAuth()
+
   const form = useForm<VolunteerFormValues>({
     resolver: zodResolver(volunteerFormSchema),
     defaultValues: {
-      skills: [],
-      weeklyHours: 5
+      name: "",
+      email: "",
+      password: "",
+      phone: "",
+      bio_Data: "", 
+      location: "",
+      category_List: [],
+      available_Hours: 5
     }
   })
 
   function onSubmit(data: VolunteerFormValues) {
-    console.log(data)
+    registerVolunteer(data)
+      .then(() => navigate("/dashboard"))
+      .catch((error) => console.error("Error registering volunteer:", error))
   }
 
   return (
@@ -77,7 +94,7 @@ export function VolunteerRegistration() {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                   <FormField
                     control={form.control}
-                    name="fullname"
+                    name="name"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Full Name</FormLabel>
@@ -116,7 +133,7 @@ export function VolunteerRegistration() {
                   />
                   <FormField
                     control={form.control}
-                    name="phoneNumber"
+                    name="phone"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Phone Number</FormLabel>
@@ -130,13 +147,13 @@ export function VolunteerRegistration() {
 
                   <FormField
                     control={form.control}
-                    name="bio"
+                    name="bio_Data"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Bio</FormLabel>
                         <FormControl>
-                          <Textarea 
-                            placeholder="Tell us about yourself, your experience, and what motivates you to volunteer..." 
+                          <Textarea
+                            placeholder="Tell us about yourself, your experience, and what motivates you to volunteer..."
                             className="min-h-[100px]"
                             {...field}
                           />
@@ -148,14 +165,14 @@ export function VolunteerRegistration() {
 
                   <FormField
                     control={form.control}
-                    name="weeklyHours"
+                    name="available_Hours"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Weekly Available Hours</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            min={1} 
+                          <Input
+                            type="number"
+                            min={1}
                             max={40}
                             {...field}
                             onChange={e => field.onChange(Number(e.target.value))}
@@ -182,71 +199,58 @@ export function VolunteerRegistration() {
 
                   <FormField
                     control={form.control}
-                    name="skills"
+                    name="category_List"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Skills</FormLabel>
                         <FormControl>
-                          <Popover>
-                            <PopoverTrigger asChild>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger>
                               <Button
                                 variant="outline"
-                                role="combobox"
-                                className={cn(
-                                  "w-full justify-between",
-                                  !field.value && "text-muted-foreground"
-                                )}
+                                className="w-full justify-between"
                               >
-                                Select skills
+                                {field.value?.length > 0
+                                  ? `${field.value.length} skill${field.value.length > 1 ? "s" : ""} selected`
+                                  : "Select skills"}
                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                               </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-full p-0">
-                              <Command>
-                                <CommandInput placeholder="Search skills..." />
-                                <CommandEmpty>No skill found.</CommandEmpty>
-                                <CommandGroup>
-                                  {skills.map((skill) => (
-                                    <CommandItem
-                                      key={skill}
-                                      onSelect={() => {
-                                        const currentValue = field.value || []
-                                        const newValue = currentValue.includes(skill)
-                                          ? currentValue.filter((s) => s !== skill)
-                                          : [...currentValue, skill]
-                                        field.onChange(newValue)
-                                      }}
-                                    >
-                                      <Check
-                                        className={cn(
-                                          "mr-2 h-4 w-4",
-                                          field.value?.includes(skill) 
-                                            ? "opacity-100" 
-                                            : "opacity-0"
-                                        )}
-                                      />
-                                      {skill}
-                                    </CommandItem>
-                                  ))}
-                                </CommandGroup>
-                              </Command>
-                            </PopoverContent>
-                          </Popover>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56">
+                              <DropdownMenuLabel>Available Skills</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              {skills.map((skill) => (
+                                <DropdownMenuCheckboxItem
+                                  key={skill}
+                                  checked={field.value?.includes(skill)}
+                                  onCheckedChange={(checked) => {
+                                    const currentValue = field.value || []
+                                    const newValue = checked
+                                      ? [...currentValue, skill]
+                                      : currentValue.filter((s) => s !== skill)
+                                    field.onChange(newValue)
+                                  }}
+                                >
+                                  {skill}
+                                </DropdownMenuCheckboxItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+
                         </FormControl>
                         <div className="flex flex-wrap gap-2 mt-2">
                           {field.value?.map((skill) => (
-                            <Badge 
+                            <Badge
                               key={skill}
                               variant="secondary"
-                              className="gap-1 px-2 py-0.5"
+                              className="flex items-center gap-1 px-2 py-1"
                             >
                               {skill}
-                              <X 
-                                className="h-3 w-3 cursor-pointer" 
+                              <X
+                                className="h-3 w-3 cursor-pointer"
                                 onClick={() => {
-                                  field.onChange(
-                                    field.value?.filter((s) => s !== skill)
-                                  )
+                                  const newValue = field.value?.filter((s) => s !== skill);
+                                  field.onChange(newValue);
                                 }}
                               />
                             </Badge>
