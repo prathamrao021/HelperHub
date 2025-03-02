@@ -13,8 +13,9 @@ import (
 	"github.com/prathamrao021/HelperHub/models"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/driver/sqlite"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 // LoginRequest struct for testing
@@ -25,11 +26,23 @@ type LoginRequest struct {
 }
 
 func setupTestDBForVolunteer() *gorm.DB {
-	// Use in-memory SQLite for testing
-	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
-	if err != nil {
-		panic("Failed to connect to test database")
+	// Use the same PostgreSQL connection as in main.go but with a test database
+	dsn := "host=localhost user=postgres password=flames_11 dbname=Helperhub port=5432 sslmode=prefer TimeZone=Asia/Shanghai"
+	
+	// Configure gorm with minimal logging during tests
+	config := &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
 	}
+
+	// Open connection to PostgreSQL
+	db, err := gorm.Open(postgres.Open(dsn), config)
+	if err != nil {
+		panic("Failed to connect to test database: " + err.Error())
+	}
+
+	// Clean up existing tables
+	db.Exec("DROP TABLE IF EXISTS volunteers CASCADE")
+	db.Exec("DROP TABLE IF EXISTS categories CASCADE")
 
 	// Auto migrate required models
 	db.AutoMigrate(&models.Volunteer{})
@@ -90,9 +103,14 @@ func createTestVolunteer(db *gorm.DB) models.Volunteer {
 	return created
 }
 
+func cleanupTestVolunteers(db *gorm.DB) {
+	db.Exec("DELETE FROM volunteers")
+}
+
 func TestCreateVolunteer(t *testing.T) {
 	db := setupTestDBForVolunteer()
 	router := setupRouterForVolunteer(db)
+	defer cleanupTestVolunteers(db)
 
 	// Test volunteer data
 	volunteer := models.Volunteer{
@@ -134,6 +152,7 @@ func TestCreateVolunteer(t *testing.T) {
 func TestGetVolunteer(t *testing.T) {
 	db := setupTestDBForVolunteer()
 	router := setupRouterForVolunteer(db)
+	defer cleanupTestVolunteers(db)
 
 	// Create test volunteer
 	volunteer := createTestVolunteer(db)
@@ -173,6 +192,7 @@ func TestGetVolunteer(t *testing.T) {
 func TestUpdateVolunteer(t *testing.T) {
 	db := setupTestDBForVolunteer()
 	router := setupRouterForVolunteer(db)
+	defer cleanupTestVolunteers(db)
 
 	// Create test volunteer
 	volunteer := createTestVolunteer(db)
@@ -220,6 +240,7 @@ func TestUpdateVolunteer(t *testing.T) {
 func TestUpdateVolunteerWithPassword(t *testing.T) {
 	db := setupTestDBForVolunteer()
 	router := setupRouterForVolunteer(db)
+	defer cleanupTestVolunteers(db)
 
 	// Create test volunteer
 	volunteer := createTestVolunteer(db)
@@ -263,6 +284,7 @@ func TestUpdateVolunteerWithPassword(t *testing.T) {
 func TestDeleteVolunteer(t *testing.T) {
 	db := setupTestDBForVolunteer()
 	router := setupRouterForVolunteer(db)
+	defer cleanupTestVolunteers(db)
 
 	// Create test volunteer
 	volunteer := createTestVolunteer(db)
@@ -288,6 +310,7 @@ func TestDeleteVolunteer(t *testing.T) {
 func TestLoginVolunteer(t *testing.T) {
 	db := setupTestDBForVolunteer()
 	router := setupRouterForVolunteer(db)
+	defer cleanupTestVolunteers(db)
 
 	// Create test volunteer with known plain password
 	plainPassword := "loginTestPassword"
@@ -355,6 +378,7 @@ func TestLoginVolunteer(t *testing.T) {
 func TestLoginVolunteerInvalidPassword(t *testing.T) {
 	db := setupTestDBForVolunteer()
 	router := setupRouterForVolunteer(db)
+	defer cleanupTestVolunteers(db)
 
 	// Create test volunteer
 	volunteer := createTestVolunteer(db)
@@ -386,6 +410,7 @@ func TestLoginVolunteerInvalidPassword(t *testing.T) {
 func TestLoginVolunteerInvalidEmail(t *testing.T) {
 	db := setupTestDBForVolunteer()
 	router := setupRouterForVolunteer(db)
+	defer cleanupTestVolunteers(db)
 
 	// Wrong login credentials
 	credentials := LoginRequest{
@@ -414,6 +439,7 @@ func TestLoginVolunteerInvalidEmail(t *testing.T) {
 func TestGetNonExistentVolunteer(t *testing.T) {
 	db := setupTestDBForVolunteer()
 	router := setupRouterForVolunteer(db)
+	defer cleanupTestVolunteers(db)
 
 	// Create request for non-existent volunteer
 	req, _ := http.NewRequest("GET", "/volunteers/get/nonexistent@email.com", nil)
@@ -431,6 +457,7 @@ func TestGetNonExistentVolunteer(t *testing.T) {
 func TestInvalidVolunteerData(t *testing.T) {
 	db := setupTestDBForVolunteer()
 	router := setupRouterForVolunteer(db)
+	defer cleanupTestVolunteers(db)
 
 	// Invalid JSON
 	req, _ := http.NewRequest("POST", "/volunteers/create", bytes.NewBuffer([]byte("invalid json")))
