@@ -21,13 +21,13 @@ const organizationFormSchema = z.object({
     password: z
       .string()
       .min(6, "Password must be at least 6 characters"),
-    organizationName: z
+    name: z
       .string()
       .min(2, "Organization name must be at least 2 characters")
       .max(100, "Organization name must not exceed 100 characters"),
     // Rest of your schema remains the same
-    phoneNumber: z.string().min(10),
-    address: z.string().min(10).max(200),
+    phone: z.string().min(10),
+    location: z.string().min(10).max(200),
     description: z.string().min(10).max(1000),
     profilePicture: z.instanceof(File).optional(),
   })
@@ -114,7 +114,7 @@ export function OrganizationRegistration() {
                 />
                   <FormField
                     control={form.control}
-                    name="organizationName"
+                    name="name"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Organization Name</FormLabel>
@@ -172,7 +172,7 @@ export function OrganizationRegistration() {
 
                   <FormField
                     control={form.control}
-                    name="phoneNumber"
+                    name="phone"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Phone Number</FormLabel>
@@ -189,7 +189,7 @@ export function OrganizationRegistration() {
 
                   <FormField
                     control={form.control}
-                    name="address"
+                    name="location"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Address</FormLabel>

@@ -65,7 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         })
         userData = response.data
       }
-      
+      console.log(userData)
       // Save to state and localStorage
       setUser(userData)
       localStorage.setItem("user", JSON.stringify(userData))
@@ -89,7 +89,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       //   }),
       // })
       const response = api.post("/volunteers/create", {
-        ...volunteerData
+        ...volunteerData,
+        userRole: "VOLUNTEER"
       })
 
       if ((await response).status !== 200) {
@@ -111,7 +112,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(true)
       const response = api.post("/organizations/create", {
         ...
-        organizationData
+        organizationData,
+        userRole: "ORGANIZATION_ADMIN"
       }
       )
 
