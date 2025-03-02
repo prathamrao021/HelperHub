@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -190,4 +191,32 @@ func deleteApplication(c *gin.Context, db *gorm.DB) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Application deleted successfully"})
+}
+
+// getLastNApprovedApplications godoc
+// @Summary Retrieve the last 'n' approved applications for a volunteer
+// @Description Retrieve the last 'n' applications with the status "Approved" for a specific volunteer
+// @Tags applications
+// @Accept json
+// @Produce json
+// @Param volunteer_id path uint true "Volunteer ID"
+// @Param n query int true "Number of applications"
+// @Success 200 {array} models.Application
+// @Router /applications/volunteer/{volunteer_id}/approved [get]
+func getLastNApprovedApplications(c *gin.Context, db *gorm.DB) {
+	volunteerID := c.Param("volunteer_id")
+	nStr := c.Query("n")
+	n, err := strconv.Atoi(nStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid number of applications"})
+		return
+	}
+
+	var applications []models.Application
+	if err := db.Where("volunteer_id = ? AND status = ?", volunteerID, "Approved").Order("created_at desc").Limit(n).Find(&applications).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, applications)
 }
