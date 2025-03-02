@@ -33,10 +33,22 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	categoryRouter.POST("/create", func(c *gin.Context) { CreateCategory(c, db) })
 	categoryRouter.GET("/get", func(c *gin.Context) { getCategories(c, db) })
 
-	// Routes for volunteer category management
-	// 	volunteerCategoryRouter := router.Group("/volunteer_categories")
-	// 	volunteerCategoryRouter.POST("/create", func(c *gin.Context) { createVolunteerCategory(c, db) })
-	// 	volunteerCategoryRouter.DELETE("/delete/:volunteer_id", func(c *gin.Context) { deleteVolunteerCategory(c, db) })
-	// 	volunteerCategoryRouter.GET("/get/:volunteer_id", func(c *gin.Context) { getVolunteerCategory(c, db) })
-	// 	volunteerCategoryRouter.PUT("/update", func(c *gin.Context) { updateVolunteerCategory(c, db) })
+	// Routes for opportunity management
+	opportunityRouter := router.Group("/opportunities")
+	opportunityRouter.POST("/create", func(c *gin.Context) { createOpportunity(c, db) })
+	opportunityRouter.DELETE("/delete/:id", func(c *gin.Context) { deleteOpportunity(c, db) })
+	opportunityRouter.PUT("/update/:id", func(c *gin.Context) { updateOpportunity(c, db) })
+	opportunityRouter.GET("/get/:id", func(c *gin.Context) { getOpportunity(c, db) })
+
+	// Routes for application management
+	applicationRouter := router.Group("/applications")
+	applicationRouter.POST("/", func(c *gin.Context) { createApplication(c, db) })
+	applicationRouter.GET("/", func(c *gin.Context) { getAllApplications(c, db) })
+	applicationRouter.GET("/:id", func(c *gin.Context) { getApplicationByID(c, db) })
+	applicationRouter.GET("/", func(c *gin.Context) { getApplicationsByVolunteerID(c, db) })
+	applicationRouter.GET("/", func(c *gin.Context) { getApplicationsByOpportunityID(c, db) })
+	applicationRouter.GET("/", func(c *gin.Context) { getApplicationsByStatus(c, db) })
+	applicationRouter.PUT("/:id", func(c *gin.Context) { updateApplication(c, db) })
+	applicationRouter.DELETE("/:id", func(c *gin.Context) { deleteApplication(c, db) })
+
 }
