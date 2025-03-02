@@ -27,7 +27,7 @@ type LoginRequest struct {
 
 func setupTestDBForVolunteer() *gorm.DB {
 	// Use the same PostgreSQL connection as in main.go but with a test database
-	dsn := "host=localhost user=postgres password=flames_11 dbname=Helperhub port=5432 sslmode=prefer TimeZone=Asia/Shanghai"
+	dsn := "host=localhost user=postgres password=admin dbname=Helperhub_test port=5432 sslmode=prefer TimeZone=Asia/Shanghai"
 	
 	// Configure gorm with minimal logging during tests
 	config := &gorm.Config{
