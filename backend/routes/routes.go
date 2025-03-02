@@ -33,10 +33,11 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	categoryRouter.POST("/create", func(c *gin.Context) { CreateCategory(c, db) })
 	categoryRouter.GET("/get", func(c *gin.Context) { getCategories(c, db) })
 
-	// Routes for volunteer category management
-	// 	volunteerCategoryRouter := router.Group("/volunteer_categories")
-	// 	volunteerCategoryRouter.POST("/create", func(c *gin.Context) { createVolunteerCategory(c, db) })
-	// 	volunteerCategoryRouter.DELETE("/delete/:volunteer_id", func(c *gin.Context) { deleteVolunteerCategory(c, db) })
-	// 	volunteerCategoryRouter.GET("/get/:volunteer_id", func(c *gin.Context) { getVolunteerCategory(c, db) })
-	// 	volunteerCategoryRouter.PUT("/update", func(c *gin.Context) { updateVolunteerCategory(c, db) })
+	// Routes for opportunity management
+	opportunityRouter := router.Group("/opportunities")
+	opportunityRouter.POST("/create", func(c *gin.Context) { createOpportunity(c, db) })
+	opportunityRouter.DELETE("/delete/:id", func(c *gin.Context) { deleteOpportunity(c, db) })
+	opportunityRouter.PUT("/update/:id", func(c *gin.Context) { updateOpportunity(c, db) })
+	opportunityRouter.GET("/get/:id", func(c *gin.Context) { getOpportunity(c, db) })
+
 }
