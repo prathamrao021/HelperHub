@@ -50,13 +50,13 @@ func createVolunteer(c *gin.Context, db *gorm.DB) {
 // @Tags volunteers
 // @Accept json
 // @Produce json
-// @Param username path string true "Username"
+// @Param volunteer_mail path string true "Email"
 // @Success 200 {object} models.Volunteer
-// @Router /volunteers/delete/{volunteer} [delete]
+// @Router /volunteers/delete/{volunteer_mail} [delete]
 func deleteVolunteer(c *gin.Context, db *gorm.DB) {
-	username := c.Param("username")
+	mail := c.Param("volunteer_mail")
 
-	if err := db.Where("username = ?", username).Delete(&models.Volunteer{}).Error; err != nil {
+	if err := db.Where("email = ?", mail).Delete(&models.Volunteer{}).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -70,12 +70,12 @@ func deleteVolunteer(c *gin.Context, db *gorm.DB) {
 // @Tags volunteers
 // @Accept json
 // @Produce json
-// @Param username path string true "Username"
+// @Param volunteer_mail path string true "Email"
 // @Param volunteer body models.Volunteer true "Volunteer data"
 // @Success 200 {object} models.Volunteer
-// @Router /volunteers/update/{volunteer} [put]
+// @Router /volunteers/update/{volunteer_mail} [put]
 func updateVolunteer(c *gin.Context, db *gorm.DB) {
-	username := c.Param("username")
+	mail := c.Param("volunteer_mail")
 	var volunteer models.Volunteer
 	if err := c.ShouldBindJSON(&volunteer); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -94,7 +94,7 @@ func updateVolunteer(c *gin.Context, db *gorm.DB) {
 
 	volunteer.Updated_At = time.Now()
 
-	if err := db.Where("username = ?", username).Updates(&volunteer).Error; err != nil {
+	if err := db.Where("email = ?", mail).Updates(&volunteer).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -108,14 +108,14 @@ func updateVolunteer(c *gin.Context, db *gorm.DB) {
 // @Tags volunteers
 // @Accept json
 // @Produce json
-// @Param username path string true "Username"
+// @Param volunteer_mail path string true "Email"
 // @Success 200 {object} models.Volunteer
-// @Router /volunteers/get/{volunteer} [get]
+// @Router /volunteers/get/{volunteer_mail} [get]
 func getVolunteer(c *gin.Context, db *gorm.DB) {
-	username := c.Param("username")
+	mail := c.Param("volunteer_mail")
 	var volunteer models.Volunteer
 
-	if err := db.Where("username = ?", username).First(&volunteer).Error; err != nil {
+	if err := db.Where("email = ?", mail).First(&volunteer).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
