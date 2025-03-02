@@ -12,6 +12,7 @@ import { Upload, Phone, Building, MapPin } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
 import { Mail, Lock } from "lucide-react"
+import { useAuth } from "@/contexts/auth-context"
 
 const organizationFormSchema = z.object({
     email: z
@@ -48,9 +49,14 @@ export function OrganizationRegistration() {
     }
   }
 
-  function onSubmit(data: OrganizationFormValues) {
-    console.log(data)
-    // Handle form submission
+  async function onSubmit(data: OrganizationFormValues) {
+    const { registerOrganization } = useAuth()
+    try {
+      await registerOrganization(data);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error registering organization:", error);
+    }
   }
 
   return (
