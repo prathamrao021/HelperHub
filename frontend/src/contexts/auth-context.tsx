@@ -1,21 +1,21 @@
 // src/contexts/auth-context.tsx
 import { createContext, useContext, useState, useEffect, ReactNode } from "react"
+import api from "@/lib/axios"
 
 // Define a more comprehensive user type that handles both roles
 type User = {
-  id: string
+  id: number
   email: string
+  name: string
   userRole: "VOLUNTEER" | "ORGANIZATION_ADMIN"
   // Shared properties
-  fullName: string
   profilePicture?: string | null
   // Volunteer-specific properties
-  bio?: string
+  bio_Data?: string
   skills?: string[]
   location?: string
   weeklyHours?: number
   // Organization-specific properties
-  organizationName?: string
   address?: string
   description?: string
   phoneNumber?: string
@@ -49,18 +49,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string, role?: string) => {
     try {
       setIsLoading(true)
-      // Replace with your API call - adjust the endpoint based on role if needed
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, role }),
-      })
-
-      if (!response.ok) {
-        throw new Error("Login failed")
+      let userData
+      if (role === "VOLUNTEER") {
+        const response = await api.post("/login/volunteer", {
+          email,
+          password,
+          role
+        })
+        userData = response.data
+      } else {
+        const response = await api.post("/login/organization", {
+          email,
+          password,
+          role
+        })
+        userData = response.data
       }
-
-      const userData = await response.json()
       
       // Save to state and localStorage
       setUser(userData)
@@ -76,21 +80,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const registerVolunteer = async (volunteerData: any) => {
     try {
       setIsLoading(true)
-      const response = await fetch("/api/volunteers/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...volunteerData,
-          userRole: "VOLUNTEER"
-        }),
+      // const response = await fetch("/volunteers/create", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({
+      //     ...volunteerData,
+      //     userRole: "VOLUNTEER"
+      //   }),
+      // })
+      const response = api.post("/volunteers/create", {
+        ...volunteerData
       })
 
-      if (!response.ok) {
+      if ((await response).status !== 200) {
         throw new Error("Volunteer registration failed")
       }
 
-      // Optionally auto-login after registration
-      await login(volunteerData.email, volunteerData.password, "volunteer")
+
+      await login(volunteerData.email, volunteerData.password, "VOLUNTEER")
     } catch (error) {
       console.error("Registration error:", error)
       throw error
@@ -102,21 +109,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const registerOrganization = async (organizationData: any) => {
     try {
       setIsLoading(true)
-      const response = await fetch("/api/organizations/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...organizationData,
-          userRole: "ORGANIZATION_ADMIN"
-        }),
-      })
+      const response = api.post("/organizations/create", {
+        ...
+        organizationData
+      }
+      )
 
-      if (!response.ok) {
+      if ((await response).status !== 200) {
         throw new Error("Organization registration failed")
       }
 
       // Optionally auto-login after registration
-      await login(organizationData.email, organizationData.password, "organization")
+      await login(organizationData.email, organizationData.password, "ORGANIZATION_ADMIN")
     } catch (error) {
       console.error("Registration error:", error)
       throw error

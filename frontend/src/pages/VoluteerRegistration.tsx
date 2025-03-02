@@ -43,30 +43,30 @@ const volunteerFormSchema = z.object({
   bio_Data: z.string().min(50, "Bio must be at least 50 characters").max(500, "Bio must not exceed 500 characters"),
   available_Hours: z.number().min(1).max(40),
   location: z.string().min(3, "Location must be at least 3 characters"),
-  skills: z.array(z.string()).min(1, "Select at least one skill")
+  category_List: z.array(z.string()).min(1, "Select at least one skill")
 })
 
 type VolunteerFormValues = z.infer<typeof volunteerFormSchema>
 
 export function VolunteerRegistration() {
   const navigate = useNavigate()
+  const { registerVolunteer } = useAuth()
 
   const form = useForm<VolunteerFormValues>({
     resolver: zodResolver(volunteerFormSchema),
     defaultValues: {
-      name: "",          // Add default for name
-      email: "",         // Add default for email
-      password: "",      // Add default for password
-      phone: "",         // Add default for phone
-      bio_Data: "",      // Add default for bio
-      location: "",      // Add default for location
-      skills: [],        // You already have this
-      available_Hours: 5 // You already have this
+      name: "",
+      email: "",
+      password: "",
+      phone: "",
+      bio_Data: "", 
+      location: "",
+      category_List: [],
+      available_Hours: 5
     }
   })
 
   function onSubmit(data: VolunteerFormValues) {
-    const { registerVolunteer } = useAuth()
     registerVolunteer(data)
       .then(() => navigate("/dashboard"))
       .catch((error) => console.error("Error registering volunteer:", error))
@@ -199,7 +199,7 @@ export function VolunteerRegistration() {
 
                   <FormField
                     control={form.control}
-                    name="skills"
+                    name="category_List"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Skills</FormLabel>
