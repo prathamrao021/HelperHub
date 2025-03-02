@@ -46,33 +46,33 @@ func createOrganization(c *gin.Context, db *gorm.DB) {
 
 // deleteOrganization godoc
 // @Summary Delete an existing organization
-// @Description Delete an existing organization by username
+// @Description Delete an existing organization by organization_mail
 // @Tags organizations
 // @Accept json
 // @Produce json
-// @Param username path string true "Username"
+// @Param organization_mail path string true "Email"
 // @Success 200 {object} models.Organization
-// @Router /organizations/delete/{organization} [delete]
+// @Router /organizations/delete/{organization_mail} [delete]
 func deleteOrganization(c *gin.Context, db *gorm.DB) {
-	username := c.Param("username")
+	mail := c.Param("organization_mail")
 
-	if err := db.Where("username = ?", username).Delete(&models.Organization{}).Error; err != nil {
+	if err := db.Where("email = ?", mail).Delete(&models.Organization{}).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 }
 
 // updateOrganization godoc
 // @Summary Update an existing organization
-// @Description Update an existing organization by username
+// @Description Update an existing organization by organization_mail
 // @Tags organizations
 // @Accept json
 // @Produce json
-// @Param username path string true "Username"
+// @Param organization_mail path string true "Email"
 // @Param organization body models.Organization true "Organization data"
 // @Success 200 {object} models.Organization
-// @Router /organizations/update/{organization} [put]
+// @Router /organizations/update/{organization_mail} [put]
 func updateOrganization(c *gin.Context, db *gorm.DB) {
-	username := c.Param("username")
+	mail := c.Param("organization_mail")
 
 	var organization models.Organization
 	if err := c.ShouldBindJSON(&organization); err != nil {
@@ -91,7 +91,7 @@ func updateOrganization(c *gin.Context, db *gorm.DB) {
 
 	organization.Updated_At = time.Now()
 
-	if err := db.Where("username = ?", username).Updates(&organization).Error; err != nil {
+	if err := db.Where("email = ?", mail).Updates(&organization).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -101,18 +101,18 @@ func updateOrganization(c *gin.Context, db *gorm.DB) {
 
 // getOrganization godoc
 // @Summary Get an existing organization
-// @Description Get an existing organization by username
+// @Description Get an existing organization by organization_mail
 // @Tags organizations
 // @Accept json
 // @Produce json
-// @Param username path string true "Username"
+// @Param organization_mail path string true "Email"
 // @Success 200 {object} models.Organization
-// @Router /organizations/get/{organization} [get]
+// @Router /organizations/get/{organization_mail} [get]
 func getOrganization(c *gin.Context, db *gorm.DB) {
-	username := c.Param("username")
+	mail := c.Param("organization_mail")
 
 	var organization models.Organization
-	if err := db.Where("username = ?", username).First(&organization).Error; err != nil {
+	if err := db.Where("email = ?", mail).First(&organization).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

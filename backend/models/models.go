@@ -63,7 +63,8 @@ type Volunteer struct {
 	Phone            string `gorm:"unique;not null"`
 	Location         string
 	Bio_Data         string
-	Availabile_Hours uint `gorm:"not null"`
+	Category_List    StringList `gorm:"type:json;not null"`
+	Availabile_Hours uint       `gorm:"not null"`
 	Created_At       time.Time
 	Updated_At       time.Time
 }
@@ -89,25 +90,17 @@ type Category struct {
 	Created_At time.Time
 }
 
-// Volunteer_Category struct
-type Volunteer_Category struct {
-	ID           uint       `gorm:"primaryKey"`
-	Volunteer_ID uint       `gorm:"not null"`
-	Category_ID  StringList `gorm:"type:json;not null"`
-}
-
 // Opportunity struct
 type Opportunity struct {
-	ID              uint      `gorm:"primaryKey"`
-	Organization_ID uint      `gorm:"not null"`
-	Category_ID     uint      `gorm:"not null"`
-	Title           string    `gorm:"not null"`
-	Description     string    `gorm:"not null"`
-	Location        string    `gorm:"not null"`
-	Start_Date      time.Time `gorm:"not null"`
-	End_Date        time.Time `gorm:"not null"`
-	Created_At      time.Time
-	Updated_At      time.Time
+	ID                uint      `gorm:"primaryKey"`
+	Organization_mail string    `gorm:"not null"`
+	Category          string    `gorm:"not null"`
+	Title             string    `gorm:"not null"`
+	Description       string    `gorm:"not null"`
+	Location          string    `gorm:"not null"`
+	Hours_Required    time.Time `gorm:"not null"`
+	Created_At        time.Time
+	Updated_At        time.Time
 }
 
 // Application struct
