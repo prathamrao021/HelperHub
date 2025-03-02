@@ -81,11 +81,11 @@ func getApplicationByID(c *gin.Context, db *gorm.DB) {
 // @Tags applications
 // @Accept json
 // @Produce json
-// @Param volunteer_id query uint true "Volunteer ID"
+// @Param volunteer_id path uint true "Volunteer ID"
 // @Success 200 {array} models.Application
-// @Router /applications [get]
+// @Router /applications/volunteer/{volunteer_id} [get]
 func getApplicationsByVolunteerID(c *gin.Context, db *gorm.DB) {
-	volunteerID := c.Query("volunteer_id")
+	volunteerID := c.Param("volunteer_id")
 	var applications []models.Application
 
 	if err := db.Where("volunteer_id = ?", volunteerID).Find(&applications).Error; err != nil {
@@ -102,11 +102,11 @@ func getApplicationsByVolunteerID(c *gin.Context, db *gorm.DB) {
 // @Tags applications
 // @Accept json
 // @Produce json
-// @Param opportunity_id query uint true "Opportunity ID"
+// @Param opportunity_id path uint true "Opportunity ID"
 // @Success 200 {array} models.Application
-// @Router /applications [get]
+// @Router /applications/opportunity/{opportunity_id} [get]
 func getApplicationsByOpportunityID(c *gin.Context, db *gorm.DB) {
-	opportunityID := c.Query("opportunity_id")
+	opportunityID := c.Param("opportunity_id")
 	var applications []models.Application
 
 	if err := db.Where("opportunity_id = ?", opportunityID).Find(&applications).Error; err != nil {
@@ -123,11 +123,11 @@ func getApplicationsByOpportunityID(c *gin.Context, db *gorm.DB) {
 // @Tags applications
 // @Accept json
 // @Produce json
-// @Param status query string true "Status"
+// @Param status path string true "Status"
 // @Success 200 {array} models.Application
-// @Router /applications [get]
+// @Router /applications/status/{status} [get]
 func getApplicationsByStatus(c *gin.Context, db *gorm.DB) {
-	status := c.Query("status")
+	status := c.Param("status")
 	var applications []models.Application
 
 	if err := db.Where("status = ?", status).Find(&applications).Error; err != nil {
