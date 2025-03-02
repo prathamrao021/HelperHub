@@ -28,7 +28,7 @@ const organizationFormSchema = z.object({
     // Rest of your schema remains the same
     phoneNumber: z.string().min(10),
     address: z.string().min(10).max(200),
-    description: z.string().min(100).max(1000),
+    description: z.string().min(10).max(1000),
     profilePicture: z.instanceof(File).optional(),
   })
 
@@ -36,6 +36,7 @@ type OrganizationFormValues = z.infer<typeof organizationFormSchema>
 
 export function OrganizationRegistration() {
   const navigate = useNavigate()
+  const { registerOrganization } = useAuth()
   const form = useForm<OrganizationFormValues>({
     resolver: zodResolver(organizationFormSchema),
   })
@@ -50,7 +51,7 @@ export function OrganizationRegistration() {
   }
 
   async function onSubmit(data: OrganizationFormValues) {
-    const { registerOrganization } = useAuth()
+    
     try {
       await registerOrganization(data);
       navigate("/dashboard");
