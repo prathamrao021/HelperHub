@@ -127,7 +127,7 @@ func getOrganization(c *gin.Context, db *gorm.DB) {
 // @Accept json
 // @Produce json
 // @Param credentials body models.LoginRequest true "Login credentials"
-// @Success 200 {object} models.LoginRequest
+// @Success 200 {object} models.Organization
 // @Router /login/organization [post]
 func loginOrganization(c *gin.Context, db *gorm.DB) {
 	var credentials models.LoginRequest

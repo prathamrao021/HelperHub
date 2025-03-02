@@ -130,7 +130,7 @@ func getVolunteer(c *gin.Context, db *gorm.DB) {
 // @Accept json
 // @Produce json
 // @Param credentials body models.LoginRequest true "Login credentials"
-// @Success 200 {object} models.LoginRequest
+// @Success 200 {object} models.Volunteer
 // @Router /login/volunteer [post]
 func loginVolunteer(c *gin.Context, db *gorm.DB) {
 	var credentials models.LoginRequest
