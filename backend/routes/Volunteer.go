@@ -122,3 +122,33 @@ func getVolunteer(c *gin.Context, db *gorm.DB) {
 
 	c.JSON(http.StatusOK, volunteer)
 }
+
+// loginVolunteer godoc
+// @Summary Login a volunteer
+// @Description Login a volunteer with the provided credentials
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param credentials body models.LoginRequest true "Login credentials"
+// @Success 200 {object} models.LoginRequest
+// @Router /login/volunteer [post]
+func loginVolunteer(c *gin.Context, db *gorm.DB) {
+	var credentials models.LoginRequest
+	if err := c.ShouldBindJSON(&credentials); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var volunteer models.Volunteer
+	if err := db.Where("email = ?", credentials.Email).First(&volunteer).Error; err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email"})
+		return
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(volunteer.Password), []byte(credentials.Password)); err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid password"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"user": volunteer})
+}

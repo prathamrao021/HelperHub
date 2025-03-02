@@ -113,3 +113,10 @@ type Application struct {
 	Created_At     time.Time
 	Updated_At     time.Time
 }
+
+// LoginRequest struct
+type LoginRequest struct {
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
+	Role     string `json:"role" binding:"required"`
+}
