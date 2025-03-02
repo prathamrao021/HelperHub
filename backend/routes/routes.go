@@ -50,4 +50,6 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	applicationRouter.GET("/status/:status", func(c *gin.Context) { getApplicationsByStatus(c, db) })
 	applicationRouter.PUT("/:id", func(c *gin.Context) { updateApplication(c, db) })
 	applicationRouter.DELETE("/:id", func(c *gin.Context) { deleteApplication(c, db) })
+	applicationRouter.GET("/volunteer/:volunteer_id/approved", func(c *gin.Context) { getLastNApprovedApplications(c, db) })
+
 }
