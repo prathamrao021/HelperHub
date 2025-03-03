@@ -41,7 +41,7 @@ func createVolunteer(c *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Volunteer data created successfully"})
+	c.JSON(http.StatusOK, volunteer)
 }
 
 // deleteVolunteer godoc

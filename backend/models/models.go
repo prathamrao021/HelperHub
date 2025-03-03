@@ -56,17 +56,17 @@ type User struct {
 
 // Volunteer struct
 type Volunteer struct {
-	ID               uint   `gorm:"primaryKey json:"id""`
-	Email            string `gorm:"unique;not null json:"email""`
-	Password         string `gorm:"not null json:"password""`
-	Name             string `gorm:"not null json:"name""`
-	Phone            string `gorm:"unique;not null json:"phone""`
-	Location         string `json:"location""`
-	Bio_Data         string `json:"bio_Data""`
-	Category_List    StringList `gorm:"type:json;not null" json:"category_List""`
-	Availabile_Hours uint       `gorm:"not null" json:"availabile_Hours""`
-	Created_At       time.Time `json:"created_At""`
-	Updated_At       time.Time `json:"updated_At""`
+	ID               uint   `gorm:"primaryKey" json:"id"`
+	Email            string `gorm:"unique;not null" json:"email"`
+	Password         string `gorm:"not null" json:"password"`
+	Name             string `gorm:"not null" json:"name"`
+	Phone            string `gorm:"unique;not null" json:"phone"`
+	Location         string `json:"location"`
+	Bio_Data         string `json:"bio_Data"`
+	Category_List    StringList `gorm:"type:json;not null" json:"category_List"`
+	Availabile_Hours uint       `gorm:"not null" json:"available_Hours"`
+	Created_At       time.Time `json:"created_At"`
+	Updated_At       time.Time `json:"updated_At"`
 }
 
 // Organization struct
