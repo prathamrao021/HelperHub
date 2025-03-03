@@ -12,9 +12,9 @@ type User = {
   profilePicture?: string | null
   // Volunteer-specific properties
   bio_Data?: string
-  skills?: string[]
+  category_List?: string[]
   location?: string
-  weeklyHours?: number
+  available_Hours?: number
   // Organization-specific properties
   address?: string
   description?: string

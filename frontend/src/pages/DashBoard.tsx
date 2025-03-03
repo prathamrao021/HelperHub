@@ -1,5 +1,4 @@
 import React from "react"
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -21,6 +20,7 @@ import {
   Building, Award
 } from "lucide-react"
 import { EditOrganizationProfile } from "@/components/EditOrganizationProfile"
+import { EditVolunteerProfile } from "@/components/EditVolunteerProfile"
 
 // Dummy chart component - replace with a real chart library like recharts
 const Overview: React.FC<{ userRole: string }> = ({ userRole }) => {
@@ -167,7 +167,7 @@ const VolunteerProfile: React.FC<{ user: any }> = ({ user }) => {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Full Name</p>
-              <p>{user?.fullName || "John Doe"}</p>
+              <p>{user?.name || "John Doe"}</p>
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Email</p>
@@ -175,7 +175,7 @@ const VolunteerProfile: React.FC<{ user: any }> = ({ user }) => {
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Phone</p>
-              <p>{user?.phoneNumber || "(555) 123-4567"}</p>
+              <p>{user?.phone || "(555) 123-4567"}</p>
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Location</p>
@@ -184,7 +184,7 @@ const VolunteerProfile: React.FC<{ user: any }> = ({ user }) => {
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Skills</p>
               <div className="flex flex-wrap gap-1">
-                {(user?.skills || ["Web Development", "Teaching", "Event Planning"]).map(
+                {(user?.category_List || ["Web Development", "Teaching", "Event Planning"]).map(
                   (skill: string) => (
                     <span key={skill} className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
                       {skill}
@@ -194,8 +194,8 @@ const VolunteerProfile: React.FC<{ user: any }> = ({ user }) => {
               </div>
             </div>
             <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Joined</p>
-              <p>January 2025</p>
+              <p className="text-sm font-medium text-muted-foreground">Weekly Hours</p>
+              <p>{user?.available_Hours}</p>
             </div>
           </div>
         </CardContent>
@@ -206,12 +206,12 @@ const VolunteerProfile: React.FC<{ user: any }> = ({ user }) => {
           <CardTitle>Bio</CardTitle>
         </CardHeader>
         <CardContent>
-          <p>{user?.bio || "Passionate about making a difference through volunteer work. Experienced in community outreach and event organization. Looking to connect with nonprofits that focus on education and environmental issues."}</p>
+          <p>{user?.bio_Data || "Passionate about making a difference through volunteer work. Experienced in community outreach and event organization. Looking to connect with nonprofits that focus on education and environmental issues."}</p>
         </CardContent>
       </Card>
       
       <div className="flex justify-end">
-      <EditOrganizationProfile />
+      <EditVolunteerProfile />
       </div>
     </div>
   )
