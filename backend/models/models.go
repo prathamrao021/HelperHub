@@ -56,31 +56,31 @@ type User struct {
 
 // Volunteer struct
 type Volunteer struct {
-	ID               uint   `gorm:"primaryKey"`
-	Email            string `gorm:"unique;not null"`
-	Password         string `gorm:"not null"`
-	Name             string `gorm:"not null"`
-	Phone            string `gorm:"unique;not null"`
-	Location         string
-	Bio_Data         string
-	Category_List    StringList `gorm:"type:json;not null"`
-	Availabile_Hours uint       `gorm:"not null"`
-	Created_At       time.Time
-	Updated_At       time.Time
+	ID               uint   `gorm:"primaryKey json:"id""`
+	Email            string `gorm:"unique;not null json:"email""`
+	Password         string `gorm:"not null json:"password""`
+	Name             string `gorm:"not null json:"name""`
+	Phone            string `gorm:"unique;not null json:"phone""`
+	Location         string `json:"location""`
+	Bio_Data         string `json:"bio_Data""`
+	Category_List    StringList `gorm:"type:json;not null" json:"category_List""`
+	Availabile_Hours uint       `gorm:"not null" json:"availabile_Hours""`
+	Created_At       time.Time `json:"created_At""`
+	Updated_At       time.Time `json:"updated_At""`
 }
 
 // Organization struct
 type Organization struct {
-	ID          uint   `gorm:"primaryKey"`
-	Email       string `gorm:"unique;not null"`
-	Password    string `gorm:"not null"`
-	Name        string `gorm:"unique;not null"`
-	Phone       string `gorm:"not null"`
-	Location    string `gorm:"not null"`
-	Description string `gorm:"not null"`
-	Website_Url string `gorm:"not null"`
-	Created_At  time.Time
-	Updated_At  time.Time
+	ID          uint   `gorm:"primaryKey" json:"id"`
+	Email       string `gorm:"unique;not null" json:"email"`
+	Password    string `gorm:"not null" json:"password"`
+	Name        string `gorm:"unique;not null" json:"name"`
+	Phone       string `gorm:"not null" json:"phone"`
+	Location    string `gorm:"not null" json:"location"`
+	Description string `gorm:"not null" json:"description"`
+	Website_Url string `gorm:"not null" json:"website_url"`
+	Created_At  time.Time `json:"created_at"`
+	Updated_At  time.Time	`json:"updated_at"`
 }
 
 // Category struct
@@ -92,26 +92,26 @@ type Category struct {
 
 // Opportunity struct
 type Opportunity struct {
-	ID                uint      `gorm:"primaryKey"`
-	Organization_mail string    `gorm:"not null"`
-	Category          string    `gorm:"not null"`
-	Title             string    `gorm:"not null"`
-	Description       string    `gorm:"not null"`
-	Location          string    `gorm:"not null"`
-	Hours_Required    time.Time `gorm:"not null"`
-	Created_At        time.Time
-	Updated_At        time.Time
+	ID                uint      `gorm:"primaryKey" json:"id"`
+	Organization_mail string    `gorm:"not null" json:"organization_mail"`
+	Category          string    `gorm:"not null" json:"category"`
+	Title             string    `gorm:"not null" json:"title"`
+	Description       string    `gorm:"not null" json:"description"`
+	Location          string    `gorm:"not null" json:"location"`
+	Hours_Required    time.Time `gorm:"not null" json:"hours_Required"`
+	Created_At        time.Time `json:"created_At"`
+	Updated_At        time.Time `json:"updated_At"`
 }
 
 // Application struct
 type Application struct {
-	ID             uint   `gorm:"primaryKey"`
-	Volunteer_ID   uint   `gorm:"not null"`
-	Opportunity_ID uint   `gorm:"not null"`
-	Status         string `gorm:"not null"`
-	Cover_Letter   string `gorm:"not null"`
-	Created_At     time.Time
-	Updated_At     time.Time
+	ID             uint   `gorm:"primaryKey" json:"id"`
+	Volunteer_ID   uint   `gorm:"not null" json:"volunteer_ID"`
+	Opportunity_ID uint   `gorm:"not null" json:"opportunity_ID"`
+	Status         string `gorm:"not null" json:"status"`
+	Cover_Letter   string `gorm:"not null" json:"cover_Letter"`
+	Created_At     time.Time `json:"created_At"`
+	Updated_At     time.Time `json:"updated_At"`
 }
 
 // LoginRequest struct

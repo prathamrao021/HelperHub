@@ -18,7 +18,7 @@ type User = {
   // Organization-specific properties
   address?: string
   description?: string
-  phoneNumber?: string
+  phone?: string
 }
 
 type AuthContextType = {
@@ -29,6 +29,7 @@ type AuthContextType = {
   registerVolunteer: (volunteerData: any) => Promise<void>
   registerOrganization: (organizationData: any) => Promise<void>
   logout: () => void
+  updateUser: (user: any) => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -46,46 +47,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(false)
   }, [])
 
-    const login = async (email: string, password: string, role?: string) => {
-    try {
-      setIsLoading(true)
-      let userData
+            const login = async (email: string, password: string, role?: string) => {
+        try {
+          setIsLoading(true);
+          let userData;
       
-      if (role === "VOLUNTEER") {
-        const response = await api.post("/login/volunteer", {
-          email,
-          password,
-          role
-        })
-        // Create enhanced user data with role
-        userData = {
-          ...response.data,
-          userRole: "VOLUNTEER"
+          if (role === "VOLUNTEER") {
+            const response = await api.post("/login/volunteer", {
+              email,
+              password,
+              role,
+            });
+            // Extract user data and add role at same level
+            userData = {
+              ...response.data.user,  // Spread the nested user object
+              userRole: "VOLUNTEER",
+            };
+          } else {
+            const response = await api.post("/login/organization", {
+              email,
+              password,
+              role,
+            });
+            // Extract user data and add role at same level
+            userData = {
+              ...response.data.user,  // Spread the nested user object
+              userRole: "ORGANIZATION_ADMIN",
+            };
+          }
+          console.log("User data which we get back from the server", userData);
+          setUser(userData);
+          localStorage.setItem("user", JSON.stringify(userData));
+        } catch (error) {
+          console.error("Login error:", error);
+          throw error;
+        } finally {
+          setIsLoading(false);
         }
-      } else {
-        const response = await api.post("/login/organization", {
-          email,
-          password,
-          role
-        })
-        // Create enhanced user data with role
-        userData = {
-          ...response.data,
-          userRole: "ORGANIZATION_ADMIN"
-        }
-        console.log("Organization login data:", userData)
-      }
-      
-      // Save to state and localStorage - now userData includes the userRole
-      setUser(userData)
-      localStorage.setItem("user", JSON.stringify(userData))
-    } catch (error) {
-      console.error("Login error:", error)
-      throw error
-    } finally {
-      setIsLoading(false)
-    }
+      };
+    
+  const updateUser = (user: any) => {
+    setUser(user)
+    localStorage.setItem("user", JSON.stringify(user))
   }
+
 
   const registerVolunteer = async (volunteerData: any) => {
     try {
@@ -148,6 +153,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     registerVolunteer,
     registerOrganization,
     logout,
+    updateUser
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
