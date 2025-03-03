@@ -48,12 +48,123 @@ These are the User Stories and their links which we planned to complete in sprin
     - Implemented retrieve last n approved applications.
 6. **Unit Tests**
     - Implemented Unit test for -
-        Applications
-        Category
-        Opportunity
-        Organization
-        Volunteer
-        User
+        Applications -
+
+            TestCreateApplication: Validates that volunteers can successfully apply for opportunities with proper validation and persistence.
+
+            TestGetAllApplications: Ensures the system can retrieve all applications across the platform.
+        
+            TestGetApplicationByID: Verifies individual applications can be accessed by their unique ID with all relevant data.
+        
+            TestGetApplicationsByVolunteerID: Tests filtering applications by volunteer, enabling volunteers to view their application history.
+        
+            TestGetApplicationsByOpportunityID: Validates filtering applications by opportunity, allowing organizations to review all applicants.
+        
+            TestGetApplicationsByStatus: Confirms applications can be filtered by status (pending, accepted, rejected), supporting workflow management.
+        
+            TestUpdateApplication: Ensures applications can be updated, particularly for status changes during the review process.
+        
+            TestDeleteApplication: Verifies applications can be removed from the system when necessary.
+        
+            TestGetNonExistentApplication: Tests proper error handling for non-existent application lookups.
+        
+            TestInvalidApplicationData: Validates error handling for malformed application submissions.
+      
+      Category -
+
+          TestCreateCategory: Ensures the system can initialize with a predefined set of volunteering categories.
+
+          TestGetCategories: Verifies that all categories can be retrieved for display in the UI.
+
+          TestCreateCategoryIdempotence: Confirms that the category creation process is idempotent, preventing duplicate categories when the initialization process runs multiple times.
+
+          TestCategoryDatabaseError: Validates proper error handling when database operations fail.
+      
+      Opportunity -
+
+          TestCreateOpportunity: Ensures organizations can create new volunteer opportunities with proper validation and persistence.
+
+          TestGetOpportunity: Verifies that opportunities can be retrieved by ID with all data correctly populated.
+
+          TestUpdateOpportunity: Tests the ability to modify opportunity details such as title, description, and requirements.
+
+          TestDeleteOpportunity: Confirms opportunities can be removed from the system when they're no longer available.
+
+          TestGetNonExistentOpportunity: Tests proper error handling when attempting to access non-existent opportunities.
+
+          TestInvalidOpportunityData: Validates error handling for malformed opportunity submissions.
+      
+      Organization -
+
+          TestCreateOrganization: Ensures organizations can be successfully created with proper data validation, password hashing, and persistence.
+
+          TestGetOrganization: Verifies that organizations can be retrieved by email address with all fields correctly populated.
+
+          TestUpdateOrganization: Tests partial updates to organization details while maintaining unchanged fields.
+
+          TestUpdateOrganizationWithPassword: Specifically tests password updates, ensuring passwords are properly hashed and not stored in plaintext.
+
+          TestDeleteOrganization: Confirms organizations can be deleted from the system.
+
+          TestLoginOrganization: Validates the authentication flow with correct credentials returns proper user data and authentication tokens.
+
+          TestLoginOrganizationInvalidPassword: Verifies authentication fails with incorrect password.
+
+          TestLoginOrganizationInvalidEmail: Ensures authentication fails for non-existent organizations.
+
+          TestGetNonExistentOrganization: Validates proper error handling when attempting to retrieve organizations that don't exist.
+
+          TestInvalidOrganizationData: Tests error handling when invalid data is submitted.
+      
+       Volunteer -
+
+          User Creation (TestCreateVolunteer)
+
+            Tests creation of new volunteers with proper password hashing
+            Verifies the volunteer is saved in the database with all correct fields
+
+
+          User Retrieval (TestGetVolunteer)
+
+            Tests fetching a volunteer by email
+            Verifies all volunteer data is returned correctly, including complex fields like category lists
+            
+
+          User Update (TestUpdateVolunteer)
+
+            Tests updating volunteer profiles
+            Verifies changes are properly saved to the database
+
+
+          Password Management (TestUpdateVolunteerWithPassword)
+
+            Tests updating a volunteer's password
+            Verifies passwords are properly hashed and stored securely
+
+
+          User Deletion (TestDeleteVolunteer)
+
+            Tests removing volunteers from the system
+            Verifies the volunteer is completely removed from the database
+
+
+          Authentication (TestLoginVolunteer)
+
+            Tests volunteer login with correct credentials
+            Verifies correct user data is returned upon successful authentication
+
+
+          Authentication Security (TestLoginVolunteerInvalidPassword, TestLoginVolunteerInvalidEmail)
+
+            Tests login failure with incorrect password
+            Tests login failure with non-existent email
+
+
+          Error Handling (TestGetNonExistentVolunteer, TestInvalidVolunteerData)
+
+            Tests API responses for non-existent volunteers
+            Tests system's handling of invalid JSON data
+        
 
 ### Frontend Development
 
@@ -92,11 +203,20 @@ These are the User Stories and their links which we planned to complete in sprin
 
 ### Backend
 
-1. Implemented Model for Organization, Volunteer, Application, Category, Opportunity 
+1. Implemented Model for -
+     Organization
+     Volunteer
+     Application
+     Category
+     Opportunity 
 
-2. Implemented Unit tests for Organization, Volunteer, Application, Category, Opportunity 
+2. Implemented Unit tests for -
+   Organization
+   Volunteer
+   Application
+   Category
+   Opportunity 
 
-3. 
 
 <!-- 1. **Swagger documentation integration** - Pratham
 2. **Project initialization files** - Pratham
