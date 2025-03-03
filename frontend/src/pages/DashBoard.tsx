@@ -21,6 +21,7 @@ import {
 } from "lucide-react"
 import { EditOrganizationProfile } from "@/components/EditOrganizationProfile"
 import { EditVolunteerProfile } from "@/components/EditVolunteerProfile"
+import { DeleteOrganizationProfile } from "@/components/DeleteOrganizationProfile"
 
 // Dummy chart component - replace with a real chart library like recharts
 const Overview: React.FC<{ userRole: string }> = ({ userRole }) => {
@@ -272,6 +273,8 @@ const OrganizationProfile: React.FC<{ user: any }> = ({ user }) => {
       
       <div className="flex justify-end">
         <EditOrganizationProfile />
+      {/* <Button variant="destructive" className="mx-5" onClick={}>Delete Profile</Button> */}
+      <DeleteOrganizationProfile />
       </div>
     </div>
   )
