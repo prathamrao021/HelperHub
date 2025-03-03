@@ -222,11 +222,11 @@ const OrganizationProfile: React.FC<{ user: any }> = ({ user }) => {
       <div className="flex flex-col items-center justify-center space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
         <Avatar className="h-24 w-24">
           <AvatarImage src={user?.profilePicture} />
-          <AvatarFallback>{user?.organizationName?.[0] || "O"}</AvatarFallback>
+          <AvatarFallback>{user?.name?.[0] || "O"}</AvatarFallback>
         </Avatar>
         <div className="space-y-1 text-center sm:text-left">
-          <h3 className="text-2xl font-bold">{user?.organizationName || "Organization Name"}</h3>
-          <p className="text-muted-foreground">{user?.email || "org@example.com"}</p>
+          <h3 className="text-2xl font-bold">{user?.name || "Organization Name"}</h3>
+          <p className="text-muted-foreground">{user?.name || "org@example.com"}</p>
           <div className="flex items-center space-x-1">
             <Building className="h-4 w-4 text-primary" />
             <span className="text-sm font-medium">Nonprofit Organization</span>
@@ -242,7 +242,7 @@ const OrganizationProfile: React.FC<{ user: any }> = ({ user }) => {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Organization Name</p>
-              <p>{user?.organizationName || "Community Helpers"}</p>
+              <p>{user?.name || "Community Helpers"}</p>
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Email</p>
