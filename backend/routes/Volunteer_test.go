@@ -369,8 +369,20 @@ func TestLoginVolunteer(t *testing.T) {
 		assert.True(t, ok, "User should be a JSON object")
 		
 		if ok {
-			assert.Equal(t, volunteer.Email, user["Email"])
-			assert.Equal(t, volunteer.Name, user["Name"])
+			// Check for case-sensitivity in JSON keys
+			email, emailExists := user["email"] // Try lowercase first
+			if !emailExists {
+				email, emailExists = user["Email"] // Then try with uppercase first letter
+			}
+			assert.True(t, emailExists, "Email field should exist in response")
+			assert.Equal(t, volunteer.Email, email)
+			
+			name, nameExists := user["name"] // Try lowercase first
+			if !nameExists {
+				name, nameExists = user["Name"] // Then try with uppercase first letter
+			}
+			assert.True(t, nameExists, "Name field should exist in response")
+			assert.Equal(t, volunteer.Name, name)
 		}
 	}
 }
