@@ -28,7 +28,7 @@ type LoginRequest struct {
 func setupTestDBForVolunteer() *gorm.DB {
 	// Use the same PostgreSQL connection as in main.go but with a test database
 	dsn := "host=localhost user=postgres password=admin dbname=Helperhub_test port=5432 sslmode=prefer TimeZone=Asia/Shanghai"
-	
+
 	// Configure gorm with minimal logging during tests
 	config := &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
@@ -77,7 +77,7 @@ func setupRouterForVolunteer(db *gorm.DB) *gin.Engine {
 func createTestVolunteer(db *gorm.DB) models.Volunteer {
 	// Create a test volunteer with hashed password
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("testpassword"), bcrypt.DefaultCost)
-	
+
 	volunteer := models.Volunteer{
 		Email:            "test@volunteer.com",
 		Password:         string(hashedPassword),
@@ -90,16 +90,16 @@ func createTestVolunteer(db *gorm.DB) models.Volunteer {
 		Created_At:       time.Now(),
 		Updated_At:       time.Now(),
 	}
-	
+
 	result := db.Create(&volunteer)
 	if result.Error != nil {
 		panic("Failed to create test volunteer: " + result.Error.Error())
 	}
-	
+
 	// Verify the volunteer was created properly
 	var created models.Volunteer
 	db.Where("email = ?", volunteer.Email).First(&created)
-	
+
 	return created
 }
 
@@ -181,7 +181,7 @@ func TestGetVolunteer(t *testing.T) {
 	assert.Equal(t, volunteer.Location, response.Location)
 	assert.Equal(t, volunteer.Bio_Data, response.Bio_Data)
 	assert.Equal(t, volunteer.Availabile_Hours, response.Availabile_Hours)
-	
+
 	// Check category list
 	assert.Equal(t, len(volunteer.Category_List), len(response.Category_List))
 	for i, category := range volunteer.Category_List {
@@ -232,7 +232,7 @@ func TestUpdateVolunteer(t *testing.T) {
 	assert.Equal(t, updatedVolunteer.Location, updatedInDB.Location)
 	assert.Equal(t, updatedVolunteer.Bio_Data, updatedInDB.Bio_Data)
 	assert.Equal(t, updatedVolunteer.Availabile_Hours, updatedInDB.Availabile_Hours)
-	
+
 	// Password should remain the same since we didn't update it
 	assert.Equal(t, volunteer.Password, updatedInDB.Password)
 }
@@ -275,7 +275,7 @@ func TestUpdateVolunteerWithPassword(t *testing.T) {
 	result := db.Where("email = ?", volunteer.Email).First(&updatedInDB)
 	assert.NoError(t, result.Error, "Volunteer should exist in database")
 	assert.Equal(t, updatedVolunteer.Name, updatedInDB.Name)
-	
+
 	// Password should be updated and hashed
 	assert.NotEqual(t, originalPassword, updatedInDB.Password, "Password should be different after update")
 	assert.NotEqual(t, "newpassword123", updatedInDB.Password, "Password should be hashed")
@@ -315,7 +315,7 @@ func TestLoginVolunteer(t *testing.T) {
 	// Create test volunteer with known plain password
 	plainPassword := "loginTestPassword"
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(plainPassword), bcrypt.DefaultCost)
-	
+
 	volunteer := models.Volunteer{
 		Email:            "login@test.com",
 		Password:         string(hashedPassword),
@@ -328,7 +328,7 @@ func TestLoginVolunteer(t *testing.T) {
 		Created_At:       time.Now(),
 		Updated_At:       time.Now(),
 	}
-	
+
 	db.Create(&volunteer)
 
 	// Login credentials
@@ -362,15 +362,15 @@ func TestLoginVolunteer(t *testing.T) {
 	// Verify the response has user data
 	userMap, exists := response["user"]
 	assert.True(t, exists, "Response should contain user data")
-	
+
 	// Check user details if it exists
 	if exists {
 		user, ok := userMap.(map[string]interface{})
 		assert.True(t, ok, "User should be a JSON object")
-		
+
 		if ok {
-			assert.Equal(t, volunteer.Email, user["Email"])
-			assert.Equal(t, volunteer.Name, user["Name"])
+			assert.Equal(t, volunteer.Email, user["email"])
+			assert.Equal(t, volunteer.Name, user["name"])
 		}
 	}
 }
