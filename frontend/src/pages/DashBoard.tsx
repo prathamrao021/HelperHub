@@ -147,10 +147,10 @@ const VolunteerProfile: React.FC<{ user: any }> = ({ user }) => {
       <div className="flex flex-col items-center justify-center space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
         <Avatar className="h-24 w-24">
           <AvatarImage src={user?.profilePicture} />
-          <AvatarFallback>{user?.fullName?.[0] || "V"}</AvatarFallback>
+          <AvatarFallback>{user?.name?.[0] || "V"}</AvatarFallback>
         </Avatar>
         <div className="space-y-1 text-center sm:text-left">
-          <h3 className="text-2xl font-bold">{user?.fullName || "Volunteer Name"}</h3>
+          <h3 className="text-2xl font-bold">{user?.name || "Volunteer Name"}</h3>
           <p className="text-muted-foreground">{user?.email || "volunteer@example.com"}</p>
           <div className="flex items-center space-x-1">
             <Award className="h-4 w-4 text-primary" />
@@ -278,7 +278,7 @@ const OrganizationProfile: React.FC<{ user: any }> = ({ user }) => {
 }
 
 export function Dashboard() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const isOrganization = user?.userRole === "ORGANIZATION_ADMIN";
   
   // Set default menu items based on user role
@@ -299,7 +299,9 @@ export function Dashboard() {
       <Navbar
         menuItems={menuItems}
         showThemeToggle={true}
-        showLoginButton={false}
+        showLogButton={true}
+        buttonDisplay="Logout"
+        onLogClick={() => logout()}
       />
       
       <div className="container mx-auto px-4 py-8">

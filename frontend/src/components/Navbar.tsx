@@ -85,8 +85,9 @@ export function Navbar({
     logo = "HELPERHUB",
     menuItems,
     showThemeToggle = true,
-    showLoginButton = true,
-    onLoginClick,
+    showLogButton = true,
+    buttonDisplay = "Login",
+    onLogClick,
 }: NavbarProps) {
     return (
         <nav className="container flex items-center justify-between px-14 py-5 w-full absolute top-0 left-0 z-50">
@@ -138,8 +139,8 @@ export function Navbar({
             {/* Right side: Theme Switcher + Login button */}
             <div className="flex items-center space-x-2">
                 {showThemeToggle && <ModeToggle />}
-                {showLoginButton && (
-                    <Button onClick={onLoginClick} className="cursor-pointer">Login</Button>
+                {showLogButton && (
+                    <Button onClick={onLogClick} className="cursor-pointer">{buttonDisplay}</Button>
                 )}
             </div>
         </nav>

@@ -235,72 +235,68 @@ export function EditVolunteerProfile() {
               )}
             />
             <FormField
-              control={form.control}
-              name="category_List"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Skills</FormLabel>
-                  <FormControl>
-                    <div className="space-y-2">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
+                control={form.control}
+                name="category_List"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Skills</FormLabel>
+                    <FormControl>
+                        <DropdownMenu>
+                        <DropdownMenuTrigger>
+                            <Button
                             variant="outline"
                             className="w-full justify-between"
-                          >
-                            <div className="flex items-center gap-1">
-                              <Briefcase className="mr-2 h-4 w-4" />
-                              {field.value?.length > 0
+                            >
+                            {field.value?.length > 0
                                 ? `${field.value.length} skill${field.value.length > 1 ? "s" : ""} selected`
                                 : "Select skills"}
-                            </div>
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
+                            </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-full max-h-[200px] overflow-y-auto">
-                          <DropdownMenuLabel>Skills</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                          {skills.map((skill) => (
+                        <DropdownMenuContent className="w-56">
+                            <DropdownMenuLabel>Available Skills</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            {skills.map((skill) => (
                             <DropdownMenuCheckboxItem
-                              key={skill}
-                              checked={field.value?.includes(skill)}
-                              onCheckedChange={(checked) => {
-                                const updatedSkills = checked
-                                  ? [...(field.value || []), skill]
-                                  : field.value?.filter((s) => s !== skill) || [];
-                                field.onChange(updatedSkills);
-                              }}
-                            >
-                              {skill}
-                            </DropdownMenuCheckboxItem>
-                          ))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                      
-                      {/* Display selected skills as badges */}
-                      {field.value?.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {field.value.map((skill) => (
-                            <Badge key={skill} variant="secondary" className="px-2 py-1">
-                              {skill}
-                              <X
-                                className="ml-1 h-3 w-3 cursor-pointer"
-                                onClick={() => {
-                                  field.onChange(
-                                    field.value?.filter((s) => s !== skill)
-                                  );
+                                key={skill}
+                                checked={field.value?.includes(skill)}
+                                onCheckedChange={(checked) => {
+                                const currentValue = field.value || []
+                                const newValue = checked
+                                    ? [...currentValue, skill]
+                                    : currentValue.filter((s) => s !== skill)
+                                field.onChange(newValue)
                                 }}
-                              />
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
+                            >
+                                {skill}
+                            </DropdownMenuCheckboxItem>
+                            ))}
+                        </DropdownMenuContent>
+                        </DropdownMenu>
+
+                    </FormControl>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                        {field.value?.map((skill) => (
+                        <Badge
+                            key={skill}
+                            variant="secondary"
+                            className="flex items-center gap-1 px-2 py-1"
+                        >
+                            {skill}
+                            <X
+                            className="h-3 w-3 cursor-pointer"
+                            onClick={() => {
+                                const newValue = field.value?.filter((s) => s !== skill);
+                                field.onChange(newValue);
+                            }}
+                            />
+                        </Badge>
+                        ))}
                     </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
             <Button type="submit" className="w-full">
               Save Changes
             </Button>

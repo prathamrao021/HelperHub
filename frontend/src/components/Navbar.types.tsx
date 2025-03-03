@@ -14,6 +14,7 @@ export interface NavbarProps {
     logo?: string
     menuItems: MenuItem[]
     showThemeToggle?: boolean
-    showLoginButton?: boolean
-    onLoginClick?: () => void
+    showLogButton?: boolean
+    buttonDisplay?: string
+    onLogClick?: () => void
 }
