@@ -31,8 +31,8 @@ export const Home = () => {
             <Navbar
                 menuItems={navigationItems}
                 showThemeToggle={true}
-                showLoginButton={true}
-                onLoginClick={() => navigate("/login")}
+                showLogButton={true}
+                onLogClick={() => navigate("/login")}
             />
             <HeroSection />
         </div>
