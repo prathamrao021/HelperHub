@@ -20,6 +20,7 @@ import {
   Calendar, Clock, Users, Briefcase, 
   Building, Award
 } from "lucide-react"
+import { EditOrganizationProfile } from "@/components/EditOrganizationProfile"
 
 // Dummy chart component - replace with a real chart library like recharts
 const Overview: React.FC<{ userRole: string }> = ({ userRole }) => {
@@ -210,7 +211,7 @@ const VolunteerProfile: React.FC<{ user: any }> = ({ user }) => {
       </Card>
       
       <div className="flex justify-end">
-        <Button>Edit Profile</Button>
+      <EditOrganizationProfile />
       </div>
     </div>
   )
@@ -250,19 +251,11 @@ const OrganizationProfile: React.FC<{ user: any }> = ({ user }) => {
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Phone</p>
-              <p>{user?.phoneNumber || "(555) 987-6543"}</p>
+              <p>{user?.phone || "(555) 987-6543"}</p>
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Address</p>
-              <p>{user?.address || "123 Nonprofit Way, Charity City, ST 12345"}</p>
-            </div>
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Admin Name</p>
-              <p>{user?.fullName || "Jane Smith"}</p>
-            </div>
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Founded</p>
-              <p>2020</p>
+              <p>{user?.location || "123 Nonprofit Way, Charity City, ST 12345"}</p>
             </div>
           </div>
         </CardContent>
@@ -278,7 +271,7 @@ const OrganizationProfile: React.FC<{ user: any }> = ({ user }) => {
       </Card>
       
       <div className="flex justify-end">
-        <Button>Edit Profile</Button>
+        <EditOrganizationProfile />
       </div>
     </div>
   )
