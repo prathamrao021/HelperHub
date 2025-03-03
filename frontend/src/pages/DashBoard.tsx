@@ -20,6 +20,7 @@ import {
   Calendar, Clock, Users, Briefcase, 
   Building, Award
 } from "lucide-react"
+import { EditOrganizationProfile } from "@/components/EditOrganizationProfile"
 
 // Dummy chart component - replace with a real chart library like recharts
 const Overview: React.FC<{ userRole: string }> = ({ userRole }) => {
@@ -210,7 +211,7 @@ const VolunteerProfile: React.FC<{ user: any }> = ({ user }) => {
       </Card>
       
       <div className="flex justify-end">
-        <Button>Edit Profile</Button>
+      <EditOrganizationProfile />
       </div>
     </div>
   )
@@ -222,11 +223,11 @@ const OrganizationProfile: React.FC<{ user: any }> = ({ user }) => {
       <div className="flex flex-col items-center justify-center space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
         <Avatar className="h-24 w-24">
           <AvatarImage src={user?.profilePicture} />
-          <AvatarFallback>{user?.organizationName?.[0] || "O"}</AvatarFallback>
+          <AvatarFallback>{user?.name?.[0] || "O"}</AvatarFallback>
         </Avatar>
         <div className="space-y-1 text-center sm:text-left">
-          <h3 className="text-2xl font-bold">{user?.organizationName || "Organization Name"}</h3>
-          <p className="text-muted-foreground">{user?.email || "org@example.com"}</p>
+          <h3 className="text-2xl font-bold">{user?.name || "Organization Name"}</h3>
+          <p className="text-muted-foreground">{user?.name || "org@example.com"}</p>
           <div className="flex items-center space-x-1">
             <Building className="h-4 w-4 text-primary" />
             <span className="text-sm font-medium">Nonprofit Organization</span>
@@ -242,7 +243,7 @@ const OrganizationProfile: React.FC<{ user: any }> = ({ user }) => {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Organization Name</p>
-              <p>{user?.organizationName || "Community Helpers"}</p>
+              <p>{user?.name || "Community Helpers"}</p>
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Email</p>
@@ -250,19 +251,11 @@ const OrganizationProfile: React.FC<{ user: any }> = ({ user }) => {
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Phone</p>
-              <p>{user?.phoneNumber || "(555) 987-6543"}</p>
+              <p>{user?.phone || "(555) 987-6543"}</p>
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Address</p>
-              <p>{user?.address || "123 Nonprofit Way, Charity City, ST 12345"}</p>
-            </div>
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Admin Name</p>
-              <p>{user?.fullName || "Jane Smith"}</p>
-            </div>
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Founded</p>
-              <p>2020</p>
+              <p>{user?.location || "123 Nonprofit Way, Charity City, ST 12345"}</p>
             </div>
           </div>
         </CardContent>
@@ -278,7 +271,7 @@ const OrganizationProfile: React.FC<{ user: any }> = ({ user }) => {
       </Card>
       
       <div className="flex justify-end">
-        <Button>Edit Profile</Button>
+        <EditOrganizationProfile />
       </div>
     </div>
   )
