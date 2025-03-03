@@ -189,33 +189,41 @@ These are the User Stories and their links which we planned to complete in sprin
 ## Successfully Completed Issues
 
 ### Frontend
-<!-- 1. **Homepage padding/margin fixes** - Dhruv
-2. **User profile management** - Akash
-3. **UI components development** - Akash
-     - Hero Section - Dhruv
-     - Login Page - Akash
-     - Register Page - Akash
-     - NavBar - Akash
-     - Profile (Organization) - Akash
-     - Profile (Volunteer) - Akash
-4. **Routing system** - Dhruv
-5. **Technical configuration** - Dhruv & Akash -->
+1. Project Setup and Configuration for Migrating from Material UI to Shadcn
+2. Implement Theme Switcher in Navbar for Light/Dark/System Mode Toggles
+3. Migrate Navbar Component from Material UI to Shadcn for Consistent Modern Design
+4. Migrate Landing Page Hero Component from Material UI to Shadcn for Modern Visual Impact
+5. Migrate Register Page from Material UI to Shadcn for Consistent Authentication Flow and Modern Design
+6. Fix Navigation Links and Button Functionality in Hero Section and Navigation Bar
+7. Implement Volunteer Registration Page with Profile Details and Skill Selection
+8. Implement Organization Registration Page with Essential Details and Logo Upload
+9. Unify Registration Flow with Role Selection (Volunteer/Organization) and Update Login Tabs + Navigation Links
+10. Modernize UI and Implement Role-Based User Experience with Shadcn for Seamless Platform Engagement
+11. Implement Authentication Context for Role-Based Access Control and Protected Routes
+12. Dashboard: Organization profile
+13. Add Edit Organization Dialog in Organization Profile
+14. The user Profile doesn't reflect the actual values.
+15. Refactor: Navbar component to use consistent button naming and improve skill selection UI in EditVolunteerProfile
+16. Feat: Delete Button for users to delete their account(Fixes #136)
+17. Delete Functionalit
 
 ### Backend
 
 1. Implemented Model for -
-     Organization
-     Volunteer
-     Application
-     Category
-     Opportunity 
+   
+       Organization
+       Volunteer
+       Application
+       Category
+       Opportunity 
 
-2. Implemented Unit tests for -
-   Organization
-   Volunteer
-   Application
-   Category
-   Opportunity 
+3. Implemented Unit tests for -
+   
+       Organization
+       Volunteer
+       Application
+       Category
+       Opportunity 
 
 
 <!-- 1. **Swagger documentation integration** - Pratham
@@ -227,7 +235,7 @@ These are the User Stories and their links which we planned to complete in sprin
      - User Validate - Nikhil
 4. **Database connection** - Pratham -->
 
-## Issues Not Completed
+<!-- ## Issues Not Completed 
 
 ### Frontend
 <!-- 1. **User Dashboard**
