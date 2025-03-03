@@ -164,6 +164,23 @@ These are the User Stories and their links which we planned to complete in sprin
 
             Tests API responses for non-existent volunteers
             Tests system's handling of invalid JSON data
+### Successfully Completed Issues For Backend
+
+1. Implemented Model for -
+   
+       Organization
+       Volunteer
+       Application
+       Category
+       Opportunity 
+
+3. Implemented Unit tests for -
+   
+       Organization
+       Volunteer
+       Application
+       Category
+       Opportunity 
         
 
 ### Frontend Development
@@ -189,41 +206,42 @@ These are the User Stories and their links which we planned to complete in sprin
 ## Successfully Completed Issues
 
 ### Frontend
-1. Project Setup and Configuration for Migrating from Material UI to Shadcn
-2. Implement Theme Switcher in Navbar for Light/Dark/System Mode Toggles
-3. Migrate Navbar Component from Material UI to Shadcn for Consistent Modern Design
-4. Migrate Landing Page Hero Component from Material UI to Shadcn for Modern Visual Impact
-5. Migrate Register Page from Material UI to Shadcn for Consistent Authentication Flow and Modern Design
-6. Fix Navigation Links and Button Functionality in Hero Section and Navigation Bar
-7. Implement Volunteer Registration Page with Profile Details and Skill Selection
-8. Implement Organization Registration Page with Essential Details and Logo Upload
-9. Unify Registration Flow with Role Selection (Volunteer/Organization) and Update Login Tabs + Navigation Links
-10. Modernize UI and Implement Role-Based User Experience with Shadcn for Seamless Platform Engagement
-11. Implement Authentication Context for Role-Based Access Control and Protected Routes
-12. Dashboard: Organization profile
-13. Add Edit Organization Dialog in Organization Profile
-14. The user Profile doesn't reflect the actual values.
-15. Refactor: Navbar component to use consistent button naming and improve skill selection UI in EditVolunteerProfile
-16. Feat: Delete Button for users to delete their account(Fixes #136)
-17. Delete Functionalit
-
-### Backend
-
-1. Implemented Model for -
+1. Configured the project environment and dependencies to support the migration from Material UI to Shadcn, so that the team can seamlessly implement Shadcn components while maintaining code consistency, theming, and performance.
    
-       Organization
-       Volunteer
-       Application
-       Category
-       Opportunity 
-
-3. Implemented Unit tests for -
+2. Implemented Theme Switcher in Navbar for Light/Dark/System Mode Toggles.
    
-       Organization
-       Volunteer
-       Application
-       Category
-       Opportunity 
+3. Refactored the Navbar component to use Shadcn instead of Material UI, so that the navigation aligns with the new design system, improves visual consistency, and enhances user experience.
+   
+4. Rebuilt the Hero section on the landing page using Shadcn components, so that it aligns with the modern design system, improves visual appeal, and ensures consistency with other migrated components.
+   
+5. Rebuilt the Register page using Shadcn components and Tailwind CSS, so that the registration flow aligns with the application’s modern design system, improves accessibility, and ensures a seamless user experience alongside the migrated Login page.
+
+6. Fixed all the Navigation Links and Button Functionality in Hero Section and Navigation Bar for a seamless experience for the user.
+    
+7. Implemented Volunteer Registration Page with Profile Details and Skill Selection so that the organization can review my profile and match me with relevant opportunities.
+    
+8. Implement Organization Registration Page with Essential Details and Logo Upload so that my organization can be onboarded to the platform and access relevant features.
+
+9. Migrated existing core components (Login, Register, Landing Page, Hero Page) from Material UI to Shadcn, so that the application achieves a more elegant, modern, and cohesive design system while improving maintainability and alignment with current design trends.
+    
+10. Developed a unified, secure, and visually consistent experience across registration, authentication, navigation, and dashboards,
+so that user can efficiently interact with the platform based on my role, access tailored features, and enjoy a modern, intuitive interface.
+
+11. Implement Authentication Context for Role-Based Access Control and Protected Routes so that the application can handle Organization/Volunteer logins, protect routes based on roles, and maintain consistent user sessions.
+    
+12. Integrated a component that allows for the following functionality:
+    
+        Editing details in organization profile
+        Saving the changes made and updating the same in the Database
+    
+13. Add Edit Organization Dialog in Organization Profile so that the Dashboard automatically updates the displayed information on dashboard.
+
+14. Refactored Navbar component to use consistent button naming and improve skill selection UI in EditVolunteerProfile
+    
+15. Implemented Delete Button for users to delete their account.
+
+
+
 
 
 <!-- 1. **Swagger documentation integration** - Pratham
