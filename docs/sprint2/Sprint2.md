@@ -185,23 +185,50 @@ These are the User Stories and their links which we planned to complete in sprin
 
 ### Frontend Development
 
-// List unit tests and Cypress test for frontend
-<!-- 1. **Technical Setup**
-    - Configured TypeScript with Material UI
-    - Established project structure
-    - Set up linting and formatting
+### Frontend Testing
 
-2. **UI Components**
-    - Implemented basic routing
-    - Created user login page
-    - Developed registration page with validation
-    - Built navigation bar with search and theme toggle
-    - Designed basic profile page layout
+#### Unit Tests
 
-3. **User Interface Features**
-    - Homepage layout optimization
-    - Profile management pages
-    - Navigation system implementation -->
+1. **EditOrganizationProfile.test.tsx**
+   - `renders the Edit Profile button`: Verifies that the Edit Profile button is properly rendered
+   - `opens the dialog when clicking Edit Profile`: Validates that clicking the Edit button opens the edit dialog
+   - `pre-fills the form with user data`: Ensures the form is pre-populated with the organization's current data
+   - `allows editing form fields`: Confirms form fields can be edited by the user
+
+2. **EditVolunteerProfile.test.tsx**
+   - `renders the Edit Profile button`: Checks if the Edit Profile button is properly displayed
+   - `pre-fills the form with volunteer data`: Tests if volunteer data is correctly loaded into the form
+   - `allows editing form fields`: Validates that volunteer profile fields can be modified
+   - `handles skill selection correctly`: Ensures the multi-select dropdown for skills works properly
+
+3. **DeleteOrganizationProfile.test.tsx**
+   - `renders the Delete Account button`: Verifies the Delete Account button appears in the component
+   - `shows confirmation dialog on delete click`: Tests that clicking delete triggers a confirmation dialog
+   - `calls API and logout on confirmation`: Ensures the delete API is called and user is logged out after confirmation
+   - `handles API errors gracefully`: Verifies proper error handling when deletion fails
+
+4. **Dashboard.test.tsx**
+   - `renders organization profile for organization users`: Tests conditional rendering based on user type
+   - `renders volunteer profile for volunteer users`: Confirms volunteer-specific components load for volunteer users
+   - `redirects unauthenticated users`: Verifies protected route functionality
+   - `displays user details correctly`: Tests if user information is displayed properly
+
+
+
+#### Cypress Component Tests
+
+1. **Button.cy.tsx**
+   - `renders correctly`: Verifies that button text content is correctly rendered
+   - `applies default variant and size`: Tests that default styling classes are properly applied
+   - `applies custom variant and size`: Confirms custom styling properties are correctly applied
+   - `is disabled when the disabled prop is passed`: Validates button disabled state functionality
+   - `triggers onClick when clicked`: Ensures click event handlers are properly executed
+
+2. **Form.cy.tsx**
+   - `renders a form with input fields`: Confirms that form labels and inputs are properly rendered
+   - `validates required field`: Tests form validation showing appropriate error messages when required fields are empty
+   - `allows user input`: Verifies that form fields properly accept and update with user input
+   - `handles form submission`: Tests the complete form submission flow and data handling
 
 ## Successfully Completed Issues
 
@@ -239,6 +266,8 @@ so that user can efficiently interact with the platform based on my role, access
 14. Refactored Navbar component to use consistent button naming and improve skill selection UI in EditVolunteerProfile
     
 15. Implemented Delete Button for users to delete their account.
+
+16. Refactored the NavBar component to be more flexible to accomodate for seamless login and logout.
 
 
 
