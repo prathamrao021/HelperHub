@@ -189,25 +189,25 @@ These are the User Stories and their links which we planned to complete in sprin
 
 #### Unit Tests
 
-1. **EditOrganizationProfile.test.tsx**
+1. **EditOrganizationProfile.test.tsx** - Akash
    - `renders the Edit Profile button`: Verifies that the Edit Profile button is properly rendered
    - `opens the dialog when clicking Edit Profile`: Validates that clicking the Edit button opens the edit dialog
    - `pre-fills the form with user data`: Ensures the form is pre-populated with the organization's current data
    - `allows editing form fields`: Confirms form fields can be edited by the user
 
-2. **EditVolunteerProfile.test.tsx**
+2. **EditVolunteerProfile.test.tsx** - Akash
    - `renders the Edit Profile button`: Checks if the Edit Profile button is properly displayed
    - `pre-fills the form with volunteer data`: Tests if volunteer data is correctly loaded into the form
    - `allows editing form fields`: Validates that volunteer profile fields can be modified
    - `handles skill selection correctly`: Ensures the multi-select dropdown for skills works properly
 
-3. **DeleteOrganizationProfile.test.tsx**
+3. **DeleteOrganizationProfile.test.tsx** - Dhruv
    - `renders the Delete Account button`: Verifies the Delete Account button appears in the component
    - `shows confirmation dialog on delete click`: Tests that clicking delete triggers a confirmation dialog
    - `calls API and logout on confirmation`: Ensures the delete API is called and user is logged out after confirmation
    - `handles API errors gracefully`: Verifies proper error handling when deletion fails
 
-4. **Dashboard.test.tsx**
+4. **Dashboard.test.tsx** - Akash & Dhruv
    - `renders organization profile for organization users`: Tests conditional rendering based on user type
    - `renders volunteer profile for volunteer users`: Confirms volunteer-specific components load for volunteer users
    - `redirects unauthenticated users`: Verifies protected route functionality
@@ -217,14 +217,14 @@ These are the User Stories and their links which we planned to complete in sprin
 
 #### Cypress Component Tests
 
-1. **Button.cy.tsx**
+1. **Button.cy.tsx** - Akash
    - `renders correctly`: Verifies that button text content is correctly rendered
    - `applies default variant and size`: Tests that default styling classes are properly applied
    - `applies custom variant and size`: Confirms custom styling properties are correctly applied
    - `is disabled when the disabled prop is passed`: Validates button disabled state functionality
    - `triggers onClick when clicked`: Ensures click event handlers are properly executed
 
-2. **Form.cy.tsx**
+2. **Form.cy.tsx** - Dhruv
    - `renders a form with input fields`: Confirms that form labels and inputs are properly rendered
    - `validates required field`: Tests form validation showing appropriate error messages when required fields are empty
    - `allows user input`: Verifies that form fields properly accept and update with user input
@@ -233,6 +233,7 @@ These are the User Stories and their links which we planned to complete in sprin
 ## Successfully Completed Issues
 
 ### Frontend
+
 1. Configured the project environment and dependencies to support the migration from Material UI to Shadcn, so that the team can seamlessly implement Shadcn components while maintaining code consistency, theming, and performance.
    
 2. Implemented Theme Switcher in Navbar for Light/Dark/System Mode Toggles.
@@ -269,23 +270,12 @@ so that user can efficiently interact with the platform based on my role, access
 
 16. Refactored the NavBar component to be more flexible to accomodate for seamless login and logout.
 
+Tasks done by Dhruv : 1-5, 9, 14-16
+Tasks done by Akash : 6-8, 10-13
 
-
-
-
-<!-- 1. **Swagger documentation integration** - Pratham
-2. **Project initialization files** - Pratham
-3. **User API endpoints** - Nikhil & Pratham
-     - User Create - Pratham
-     - User Update - Nikhil
-     - User Delete - Pratham
-     - User Validate - Nikhil
-4. **Database connection** - Pratham -->
-
-<!-- ## Issues Not Completed 
-
+## Backlogs that were cleared from sprint 1
 ### Frontend
-<!-- 1. **User Dashboard**
+1. **User Dashboard**
      - Full dashboard with functionality to update personal information
 
 2. **Authentication Integration**
@@ -293,4 +283,27 @@ so that user can efficiently interact with the platform based on my role, access
 
 ### Backend
 1. **Scheduling APIs**
-     - Development of APIs for scheduling functionalities -->
+     - Development of APIs for scheduling functionalities
+
+## Issues Not Completed in Sprint 2
+
+### Reason for Incompletion
+The pending tasks from Sprint 2 were not completed due to **time constraints and prioritization of core features**. Initial efforts were focused on setting up fundamental functionalities, authentication flows, and ensuring backend stability. As a result, certain advanced features and integrations had to be deferred to the next sprint.
+
+### Frontend
+- End-to-End (E2E) testing is not yet implemented.
+- Forms for creating an opportunity are incomplete.
+- Functionality to apply to an opportunity is missing.
+- Dashboard for managing opportunities and applications is not yet built.
+
+### Backend
+- Specialized APIs are pending implementation, including:
+  - Fetching all recent jobs completed by a volunteer using `volunteer_id`.
+  - Retrieving the total number of jobs and hours worked for a volunteer.
+  - Displaying recent opportunities published by organizations.
+
+### Next Steps
+The pending features will be prioritized in **Sprint 3**, ensuring:
+- Full API support for volunteer and organization dashboards.
+- Completion of opportunity-related forms and workflows.
+- E2E tests for ensuring app stability before deployment.
