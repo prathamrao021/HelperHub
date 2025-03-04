@@ -65,8 +65,8 @@ export function OrganizationRegistration() {
       <Navbar
         menuItems={[]}
         showThemeToggle={true}
-        showLoginButton={true}
-        onLoginClick={() => navigate("/login")}
+        showLogButton={true}
+        onLogClick={() => navigate("/login")}
       />
       <div className="flex min-h-screen w-full items-center justify-center p-6 md:p-10">
         <div className="container max-w-2xl mx-auto px-4 py-8">
