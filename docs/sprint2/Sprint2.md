@@ -23,29 +23,118 @@ These are the User Stories and their links which we planned to complete in sprin
 
 ## Sprint 2 Accomplishments
 
-### Backend Development
-1. **Volunteer Management APIs**
-    - Implemented CRUD API for volunteer.
-    - Established volunteer model with required fields.
-    - Implemented Login feature for volunteer.
+## Backend Development
+## Volunteer Management API Endpoints  
 
-2. **Organization Management APIs**
-    - Implemented CRUD API for Organization creation
-    - Established Organization model with required fields
-    - Implemented Login feature for Organization.
+### 1. **Create Volunteer**  
+**Endpoint**: `POST /volunteers/create`  
+**Description**: Registers a new volunteer with required details.  
 
-3. **Opportunity Management APIs**
-    - Implemented CRUD API for Opportunity creation
-    - Established Opportunity model with required fields.
-   
-4. **Category Management APIs**
-    - Implemented Create API for categories.
-    - Implemented Get API for categories.
+### 2. **Delete Volunteer**  
+**Endpoint**: `DELETE /volunteers/delete/:volunteer_mail`  
+**Description**: Deletes a volunteer account based on the provided email.  
 
-5. **Application Management APIs**
-    - Implemented CRUD API for Application creation.
-    - Implemented APIs to get Application by Opportunity. ID, Status, Volunteer ID, Application ID.
-    - Implemented retrieve last n approved applications.
+### 3. **Update Volunteer Details**  
+**Endpoint**: `PUT /volunteers/update/:volunteer_mail`  
+**Description**: Updates a volunteer’s profile information.  
+
+### 4. **Get Volunteer Details**  
+**Endpoint**: `GET /volunteers/get/:volunteer_mail`  
+**Description**: Retrieves details of a specific volunteer by email.  
+
+### 5. **Volunteer Login**  
+**Endpoint**: `POST /login/volunteer`  
+**Description**: Authenticates a volunteer using email and password.  
+
+
+## Organization Management API Endpoints  
+
+### 1. **Create Organization**  
+**Endpoint**: `POST /organizations/create`  
+**Description**: Registers a new organization with required details.  
+
+### 2. **Delete Organization**  
+**Endpoint**: `DELETE /organizations/delete/:organization_mail`  
+**Description**: Deletes an organization account based on the provided email.  
+
+### 3. **Update Organization Details**  
+**Endpoint**: `PUT /organizations/update/:organization_mail`  
+**Description**: Updates an organization’s profile information.  
+
+### 4. **Get Organization Details**  
+**Endpoint**: `GET /organizations/get/:organization_mail`  
+**Description**: Retrieves details of a specific organization by email.  
+
+### 5. **Organization Login**  
+**Endpoint**: `POST /login/organization`  
+**Description**: Authenticates an organization using email and password.  
+
+## Opportunity Management API Endpoints  
+
+### 1. **Create Opportunity**  
+**Endpoint**: `POST /opportunities/create`  
+**Description**: Creates a new volunteering opportunity.  
+
+### 2. **Delete Opportunity**  
+**Endpoint**: `DELETE /opportunities/delete/:id`  
+**Description**: Deletes an opportunity based on the provided ID.  
+
+### 3. **Update Opportunity Details**  
+**Endpoint**: `PUT /opportunities/update/:id`  
+**Description**: Updates details of an existing opportunity.  
+
+### 4. **Get Opportunity Details**  
+**Endpoint**: `GET /opportunities/get/:id`  
+**Description**: Retrieves details of a specific opportunity by ID.  
+
+## Category Management API Endpoints  
+
+### 1. **Create Category**  
+**Endpoint**: `POST /categories/create`  
+**Description**: Creates a new category for opportunities.  
+
+### 2. **Get All Categories**  
+**Endpoint**: `GET /categories/get`  
+**Description**: Retrieves all available categories.  
+
+## Application Management API Endpoints  
+
+### 1. **Create Application**  
+**Endpoint**: `POST /applications/`  
+**Description**: Submits a new application for an opportunity.  
+
+### 2. **Get All Applications**  
+**Endpoint**: `GET /applications/`  
+**Description**: Retrieves all applications.  
+
+### 3. **Get Application by ID**  
+**Endpoint**: `GET /applications/:id`  
+**Description**: Fetches details of a specific application using its ID.  
+
+### 4. **Get Applications by Volunteer ID**  
+**Endpoint**: `GET /applications/volunteer/:volunteer_id`  
+**Description**: Retrieves all applications submitted by a specific volunteer.  
+
+### 5. **Get Applications by Opportunity ID**  
+**Endpoint**: `GET /applications/opportunity/:opportunity_id`  
+**Description**: Retrieves all applications for a specific opportunity.  
+
+### 6. **Get Applications by Status**  
+**Endpoint**: `GET /applications/status/:status`  
+**Description**: Retrieves applications based on their status (e.g., pending, approved, rejected).  
+
+### 7. **Update Application**  
+**Endpoint**: `PUT /applications/:id`  
+**Description**: Updates the status or details of an application.  
+
+### 8. **Delete Application**  
+**Endpoint**: `DELETE /applications/:id`  
+**Description**: Deletes an application by its ID.  
+
+### 9. **Get Last N Approved Applications by Volunteer ID**  
+**Endpoint**: `GET /applications/volunteer/:volunteer_id/approved`  
+**Description**: Retrieves the last N approved applications of a volunteer.  
+
 6. **Unit Tests**
     - Implemented Unit test for -
         Applications -
