@@ -61,13 +61,13 @@ export function LoginForm({
                             </div>
                         )}
 
-                        <Tabs defaultValue="VOLUNTEER" value={role} onValueChange={setRole} className="w-full">
+                        <Tabs defaultValue="VOLUNTEER" value={role} className="w-full">
                             <TabsList className="grid w-full grid-cols-2 mb-6">
-                                <TabsTrigger value="volunteer" className="flex items-center gap-2">
+                                <TabsTrigger onClick={()=>{setRole("VOLUNTEER")}} value="VOLUNTEER" className="flex items-center gap-2">
                                     <User className="h-4 w-4" />
                                     <span>Volunteer</span>
                                 </TabsTrigger>
-                                <TabsTrigger value="ORGANIZATION_ADMIN" className="flex items-center gap-2">
+                                <TabsTrigger onClick={()=>{setRole("ORGANIZATION_ADMIN")}} value="ORGANIZATION_ADMIN" className="flex items-center gap-2">
                                     <Building className="h-4 w-4" />
                                     <span>Organization</span>
                                 </TabsTrigger>
