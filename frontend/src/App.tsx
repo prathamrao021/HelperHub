@@ -11,6 +11,7 @@ import { ProtectedRoute, RoleProtectedRoute } from '@/components/protected-route
 import {UnauthorizedPage} from '@/pages/UnauthorizedPage'
 import {OpportunitiesPage} from '@/pages/Opportunities'
 import {ManageProjectsPage} from '@/pages/ManageProject'
+import {ApplicationsPage} from '@/pages/Applications'
 
 export function App() {
   return (
@@ -44,6 +45,15 @@ export function App() {
                   <OpportunitiesPage />
                 </RoleProtectedRoute>
               } 
+            />
+
+            <Route 
+              path="/applications" 
+              element={
+                <RoleProtectedRoute allowedRoles={["VOLUNTEER"]}>
+                  <ApplicationsPage />
+                </RoleProtectedRoute>
+              }
             />
             
             {/* Organization specific routes */}
