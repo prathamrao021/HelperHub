@@ -43,6 +43,50 @@ func (u *UintList) Scan(value interface{}) error {
 	return json.Unmarshal(bytes, u)
 }
 
+type CustomDate time.Time
+
+const customDateFormat = "2006-01-02"
+
+// MarshalJSON for CustomDate (Go -> JSON)
+func (d CustomDate) MarshalJSON() ([]byte, error) {
+	formatted := time.Time(d).Format(customDateFormat)
+	return []byte(`"` + formatted + `"`), nil
+}
+
+// UnmarshalJSON for CustomDate (JSON -> Go)
+func (d *CustomDate) UnmarshalJSON(data []byte) error {
+	parsed, err := time.Parse(`"`+customDateFormat+`"`, string(data))
+	if err != nil {
+		return err
+	}
+	*d = CustomDate(parsed)
+	return nil
+}
+
+// Value for CustomDate (Go -> DB)
+func (d CustomDate) Value() (driver.Value, error) {
+	return time.Time(d).Format(customDateFormat), nil
+}
+
+// Scan for CustomDate (DB -> Go)
+func (d *CustomDate) Scan(value interface{}) error {
+	dateStr, ok := value.(string)
+	if !ok {
+		return errors.New("type assertion to string failed")
+	}
+	parsed, err := time.Parse(customDateFormat, dateStr)
+	if err != nil {
+		return err
+	}
+	*d = CustomDate(parsed)
+	return nil
+}
+
+// ToTime converts CustomDate to time.Time
+func (d CustomDate) ToTime() time.Time {
+	return time.Time(d)
+}
+
 // User struct
 type User struct {
 	ID            uint   `gorm:"primaryKey"`
@@ -92,15 +136,17 @@ type Category struct {
 
 // Opportunity struct
 type Opportunity struct {
-	ID                uint      `gorm:"primaryKey" json:"id"`
-	Organization_mail string    `gorm:"not null" json:"organization_mail"`
-	Category          string    `gorm:"not null" json:"category"`
-	Title             string    `gorm:"not null" json:"title"`
-	Description       string    `gorm:"not null" json:"description"`
-	Location          string    `gorm:"not null" json:"location"`
-	Hours_Required    uint      `gorm:"not null" json:"hours_required"`
-	Created_At        time.Time `json:"created_at"`
-	Updated_At        time.Time `json:"updated_at"`
+	ID                uint       `gorm:"primaryKey" json:"id"`
+	Organization_mail string     `gorm:"not null" json:"organization_mail"`
+	Category          string     `gorm:"not null" json:"category"`
+	Title             string     `gorm:"not null" json:"title"`
+	Description       string     `gorm:"not null" json:"description"`
+	Location          string     `gorm:"not null" json:"location"`
+	Hours_Required    uint       `gorm:"not null" json:"hours_required"`
+	Start_Date        CustomDate `gorm:"type:date;not null" json:"start_date"` // Use CustomDate
+	End_Date          CustomDate `gorm:"type:date;not null" json:"end_date"`   // Use CustomDate
+	Created_At        time.Time  `json:"created_at"`
+	Updated_At        time.Time  `json:"updated_at"`
 }
 
 // Application struct
