@@ -12,7 +12,7 @@ import {UnauthorizedPage} from '@/pages/UnauthorizedPage'
 import {OpportunitiesPage} from '@/pages/Opportunities'
 import {ManageProjectsPage} from '@/pages/Projects'
 import {ApplicationsPage} from '@/pages/Applications'
-
+import { ProjectDetailPage } from '@/pages/ProjectDetail'
 export function App() {
   return (
     <ThemeProvider defaultTheme='system' storageKey='vite-ui-theme'>
@@ -68,10 +68,10 @@ export function App() {
 
             {/* Organization project route*/}
             <Route 
-              path="/projects/:id" 
+              path="/project/:id" 
               element={
                 <RoleProtectedRoute allowedRoles={["ORGANIZATION_ADMIN"]}>
-                  <ManageProjectsPage />
+                  <ProjectDetailPage />
                 </RoleProtectedRoute>
               }
             />
