@@ -166,3 +166,45 @@ func loginVolunteer(c *gin.Context, db *gorm.DB) {
 
 	c.JSON(http.StatusOK, gin.H{"user": volunteer})
 }
+
+// getVolunteerStats godoc
+// @Summary Retrieve the total number of jobs and hours worked for a volunteer
+// @Description Retrieve the total number of jobs and hours worked for a volunteer based on accepted applications
+// @Tags volunteers
+// @Accept json
+// @Produce json
+// @Param volunteer_id path uint true "Volunteer ID"
+// @Success 200 {object} map[string]interface{}
+// @Router /volunteers/{volunteer_id}/stats [get]
+func getVolunteerStats(c *gin.Context, db *gorm.DB) {
+	volunteerID := c.Param("volunteer_id")
+
+	var totalJobs int64
+	var totalHoursWorked int64
+
+	// Query to count the total number of jobs and sum the hours worked
+	if err := db.Table("applications").
+		Joins("join opportunities on applications.opportunity_id = opportunities.id").
+		Where("applications.volunteer_id = ? AND applications.status = ?", volunteerID, "Accepted").
+		Count(&totalJobs).
+		Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := db.Table("applications").
+		Select("SUM(opportunities.hours_required)").
+		Joins("join opportunities on applications.opportunity_id = opportunities.id").
+		Where("applications.volunteer_id = ? AND applications.status = ?", volunteerID, "Accepted").
+		Scan(&totalHoursWorked).
+		Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Return the stats
+	c.JSON(http.StatusOK, gin.H{
+		"total_jobs":         totalJobs,
+		"total_hours_worked": totalHoursWorked,
+	})
+}
