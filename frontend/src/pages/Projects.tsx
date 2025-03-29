@@ -195,7 +195,7 @@ export function ManageProjectsPage() {
 
     // Handle opportunity click
     const handleOpportunityClick = (id: number) => {
-        navigate(`/manage-projects/${id}`);
+        navigate(`/project/${id}`);
     };
 
     return (
