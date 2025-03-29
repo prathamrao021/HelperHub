@@ -7,8 +7,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { MapPin, CalendarIcon, Clock, ArrowRight, Plus } from "lucide-react"
 import { format } from "date-fns"
 import { toast, Toaster } from "sonner"
@@ -26,8 +24,6 @@ import {
 } from "@/components/ui/form"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import { cn } from "@/lib/utils"
-import { DateRange } from "react-day-picker"
 // Define the opportunity schema for form validation
 const opportunityFormSchema = z.object({
     title: z.string().min(5, "Title must be at least 5 characters"),
@@ -98,7 +94,6 @@ export function ManageProjectsPage() {
     const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedTab, setSelectedTab] = useState(projectId ? "view" : "create");
-    const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
     // Initialize react-hook-form
     const form = useForm<OpportunityFormValues>({
