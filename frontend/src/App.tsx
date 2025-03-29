@@ -10,7 +10,7 @@ import { Dashboard } from '@/pages/DashBoard'
 import { ProtectedRoute, RoleProtectedRoute } from '@/components/protected-route'
 import {UnauthorizedPage} from '@/pages/UnauthorizedPage'
 import {OpportunitiesPage} from '@/pages/Opportunities'
-import {ManageProjectsPage} from '@/pages/ManageProject'
+import {ManageProjectsPage} from '@/pages/Projects'
 import {ApplicationsPage} from '@/pages/Applications'
 
 export function App() {
@@ -58,12 +58,22 @@ export function App() {
             
             {/* Organization specific routes */}
             <Route 
-              path="/manage-projects" 
+              path="/projects" 
               element={
                 <RoleProtectedRoute allowedRoles={["ORGANIZATION_ADMIN"]}>
                   <ManageProjectsPage />
                 </RoleProtectedRoute>
               } 
+            />
+
+            {/* Organization project route*/}
+            <Route 
+              path="/projects/:id" 
+              element={
+                <RoleProtectedRoute allowedRoles={["ORGANIZATION_ADMIN"]}>
+                  <ManageProjectsPage />
+                </RoleProtectedRoute>
+              }
             />
           </Routes>
         </Router>

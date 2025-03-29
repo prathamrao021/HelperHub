@@ -289,7 +289,6 @@ export function Dashboard() {
     ? [
         { title: "Dashboard", href: "/dashboard" },
         { title: "Manage Projects", href: "/projects" },
-        { title: "Find Volunteers", href: "/volunteers" },
       ]
     : [
         { title: "Dashboard", href: "/dashboard" },
