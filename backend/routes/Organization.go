@@ -55,10 +55,18 @@ func createOrganization(c *gin.Context, db *gorm.DB) {
 // @Router /organizations/delete/{organization_mail} [delete]
 func deleteOrganization(c *gin.Context, db *gorm.DB) {
 	mail := c.Param("organization_mail")
+	var organization models.Organization
 
-	if err := db.Where("email = ?", mail).Delete(&models.Organization{}).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	if err := db.Where("email = ?", mail).First(&organization).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Organization not found"})
+		return
+	} else {
+		if err := db.Where("email = ?", mail).Delete(&models.Organization{}).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
 	}
+
 	c.JSON(http.StatusOK, gin.H{"message": "Organization data deleted successfully"})
 }
 
@@ -74,30 +82,35 @@ func deleteOrganization(c *gin.Context, db *gorm.DB) {
 // @Router /organizations/update/{organization_mail} [put]
 func updateOrganization(c *gin.Context, db *gorm.DB) {
 	mail := c.Param("organization_mail")
-
 	var organization models.Organization
-	if err := c.ShouldBindJSON(&organization); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
 
-	if organization.Password != "" {
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(organization.Password), bcrypt.DefaultCost)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
-			return
-		}
-		organization.Password = string(hashedPassword)
-	}
-
-	organization.Updated_At = time.Now()
-
-	if err := db.Where("email = ?", mail).Updates(&organization).Error; err != nil {
+	if err := db.Where("email = ?", mail).First(&organization).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Organization data updated successfully"})
+	var updatedOrganization map[string]interface{}
+	if err := c.ShouldBindJSON(&updatedOrganization); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if password, exists := updatedOrganization["password"]; exists && password != "" {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password.(string)), bcrypt.DefaultCost)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
+			return
+		}
+		updatedOrganization["password"] = string(hashedPassword)
+	}
+	updatedOrganization["updated_at"] = time.Now()
+
+	if err := db.Model(&organization).Updates(&updatedOrganization).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, organization)
 }
 
 // getOrganization godoc

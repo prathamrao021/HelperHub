@@ -47,10 +47,15 @@ func createOpportunity(c *gin.Context, db *gorm.DB) {
 // @Router /opportunities/delete/{id} [delete]
 func deleteOpportunity(c *gin.Context, db *gorm.DB) {
 	id := c.Param("id")
-
-	if err := db.Where("id = ?", id).Delete(&models.Opportunity{}).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	var opportunity models.Opportunity
+	if err := db.Where("id = ?", id).First(&opportunity).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Opportunity not found"})
 		return
+	} else {
+		if err := db.Where("id = ?", id).Delete(&opportunity).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Opportunity deleted successfully"})
@@ -75,14 +80,15 @@ func updateOpportunity(c *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	if err := c.ShouldBindJSON(&opportunity); err != nil {
+	var updatedOpportunity map[string]interface{}
+	if err := c.ShouldBindJSON(&updatedOpportunity); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	opportunity.Updated_At = time.Now()
+	updatedOpportunity["updated_at"] = time.Now()
 
-	if err := db.Save(&opportunity).Error; err != nil {
+	if err := db.Model(&opportunity).Updates(updatedOpportunity).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
