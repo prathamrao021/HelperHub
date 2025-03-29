@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"time"
 
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/prathamrao021/HelperHub/models"
 	"gorm.io/gorm"
@@ -115,4 +117,37 @@ func getOpportunity(c *gin.Context, db *gorm.DB) {
 	}
 
 	c.JSON(http.StatusOK, opportunity)
+}
+
+// getLastNExpiredOpportunitiesByOrganization godoc
+// @Summary Retrieve the last 'n' expired opportunities for an organization
+// @Description Retrieve the last 'n' opportunities where the end_date is less than the current date for a specific organization
+// @Tags opportunities
+// @Accept json
+// @Produce json
+// @Param organization_id path uint true "Organization ID"
+// @Param n query int true "Number of opportunities"
+// @Success 200 {array} models.Opportunity
+// @Router /opportunities/organization/{organization_id}/expired [get]
+func getLastNExpiredOpportunitiesByOrganization(c *gin.Context, db *gorm.DB) {
+	organizationID := c.Param("organization_id")
+	nStr := c.Query("n")
+	n, err := strconv.Atoi(nStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid number of opportunities"})
+		return
+	}
+
+	var opportunities []models.Opportunity
+	currentDate := time.Now()
+
+	if err := db.Where("organization_mail = ? AND end_date < ?", organizationID, currentDate).
+		Order("end_date desc").
+		Limit(n).
+		Find(&opportunities).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, opportunities)
 }
