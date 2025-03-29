@@ -47,6 +47,7 @@ func createApplication(c *gin.Context, db *gorm.DB) {
 // @Router /applications [get]
 func getAllApplications(c *gin.Context, db *gorm.DB) {
 	var applications []models.Application
+
 	if err := db.Find(&applications).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -184,10 +185,16 @@ func updateApplication(c *gin.Context, db *gorm.DB) {
 // @Router /applications/{id} [delete]
 func deleteApplication(c *gin.Context, db *gorm.DB) {
 	id := c.Param("id")
+	var application models.Application
 
-	if err := db.Where("id = ?", id).Delete(&models.Application{}).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	if err := db.Where("id = ?", id).First(&application).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Application not found"})
 		return
+	} else {
+		if err := db.Where("id = ?", id).Delete(&application).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Application deleted successfully"})
