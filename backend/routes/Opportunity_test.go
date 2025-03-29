@@ -21,7 +21,7 @@ import (
 func setupTestDBOpportunity() *gorm.DB {
 	// Use the same PostgreSQL connection as in main.go but with a test database
 	dsn := "host=localhost user=postgres password=admin dbname=Helperhub_test port=5432 sslmode=prefer TimeZone=Asia/Shanghai"
-	
+
 	// Configure gorm with minimal logging during tests
 	config := &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
@@ -35,7 +35,7 @@ func setupTestDBOpportunity() *gorm.DB {
 
 	// Clean up existing tables
 	db.Exec("DROP TABLE IF EXISTS opportunities CASCADE")
-	
+
 	// Auto migrate required models
 	db.AutoMigrate(&models.Opportunity{})
 
@@ -43,7 +43,7 @@ func setupTestDBOpportunity() *gorm.DB {
 	// First, check if organization already exists
 	var count int64
 	db.Model(&models.Organization{}).Where("email = ?", "test@org.com").Count(&count)
-	
+
 	if count == 0 {
 		// Create the test organization if it doesn't exist
 		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
@@ -92,7 +92,7 @@ func createTestOpportunity(db *gorm.DB) models.Opportunity {
 		Title:             "Test Opportunity",
 		Description:       "Test Description",
 		Location:          "Test Location",
-		Hours_Required:    time.Now().Add(48 * time.Hour), // 48 hours from now
+		Hours_Required:    5, // 48 hours from now
 		Created_At:        time.Now(),
 		Updated_At:        time.Now(),
 	}
@@ -116,7 +116,7 @@ func TestCreateOpportunity(t *testing.T) {
 		Title:             "Tutor Children",
 		Description:       "Help children with homework",
 		Location:          "Local Library",
-		Hours_Required:    time.Now().Add(24 * time.Hour), // 24 hours from now
+		Hours_Required:    10, // 24 hours from now
 	}
 
 	// Convert to JSON
