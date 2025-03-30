@@ -224,3 +224,30 @@ func getOpportunitiesByOrganization(c *gin.Context, db *gorm.DB) {
 
 // 	c.JSON(http.StatusOK, opportunities)
 // }
+
+// getAvailableOpportunities godoc
+// @Summary Retrieve available volunteer opportunities
+// @Description Retrieve available volunteer opportunities, excluding expired ones, and include organization name
+// @Tags opportunities
+// @Accept json
+// @Produce json
+// @Success 200 {array} map[string]interface{}
+// @Router /opportunities/available [get]
+func getAvailableOpportunities(c *gin.Context, db *gorm.DB) {
+	currentDate := time.Now()
+
+	var opportunities []map[string]interface{}
+
+	// Query to retrieve available opportunities
+	if err := db.Table("opportunities").
+		Select("opportunities.*, organizations.name AS organization_name").
+		Joins("INNER JOIN organizations ON opportunities.organization_mail = organizations.email").
+		Where("opportunities.end_date >= ?", currentDate).
+		Order("opportunities.start_date ASC").
+		Find(&opportunities).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, opportunities)
+}
