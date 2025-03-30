@@ -8,6 +8,7 @@ import { MapPin, Clock, Search, X } from "lucide-react"
 import { format } from "date-fns"
 import { toast, Toaster } from "sonner"
 import { DashboardLayout } from "@/components/dashboard-layout"
+import api from "@/lib/axios"
 
 // Mock data for opportunities
 const mockOpportunities = [
@@ -84,10 +85,30 @@ export function OpportunitiesPage() {
   // Fetch opportunities (using mock data for now)
   useEffect(() => {
     // Simulate API call
-    setTimeout(() => {
-      setOpportunities(mockOpportunities)
-      setLoading(false)
-    }, 800)
+    // setTimeout(() => {
+    //   setOpportunities(mockOpportunities)
+    //   setLoading(false)
+    // }, 800)
+    const response = api.get(`/opportunities/available`)
+    response
+      .then(res => {
+        // Assuming the API returns an array of opportunities
+        setOpportunities(res.data)
+        setLoading(false)
+      })
+      .catch(error => {
+        console.error("Error fetching opportunities:", error)
+        toast.error("Error fetching opportunities", {
+          description: "There was an error loading the opportunities. Please try again later.",
+        })
+        setLoading(false)
+      })
+    // Cleanup function to reset state if needed
+    return () => {
+      // Resetting state if needed when component unmounts
+      setOpportunities([])
+      setLoading(true)
+    }
   }, [])
 
   // Apply filters to opportunities (search only)
