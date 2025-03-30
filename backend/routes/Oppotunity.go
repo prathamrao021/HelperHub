@@ -151,3 +151,76 @@ func getLastNExpiredOpportunitiesByOrganization(c *gin.Context, db *gorm.DB) {
 
 	c.JSON(http.StatusOK, opportunities)
 }
+
+// getOpportunitiesWithApplicationCount godoc
+// @Summary Retrieve all opportunities for an organization with application counts
+// @Description Retrieve all opportunities for a specific organization, including the number of applications each opportunity has received
+// @Tags opportunities
+// @Accept json
+// @Produce json
+// @Param organization_mail query string true "Organization Mail"
+// @Success 200 {array} map[string]interface{}
+// @Router /opportunities [get]
+func getOpportunitiesByOrganization(c *gin.Context, db *gorm.DB) {
+	organizationMail := c.Query("organization_mail")
+	if organizationMail == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "organization_id is required"})
+		return
+	}
+
+	var opportunities []map[string]interface{}
+
+	// Query to retrieve opportunities with application counts
+	if err := db.Table("opportunities").
+		Select("opportunities.*, COUNT(applications.id) AS application_count").
+		Joins("LEFT JOIN applications ON applications.opportunity_id = opportunities.id").
+		Where("opportunities.organization_mail = ?", organizationMail).
+		Group("opportunities.id").
+		Find(&opportunities).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, opportunities)
+}
+
+// func getOpportunitiesByOrganization(c *gin.Context, db *gorm.DB) {
+// 	stringOrgID := c.Query("organization_id")
+
+// 	if stringOrgID == "" {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": "organization_id is required"})
+// 		return
+// 	}
+
+// 	pageStr := c.DefaultQuery("page", "1")
+// 	pageSizeStr := c.DefaultQuery("page_size", "10")
+
+// 	page, err := strconv.Atoi(pageStr)
+// 	if err != nil || page < 1 {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid page number"})
+// 		return
+// 	}
+
+// 	pageSize, err := strconv.Atoi(pageSizeStr)
+// 	if err != nil || pageSize < 1 {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid page size"})
+// 		return
+// 	}
+
+// 	offset := (page - 1) * pageSize
+
+// 	var opportunities []models.Opportunity
+// 	if err := db.Table("opportunities").
+// 		Select("opportunities.*, COUNT(applications.id) AS application_count").
+// 		Joins("LEFT JOIN applications ON applications.opportunity_id = opportunities.id").
+// 		Where("opportunities.organization_mail = ?", stringOrgID).
+// 		Group("opportunities.id").
+// 		Offset(offset).
+// 		Limit(pageSize).
+// 		Find(&opportunities).Error; err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+// 		return
+// 	}
+
+// 	c.JSON(http.StatusOK, opportunities)
+// }

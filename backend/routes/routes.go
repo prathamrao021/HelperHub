@@ -43,6 +43,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	opportunityRouter.PUT("/update/:id", func(c *gin.Context) { updateOpportunity(c, db) })
 	opportunityRouter.GET("/get/:id", func(c *gin.Context) { getOpportunity(c, db) })
 	opportunityRouter.GET("/get/expired", func(c *gin.Context) { getLastNExpiredOpportunitiesByOrganization(c, db) })
+	opportunityRouter.GET("/", func(c *gin.Context) { getOpportunitiesByOrganization(c, db) })
 
 	// Routes for application management
 	applicationRouter := router.Group("/applications")
