@@ -1,7 +1,6 @@
 describe('Volunteer Registration', () => {
     it('should register a volunteer successfully', () => {
-      // Visit the volunteer registration page
-      cy.visit('/register/organization'); // Adjust URL based on your routing setup
+      cy.visit('/register/organization'); 
   
       // Fill out the registration form
       cy.get('input[name="email"]').type('org56@example.com');
@@ -11,10 +10,10 @@ describe('Volunteer Registration', () => {
       cy.get('input[name="location"]').type('123 Main St, Ciity, Country');
       cy.get('textarea[name="description"]').type('We aim to make the world a better place by.');
   
-    // Submit the form
+
     cy.get('button[type="submit"]').click();
 
-    // Verify registration was successful and user is redirected to the dashboard
+    // dashboard if success
     cy.url().should('include', '/dashboard');
     cy.contains('Dashboard').should('be.visible');
     });
