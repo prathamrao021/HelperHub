@@ -18,10 +18,17 @@ import (
 	"gorm.io/gorm/logger"
 )
 
+// LoginRequestOrganization struct for testing
+type LoginRequestOrganization struct {
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
+	Role     string `json:"role" binding:"required"`
+}
+
 func setupTestDBForOrganization() *gorm.DB {
 	// Use the same PostgreSQL connection as in main.go but with a test database
 	dsn := "host=localhost user=postgres password=admin dbname=Helperhub_test port=5432 sslmode=prefer TimeZone=Asia/Shanghai"
-	
+
 	// Configure gorm with minimal logging during tests
 	config := &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
@@ -69,7 +76,7 @@ func setupRouterForOrganization(db *gorm.DB) *gin.Engine {
 func createTestOrganization(db *gorm.DB) models.Organization {
 	// Create a test organization with hashed password
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("testpassword"), bcrypt.DefaultCost)
-	
+
 	organization := models.Organization{
 		Email:       "test@org.com",
 		Password:    string(hashedPassword),
@@ -81,16 +88,16 @@ func createTestOrganization(db *gorm.DB) models.Organization {
 		Created_At:  time.Now(),
 		Updated_At:  time.Now(),
 	}
-	
+
 	result := db.Create(&organization)
 	if result.Error != nil {
 		panic("Failed to create test organization: " + result.Error.Error())
 	}
-	
+
 	// Verify the organization was created properly
 	var created models.Organization
 	db.Where("email = ?", organization.Email).First(&created)
-	
+
 	return created
 }
 
@@ -147,6 +154,14 @@ func TestGetOrganization(t *testing.T) {
 	// Create test organization
 	org := createTestOrganization(db)
 
+	// Debug: Verify the organization was created in the database
+	var count int64
+	db.Model(&models.Organization{}).Where("email = ?", org.Email).Count(&count)
+	t.Logf("Organization with Email %s exists in DB: %v (count: %d)", org.Email, count > 0, count)
+
+	// Debug: Print the URL that will be used
+	t.Logf("Route: /organizations/get/%s", org.Email)
+
 	// Create request
 	req, _ := http.NewRequest("GET", fmt.Sprintf("/organizations/get/%s", org.Email), nil)
 	w := httptest.NewRecorder()
@@ -181,14 +196,13 @@ func TestUpdateOrganization(t *testing.T) {
 	// Create test organization
 	org := createTestOrganization(db)
 
-	// Updated organization data
-	updatedOrg := models.Organization{
-		Name:        "Updated Name",
-		Phone:       "5555555555",
-		Location:    "Updated Location",
-		Description: "Updated Description",
-		Website_Url: "https://updated-org.com",
-		// Don't update password
+	// Updated organization data as a map to match the implementation
+	updatedOrg := map[string]interface{}{
+		"name":        "Updated Name",
+		"phone":       "5555555555",
+		"location":    "Updated Location",
+		"description": "Updated Description",
+		"website_url": "https://updated-org.com",
 	}
 
 	// Convert to JSON
@@ -211,12 +225,12 @@ func TestUpdateOrganization(t *testing.T) {
 	var updatedInDB models.Organization
 	result := db.Where("email = ?", org.Email).First(&updatedInDB)
 	assert.NoError(t, result.Error, "Organization should exist in database")
-	assert.Equal(t, updatedOrg.Name, updatedInDB.Name)
-	assert.Equal(t, updatedOrg.Phone, updatedInDB.Phone)
-	assert.Equal(t, updatedOrg.Location, updatedInDB.Location)
-	assert.Equal(t, updatedOrg.Description, updatedInDB.Description)
-	assert.Equal(t, updatedOrg.Website_Url, updatedInDB.Website_Url)
-	
+	assert.Equal(t, updatedOrg["name"], updatedInDB.Name)
+	assert.Equal(t, updatedOrg["phone"], updatedInDB.Phone)
+	assert.Equal(t, updatedOrg["location"], updatedInDB.Location)
+	assert.Equal(t, updatedOrg["description"], updatedInDB.Description)
+	assert.Equal(t, updatedOrg["website_url"], updatedInDB.Website_Url)
+
 	// Password should remain the same since we didn't update it
 	assert.Equal(t, org.Password, updatedInDB.Password)
 }
@@ -230,18 +244,14 @@ func TestUpdateOrganizationWithPassword(t *testing.T) {
 	org := createTestOrganization(db)
 	originalPassword := org.Password
 
-	// Updated organization data with new password
-	updatedOrg := models.Organization{
-		Name:     "Password Update Test",
-		Password: "newpassword123",
-		Phone:    "6666666666",
-	}
-
-	// Convert to JSON
-	jsonData, _ := json.Marshal(updatedOrg)
+	// Create a raw JSON string for updating just the name and password
+	jsonStr := `{
+		"name": "Password Update Test",
+		"password": "newpassword123"
+	}`
 
 	// Create request
-	req, _ := http.NewRequest("PUT", fmt.Sprintf("/organizations/update/%s", org.Email), bytes.NewBuffer(jsonData))
+	req, _ := http.NewRequest("PUT", fmt.Sprintf("/organizations/update/%s", org.Email), bytes.NewBuffer([]byte(jsonStr)))
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
@@ -257,8 +267,8 @@ func TestUpdateOrganizationWithPassword(t *testing.T) {
 	var updatedInDB models.Organization
 	result := db.Where("email = ?", org.Email).First(&updatedInDB)
 	assert.NoError(t, result.Error, "Organization should exist in database")
-	assert.Equal(t, updatedOrg.Name, updatedInDB.Name)
-	
+	assert.Equal(t, "Password Update Test", updatedInDB.Name)
+
 	// Password should be updated and hashed
 	assert.NotEqual(t, originalPassword, updatedInDB.Password, "Password should be different after update")
 	assert.NotEqual(t, "newpassword123", updatedInDB.Password, "Password should be hashed")
@@ -298,7 +308,7 @@ func TestLoginOrganization(t *testing.T) {
 	// Create test organization with known plain password
 	plainPassword := "loginTestPassword"
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(plainPassword), bcrypt.DefaultCost)
-	
+
 	organization := models.Organization{
 		Email:       "login@test.org",
 		Password:    string(hashedPassword),
@@ -310,11 +320,11 @@ func TestLoginOrganization(t *testing.T) {
 		Created_At:  time.Now(),
 		Updated_At:  time.Now(),
 	}
-	
+
 	db.Create(&organization)
 
 	// Login credentials
-	credentials := LoginRequest{
+	credentials := LoginRequestOrganization{
 		Email:    organization.Email,
 		Password: plainPassword,
 		Role:     "organization",
@@ -344,12 +354,12 @@ func TestLoginOrganization(t *testing.T) {
 	// Verify the response has user data
 	userMap, exists := response["user"]
 	assert.True(t, exists, "Response should contain user data")
-	
+
 	// Check user details if it exists
 	if exists {
 		user, ok := userMap.(map[string]interface{})
 		assert.True(t, ok, "User should be a JSON object")
-		
+
 		if ok {
 			// Check for case-sensitivity in JSON keys
 			email, emailExists := user["email"] // Try lowercase first
@@ -358,7 +368,7 @@ func TestLoginOrganization(t *testing.T) {
 			}
 			assert.True(t, emailExists, "Email field should exist in response")
 			assert.Equal(t, organization.Email, email)
-			
+
 			name, nameExists := user["name"] // Try lowercase first
 			if !nameExists {
 				name, nameExists = user["Name"] // Then try with uppercase first letter
@@ -378,7 +388,7 @@ func TestLoginOrganizationInvalidPassword(t *testing.T) {
 	org := createTestOrganization(db)
 
 	// Wrong login credentials
-	credentials := LoginRequest{
+	credentials := LoginRequestOrganization{
 		Email:    org.Email,
 		Password: "wrongpassword",
 		Role:     "organization",
@@ -407,7 +417,7 @@ func TestLoginOrganizationInvalidEmail(t *testing.T) {
 	defer cleanupTestOrganizations(db)
 
 	// Wrong login credentials
-	credentials := LoginRequest{
+	credentials := LoginRequestOrganization{
 		Email:    "nonexistent@org.com",
 		Password: "anypassword",
 		Role:     "organization",
@@ -458,6 +468,53 @@ func TestInvalidOrganizationData(t *testing.T) {
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
+
+	// Assertions
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+}
+
+func TestUpdateNonExistentOrganization(t *testing.T) {
+	db := setupTestDBForOrganization()
+	router := setupRouterForOrganization(db)
+	defer cleanupTestOrganizations(db)
+
+	// Updated organization data
+	updatedOrg := map[string]interface{}{
+		"name":  "Updated Name",
+		"phone": "5555555555",
+	}
+
+	// Convert to JSON
+	jsonData, _ := json.Marshal(updatedOrg)
+
+	// Create request for non-existent organization
+	req, _ := http.NewRequest("PUT", "/organizations/update/nonexistent@org.com", bytes.NewBuffer(jsonData))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	// Log the response for debugging
+	t.Logf("Response Status: %d", w.Code)
+	t.Logf("Response Body: %s", w.Body.String())
+
+	// Assertions
+	assert.Equal(t, http.StatusInternalServerError, w.Code)
+}
+
+func TestInvalidLoginData(t *testing.T) {
+	db := setupTestDBForOrganization()
+	router := setupRouterForOrganization(db)
+	defer cleanupTestOrganizations(db)
+
+	// Invalid JSON
+	req, _ := http.NewRequest("POST", "/login/organization", bytes.NewBuffer([]byte("invalid json")))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	// Log the response for debugging
+	t.Logf("Response Status: %d", w.Code)
+	t.Logf("Response Body: %s", w.Body.String())
 
 	// Assertions
 	assert.Equal(t, http.StatusBadRequest, w.Code)
