@@ -1,3 +1,4 @@
+/// <reference types="cypress" />
 describe('Initial Load', () => {
     it('should load the homepage and verify key elements', () => {
       // Visit the homepage

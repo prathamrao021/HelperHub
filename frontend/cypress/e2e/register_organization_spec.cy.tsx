@@ -4,12 +4,12 @@ describe('Volunteer Registration', () => {
       cy.visit('/register/organization'); // Adjust URL based on your routing setup
   
       // Fill out the registration form
-      cy.get('input[name="email"]').type('org@example.com');
-      cy.get('input[name="password"]').type('password123');
-      cy.get('input[name="name"]').type('My Organization');
+      cy.get('input[name="email"]').type('org56@example.com');
+      cy.get('input[name="password"]').type('password1234');
+      cy.get('input[name="name"]').type('My Organizations');
       cy.get('input[name="phone"]').type('1234567890');
-      cy.get('input[name="location"]').type('123 Main St, City, Country');
-      cy.get('textarea[name="description"]').type('We aim to make the world a better place.');
+      cy.get('input[name="location"]').type('123 Main St, Ciity, Country');
+      cy.get('textarea[name="description"]').type('We aim to make the world a better place by.');
   
     // Submit the form
     cy.get('button[type="submit"]').click();
