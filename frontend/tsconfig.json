@@ -8,6 +8,7 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "baseUrl": ".",
+    "types": ["cypress", "node"],
     "paths": {
       "@/*": ["./src/*"],
       "@pages/*": ["./src/pages/*"],
