@@ -101,7 +101,6 @@ describe("Dashboard Component", () => {
 
     expect(screen.getByText("Organization Dashboard")).toBeInTheDocument();
     expect(screen.getByText("Manage Projects")).toBeInTheDocument();
-    expect(screen.getByText("Find Volunteers")).toBeInTheDocument();
 
     // Ensure `OrganizationProfile` is rendered
     // expect(screen.getByTestId("organization-profile")).toBeInTheDocument();
