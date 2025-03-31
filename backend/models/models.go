@@ -4,6 +4,7 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"time"
 )
 
@@ -69,17 +70,33 @@ func (d CustomDate) Value() (driver.Value, error) {
 }
 
 // Scan for CustomDate (DB -> Go)
+// Scan for CustomDate (DB -> Go)
 func (d *CustomDate) Scan(value interface{}) error {
-	dateStr, ok := value.(string)
-	if !ok {
-		return errors.New("type assertion to string failed")
-	}
-	parsed, err := time.Parse(customDateFormat, dateStr)
-	if err != nil {
-		return err
-	}
-	*d = CustomDate(parsed)
-	return nil
+    if value == nil {
+        return nil
+    }
+
+    switch v := value.(type) {
+    case time.Time:
+        *d = CustomDate(v)
+        return nil
+    case string:
+        parsed, err := time.Parse(customDateFormat, v)
+        if err != nil {
+            return err
+        }
+        *d = CustomDate(parsed)
+        return nil
+    case []byte:
+        parsed, err := time.Parse(customDateFormat, string(v))
+        if err != nil {
+            return err
+        }
+        *d = CustomDate(parsed)
+        return nil
+    default:
+        return fmt.Errorf("cannot scan type %T into CustomDate", value)
+    }
 }
 
 // ToTime converts CustomDate to time.Time
