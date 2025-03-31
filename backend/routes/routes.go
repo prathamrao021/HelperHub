@@ -20,6 +20,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	volunteerRouter.DELETE("/delete/:volunteer_mail", func(c *gin.Context) { deleteVolunteer(c, db) })
 	volunteerRouter.PUT("/update/:volunteer_mail", func(c *gin.Context) { updateVolunteer(c, db) })
 	volunteerRouter.GET("/get/:volunteer_mail", func(c *gin.Context) { getVolunteer(c, db) })
+	volunteerRouter.GET("/get/stats/:volunteer_mail", func(c *gin.Context) { getVolunteerStats(c, db) })
 	router.POST("/login/volunteer", func(c *gin.Context) { loginVolunteer(c, db) })
 
 	// Routes for organization management
@@ -41,6 +42,9 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	opportunityRouter.DELETE("/delete/:id", func(c *gin.Context) { deleteOpportunity(c, db) })
 	opportunityRouter.PUT("/update/:id", func(c *gin.Context) { updateOpportunity(c, db) })
 	opportunityRouter.GET("/get/:id", func(c *gin.Context) { getOpportunity(c, db) })
+	opportunityRouter.GET("/get/expired", func(c *gin.Context) { getLastNExpiredOpportunitiesByOrganization(c, db) })
+	opportunityRouter.GET("/", func(c *gin.Context) { getOpportunitiesByOrganization(c, db) })
+	opportunityRouter.GET("/available", func(c *gin.Context) { getAvailableOpportunities(c, db) })
 
 	// Routes for application management
 	applicationRouter := router.Group("/applications")
@@ -53,5 +57,6 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	applicationRouter.PUT("/:id", func(c *gin.Context) { updateApplication(c, db) })
 	applicationRouter.DELETE("/:id", func(c *gin.Context) { deleteApplication(c, db) })
 	applicationRouter.GET("/volunteer/:volunteer_id/approved", func(c *gin.Context) { getLastNApprovedApplications(c, db) })
+	applicationRouter.GET("/volunteer/:volunteer_id/completed", func(c *gin.Context) { getLastNAcceptedOpportunitiesForVolunteer(c, db) })
 
 }

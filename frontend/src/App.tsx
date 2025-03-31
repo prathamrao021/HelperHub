@@ -10,8 +10,9 @@ import { Dashboard } from '@/pages/DashBoard'
 import { ProtectedRoute, RoleProtectedRoute } from '@/components/protected-route'
 import {UnauthorizedPage} from '@/pages/UnauthorizedPage'
 import {OpportunitiesPage} from '@/pages/Opportunities'
-import {ManageProjectsPage} from '@/pages/ManageProject'
-
+import {ManageProjectsPage} from '@/pages/Projects'
+import {ApplicationsPage} from '@/pages/Applications'
+import { ProjectDetailPage } from '@/pages/ProjectDetail'
 export function App() {
   return (
     <ThemeProvider defaultTheme='system' storageKey='vite-ui-theme'>
@@ -45,15 +46,34 @@ export function App() {
                 </RoleProtectedRoute>
               } 
             />
+
+            <Route 
+              path="/applications" 
+              element={
+                <RoleProtectedRoute allowedRoles={["VOLUNTEER"]}>
+                  <ApplicationsPage />
+                </RoleProtectedRoute>
+              }
+            />
             
             {/* Organization specific routes */}
             <Route 
-              path="/manage-projects" 
+              path="/projects" 
               element={
                 <RoleProtectedRoute allowedRoles={["ORGANIZATION_ADMIN"]}>
                   <ManageProjectsPage />
                 </RoleProtectedRoute>
               } 
+            />
+
+            {/* Organization project route*/}
+            <Route 
+              path="/project/:id" 
+              element={
+                <RoleProtectedRoute allowedRoles={["ORGANIZATION_ADMIN"]}>
+                  <ProjectDetailPage />
+                </RoleProtectedRoute>
+              }
             />
           </Routes>
         </Router>

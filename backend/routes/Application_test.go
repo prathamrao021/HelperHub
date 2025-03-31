@@ -21,7 +21,7 @@ import (
 func setupTestDBForApplication() *gorm.DB {
 	// Use the same PostgreSQL connection as in main.go but with a test database
 	dsn := "host=localhost user=postgres password=admin dbname=Helperhub_test port=5432 sslmode=prefer TimeZone=Asia/Shanghai"
-	
+
 	// Configure gorm with minimal logging during tests
 	config := &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
@@ -91,7 +91,7 @@ func setupTestDBForApplication() *gorm.DB {
 			Title:             "Test Opportunity",
 			Description:       "Test Description",
 			Location:          "Test Location",
-			Hours_Required:    time.Now().Add(48 * time.Hour), // 48 hours from now
+			Hours_Required:    10, // 48 hours from now
 			Created_At:        time.Now(),
 			Updated_At:        time.Now(),
 		}
@@ -176,13 +176,13 @@ func setupRouterForApplication(db *gorm.DB) *gin.Engine {
 	r.POST("/applications", func(c *gin.Context) {
 		createApplication(c, db)
 	})
-	
+
 	// Handler for GET with query parameters
 	r.GET("/applications", func(c *gin.Context) {
 		volunteerID := c.Query("volunteer_id")
 		opportunityID := c.Query("opportunity_id")
 		status := c.Query("status")
-		
+
 		if volunteerID != "" {
 			mockGetApplicationsByVolunteerID(c, db)
 		} else if opportunityID != "" {
@@ -193,7 +193,7 @@ func setupRouterForApplication(db *gorm.DB) *gin.Engine {
 			getAllApplications(c, db)
 		}
 	})
-	
+
 	r.GET("/applications/:id", func(c *gin.Context) {
 		getApplicationByID(c, db)
 	})
@@ -222,17 +222,17 @@ func createTestApplication(db *gorm.DB) models.Application {
 		Created_At:     time.Now(),
 		Updated_At:     time.Now(),
 	}
-	
+
 	result := db.Create(&application)
 	if result.Error != nil {
 		panic("Failed to create test application: " + result.Error.Error())
 	}
-	
+
 	// Verify the application was created properly
 	var created models.Application
 	db.First(&created, application.ID)
-	
-	return created  // Return the application as loaded from DB
+
+	return created // Return the application as loaded from DB
 }
 
 func cleanupTestApplications(db *gorm.DB) {
@@ -356,10 +356,10 @@ func TestGetApplicationsByVolunteerID(t *testing.T) {
 
 	// Create test application and make sure it's loaded from DB
 	app := createTestApplication(db)
-	
+
 	// Print debug information
 	t.Logf("Testing with application ID=%d, VolunteerID=%d", app.ID, app.Volunteer_ID)
-	
+
 	// Manually verify the application exists in the database
 	var count int64
 	db.Model(&models.Application{}).Where("volunteer_id = ?", app.Volunteer_ID).Count(&count)
@@ -368,7 +368,7 @@ func TestGetApplicationsByVolunteerID(t *testing.T) {
 	// Create request - using string formatting to ensure proper query parameter
 	req, _ := http.NewRequest("GET", fmt.Sprintf("/applications?volunteer_id=%d", app.Volunteer_ID), nil)
 	w := httptest.NewRecorder()
-	
+
 	// Execute the request
 	router.ServeHTTP(w, req)
 
@@ -386,10 +386,10 @@ func TestGetApplicationsByVolunteerID(t *testing.T) {
 
 	// Verify we got at least one application
 	assert.GreaterOrEqual(t, len(response), 1, "Expected at least one application in the response")
-	
+
 	// If we got responses, verify they have the correct volunteer ID
 	if len(response) > 0 {
-		assert.Equal(t, app.Volunteer_ID, response[0].Volunteer_ID, 
+		assert.Equal(t, app.Volunteer_ID, response[0].Volunteer_ID,
 			"Application in response should have the requested volunteer ID")
 	}
 }
@@ -401,10 +401,10 @@ func TestGetApplicationsByOpportunityID(t *testing.T) {
 
 	// Create test application and make sure it's loaded from DB
 	app := createTestApplication(db)
-	
+
 	// Print debug information
 	t.Logf("Testing with application ID=%d, OpportunityID=%d", app.ID, app.Opportunity_ID)
-	
+
 	// Manually verify the application exists in the database
 	var count int64
 	db.Model(&models.Application{}).Where("opportunity_id = ?", app.Opportunity_ID).Count(&count)
@@ -413,7 +413,7 @@ func TestGetApplicationsByOpportunityID(t *testing.T) {
 	// Create request - using string formatting to ensure proper query parameter
 	req, _ := http.NewRequest("GET", fmt.Sprintf("/applications?opportunity_id=%d", app.Opportunity_ID), nil)
 	w := httptest.NewRecorder()
-	
+
 	// Execute the request
 	router.ServeHTTP(w, req)
 
@@ -431,10 +431,10 @@ func TestGetApplicationsByOpportunityID(t *testing.T) {
 
 	// Verify we got at least one application
 	assert.GreaterOrEqual(t, len(response), 1, "Expected at least one application in the response")
-	
+
 	// If we got responses, verify they have the correct opportunity ID
 	if len(response) > 0 {
-		assert.Equal(t, app.Opportunity_ID, response[0].Opportunity_ID, 
+		assert.Equal(t, app.Opportunity_ID, response[0].Opportunity_ID,
 			"Application in response should have the requested opportunity ID")
 	}
 }
@@ -446,10 +446,10 @@ func TestGetApplicationsByStatus(t *testing.T) {
 
 	// Create test application with "pending" status
 	app := createTestApplication(db)
-	
+
 	// Print debug information
 	t.Logf("Testing with application ID=%d, Status=%s", app.ID, app.Status)
-	
+
 	// Manually verify the application exists in the database with the correct status
 	var count int64
 	db.Model(&models.Application{}).Where("status = ?", "pending").Count(&count)
@@ -458,7 +458,7 @@ func TestGetApplicationsByStatus(t *testing.T) {
 	// Create request for applications with pending status
 	req, _ := http.NewRequest("GET", "/applications?status=pending", nil)
 	w := httptest.NewRecorder()
-	
+
 	// Execute the request
 	router.ServeHTTP(w, req)
 
@@ -476,7 +476,7 @@ func TestGetApplicationsByStatus(t *testing.T) {
 
 	// Verify we got at least one application
 	assert.GreaterOrEqual(t, len(response), 1, "Expected at least one application with 'pending' status")
-	
+
 	// Only check for the created application if we got any results
 	if len(response) > 0 {
 		// Check if we can find the application we created in the response
@@ -488,7 +488,7 @@ func TestGetApplicationsByStatus(t *testing.T) {
 			}
 		}
 		assert.True(t, found, "The created application wasn't found in the response")
-		
+
 		// Check if the applications have the requested status
 		for _, a := range response {
 			assert.Equal(t, "pending", a.Status, "All returned applications should have 'pending' status")
@@ -533,7 +533,7 @@ func TestUpdateApplication(t *testing.T) {
 	assert.Equal(t, app.ID, response.ID)
 	assert.Equal(t, "accepted", response.Status)
 	assert.Equal(t, "Updated cover letter", response.Cover_Letter)
-	
+
 	// Verify update time is later than creation time
 	assert.True(t, response.Updated_At.After(app.Created_At))
 }

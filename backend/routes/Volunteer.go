@@ -55,13 +55,21 @@ func createVolunteer(c *gin.Context, db *gorm.DB) {
 // @Router /volunteers/delete/{volunteer_mail} [delete]
 func deleteVolunteer(c *gin.Context, db *gorm.DB) {
 	mail := c.Param("volunteer_mail")
+	var volunteer models.Volunteer
 
-	if err := db.Where("email = ?", mail).Delete(&models.Volunteer{}).Error; err != nil {
+	if err := db.Where("email = ?", mail).First(&volunteer).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+	} else {
+		if err := db.Where("email = ?", mail).Delete(&volunteer).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"message": "Volunteer data deleted successfully"})
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Volunteer data deleted successfully"})
+	c.JSON(http.StatusBadRequest, gin.H{"message": "Volunteer data not found"})
+
 }
 
 // updateVolunteer godoc
@@ -77,29 +85,35 @@ func deleteVolunteer(c *gin.Context, db *gorm.DB) {
 func updateVolunteer(c *gin.Context, db *gorm.DB) {
 	mail := c.Param("volunteer_mail")
 	var volunteer models.Volunteer
-	if err := c.ShouldBindJSON(&volunteer); err != nil {
+
+	if err := db.Where("email = ?", mail).First(&volunteer).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Volunteer not found"})
+		return
+	}
+
+	var updatedData map[string]interface{}
+	if err := c.ShouldBindJSON(&updatedData); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Hash the password if it is provided
-	if volunteer.Password != "" {
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(volunteer.Password), bcrypt.DefaultCost)
+	if password, exists := updatedData["password"]; exists && password != "" {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password.(string)), bcrypt.DefaultCost)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
 			return
 		}
-		volunteer.Password = string(hashedPassword)
+		updatedData["password"] = string(hashedPassword)
 	}
 
-	volunteer.Updated_At = time.Now()
+	updatedData["updated_at"] = time.Now()
 
-	if err := db.Where("email = ?", mail).Updates(&volunteer).Error; err != nil {
+	if err := db.Model(&volunteer).Updates(updatedData).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Volunteer data updated successfully"})
+	c.JSON(http.StatusOK, volunteer)
 }
 
 // getVolunteer godoc
@@ -151,4 +165,46 @@ func loginVolunteer(c *gin.Context, db *gorm.DB) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"user": volunteer})
+}
+
+// getVolunteerStats godoc
+// @Summary Retrieve the total number of jobs and hours worked for a volunteer
+// @Description Retrieve the total number of jobs and hours worked for a volunteer based on accepted applications
+// @Tags volunteers
+// @Accept json
+// @Produce json
+// @Param volunteer_id path uint true "Volunteer ID"
+// @Success 200 {object} map[string]interface{}
+// @Router /volunteers/{volunteer_id}/stats [get]
+func getVolunteerStats(c *gin.Context, db *gorm.DB) {
+	volunteerID := c.Param("volunteer_id")
+
+	var totalJobs int64
+	var totalHoursWorked int64
+
+	// Query to count the total number of jobs and sum the hours worked
+	if err := db.Table("applications").
+		Joins("join opportunities on applications.opportunity_id = opportunities.id").
+		Where("applications.volunteer_id = ? AND applications.status = ?", volunteerID, "Accepted").
+		Count(&totalJobs).
+		Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := db.Table("applications").
+		Select("SUM(opportunities.hours_required)").
+		Joins("join opportunities on applications.opportunity_id = opportunities.id").
+		Where("applications.volunteer_id = ? AND applications.status = ?", volunteerID, "Accepted").
+		Scan(&totalHoursWorked).
+		Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Return the stats
+	c.JSON(http.StatusOK, gin.H{
+		"total_jobs":         totalJobs,
+		"total_hours_worked": totalHoursWorked,
+	})
 }
