@@ -74,8 +74,41 @@ These are the User Stories and their links which we planned to complete in sprin
    - Improved component naming conventions
    - Fixed code style inconsistencies
    - Added proper comments for complex logic
+
+### Frontend Testing
+
+#### Unit Tests
+
+1. **OrganizationRegistration.test.tsx**  
+   - `renders the form with fields and submit button`: Ensures all input fields and the submit button are rendered properly.  
+   - `validates form fields and shows error message on invalid input`: Tests form validation by entering invalid inputs and checking for error messages.  
+   - `validates max length for organization name`: Ensures the organization name does not exceed 100 characters and displays an error if it does.  
+   - `submits form and calls registerOrganization on valid input`: Mocks a successful form submission and verifies that `registerOrganization` is called with the correct parameters, and the user is redirected to the dashboard.  
+
+2. **VolunteerRegistration.test.tsx**  
+   - `renders the form with fields and submit button`: Verifies that all input fields and the submit button are displayed.  
+   - `validates form fields and shows error message on invalid input`: Ensures form validation works by checking for error messages when invalid data is entered.  
+
+#### Cypress E2E Tests  
+
+1. **basic_spec.cy.tsx**  
+   - `should load the homepage and verify key elements`: Ensures the homepage loads correctly by verifying the title, navigation bar, and visibility of the "Register" and "Login" buttons.  
+
+2. **login_volunteer_spec.cy.tsx**  
+   - `should log in a volunteer and access the dashboard`: Simulates a volunteer logging in and verifies redirection to the dashboard with the expected elements.  
+
+3. **logout_volunteer_spec.cy.tsx**  
+   - `should log in as a volunteer, log out, and redirect to the homepage`: Logs in a volunteer, performs logout, and ensures redirection to the homepage with the login button visible.  
+
+4. **register_organization_spec.cy.tsx**  
+   - `should register an organization successfully`: Completes the organization registration form and verifies successful redirection to the dashboard.  
+
+5. **register_volunteer_spec.cy.tsx**  
+   - `should register a volunteer successfully`: Fills out the volunteer registration form, selects skills, and checks redirection to the dashboard upon successful registration.  
+
+
 ## Backend Development
-## Volunteer Management API Endpoints  
+### Volunteer Management API Endpoints  
 
 ### 1. **Create Volunteer**  
 **Endpoint**: `POST /volunteers/create`  
@@ -256,57 +289,6 @@ These are the User Stories and their links which we planned to complete in sprin
   - Tests creating an opportunity with a non-existent organization.  
   - Verifies foreign key constraint handling.  
 
-### Successfully Completed Issues For Backend
-
-1. Implemented Model for -
-   
-       Organization
-       Volunteer
-       Application
-       Category
-       Opportunity 
-
-3. Implemented Unit tests for -
-   
-       Organization
-       Volunteer
-       Application
-       Category
-       Opportunity 
-        
-
-### Frontend Development
-
-### Frontend Testing
-
-#### Unit Tests
-
-1. **OrganizationRegistration.test.tsx**  
-   - `renders the form with fields and submit button`: Ensures all input fields and the submit button are rendered properly.  
-   - `validates form fields and shows error message on invalid input`: Tests form validation by entering invalid inputs and checking for error messages.  
-   - `validates max length for organization name`: Ensures the organization name does not exceed 100 characters and displays an error if it does.  
-   - `submits form and calls registerOrganization on valid input`: Mocks a successful form submission and verifies that `registerOrganization` is called with the correct parameters, and the user is redirected to the dashboard.  
-
-2. **VolunteerRegistration.test.tsx**  
-   - `renders the form with fields and submit button`: Verifies that all input fields and the submit button are displayed.  
-   - `validates form fields and shows error message on invalid input`: Ensures form validation works by checking for error messages when invalid data is entered.  
-
-#### Cypress E2E Tests  
-
-1. **basic_spec.cy.tsx**  
-   - `should load the homepage and verify key elements`: Ensures the homepage loads correctly by verifying the title, navigation bar, and visibility of the "Register" and "Login" buttons.  
-
-2. **login_volunteer_spec.cy.tsx**  
-   - `should log in a volunteer and access the dashboard`: Simulates a volunteer logging in and verifies redirection to the dashboard with the expected elements.  
-
-3. **logout_volunteer_spec.cy.tsx**  
-   - `should log in as a volunteer, log out, and redirect to the homepage`: Logs in a volunteer, performs logout, and ensures redirection to the homepage with the login button visible.  
-
-4. **register_organization_spec.cy.tsx**  
-   - `should register an organization successfully`: Completes the organization registration form and verifies successful redirection to the dashboard.  
-
-5. **register_volunteer_spec.cy.tsx**  
-   - `should register a volunteer successfully`: Fills out the volunteer registration form, selects skills, and checks redirection to the dashboard upon successful registration.  
 
 ## Successfully Completed Issues
 
@@ -351,6 +333,25 @@ so that user can efficiently interact with the platform based on my role, access
 Tasks done by Dhruv : 1-5, 9, 14-16
 Tasks done by Akash : 6-8, 10-13
 
+### Backend
+
+1. Implemented Model for -
+   
+       Organization
+       Volunteer
+       Application
+       Category
+       Opportunity 
+
+3. Implemented Unit tests for -
+   
+       Organization
+       Volunteer
+       Application
+       Category
+       Opportunity 
+        
+
 ## Backlogs that were cleared from sprint 2
 ### Frontend
 1. **E2E Testing**
@@ -372,9 +373,8 @@ The pending tasks from Sprint 2 were not completed due to **time constraints and
 
 ### Frontend
 - End-to-End (E2E) testing is not yet implemented.
-- Forms for creating an opportunity are incomplete.
-- Functionality to apply to an opportunity is missing.
-- Dashboard for managing opportunities and applications is not yet built.
+- Some parts of Opportunity and Application is still using mock not actual fetched data from backend.
+- Dashboard for managing opportunities and applications is not yet built. It lacks the graph for the recent jobs.
 
 ### Backend
 - Specialized APIs are pending implementation, including:
@@ -387,5 +387,6 @@ The pending features will be prioritized in **Sprint 4**, ensuring:
 - Complete E2E testing for all pages
 
 - Full API support for volunteer and organization dashboards.
-- Completion of opportunity-related forms and workflows.
+- Full integration and full coverage for testing in frontend.
 - E2E tests for ensuring app stability before deployment.
+- Containerization of the application for easy deployment.
