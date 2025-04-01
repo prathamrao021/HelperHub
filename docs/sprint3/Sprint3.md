@@ -77,76 +77,23 @@ These are the User Stories and their links which we planned to complete in sprin
 ## Backend Development
 ## Volunteer Management API Endpoints  
 
-### 1. **Create Volunteer**  
-**Endpoint**: `POST /volunteers/create`  
-**Description**: Registers a new volunteer with required details.  
-
-### 2. **Delete Volunteer**  
-**Endpoint**: `DELETE /volunteers/delete/:volunteer_mail`  
-**Description**: Deletes a volunteer account based on the provided email.  
-
-### 3. **Update Volunteer Details**  
-**Endpoint**: `PUT /volunteers/update/:volunteer_mail`  
-**Description**: Updates a volunteer’s profile information.  
-
-### 4. **Get Volunteer Details**  
-**Endpoint**: `GET /volunteers/get/:volunteer_mail`  
-**Description**: Retrieves details of a specific volunteer by email.  
-
-### 5. **Volunteer Login**  
-**Endpoint**: `POST /login/volunteer`  
-**Description**: Authenticates a volunteer using email and password.  
-
-
-## Organization Management API Endpoints  
-
-### 1. **Create Organization**  
-**Endpoint**: `POST /organizations/create`  
-**Description**: Registers a new organization with required details.  
-
-### 2. **Delete Organization**  
-**Endpoint**: `DELETE /organizations/delete/:organization_mail`  
-**Description**: Deletes an organization account based on the provided email.  
-
-### 3. **Update Organization Details**  
-**Endpoint**: `PUT /organizations/update/:organization_mail`  
-**Description**: Updates an organization’s profile information.  
-
-### 4. **Get Organization Details**  
-**Endpoint**: `GET /organizations/get/:organization_mail`  
-**Description**: Retrieves details of a specific organization by email.  
-
-### 5. **Organization Login**  
-**Endpoint**: `POST /login/organization`  
-**Description**: Authenticates an organization using email and password.  
+### 1. **Volunteer Statistics API**  
+**Endpoint**: `GET /volunteers/:volunteer_id/stats`  
+**Description**: Retrieve the total number of jobs and hours worked for a volunteer based on accepted applications.  
 
 ## Opportunity Management API Endpoints  
 
-### 1. **Create Opportunity**  
-**Endpoint**: `POST /opportunities/create`  
-**Description**: Creates a new volunteering opportunity.  
+### 1. **Last N opportunities for Organization where End Date < Current Date**  
+**Endpoint**: `GET /opportunities/organization/:organization_mail/expired`  
+**Description**: Retrieve the last 'n' opportunities where the end_date is less than the current date for a specific organization.  
 
-### 2. **Delete Opportunity**  
-**Endpoint**: `DELETE /opportunities/delete/:id`  
-**Description**: Deletes an opportunity based on the provided ID.  
+### 2. **Get all Opportunities with number of applications for each**  
+**Endpoint**: `GET /opportunities`  
+**Description**: Retrieve all opportunities for a specific organization, including the number of applications each opportunity has received. 
 
-### 3. **Update Opportunity Details**  
-**Endpoint**: `PUT /opportunities/update/:id`  
-**Description**: Updates details of an existing opportunity.  
-
-### 4. **Get Opportunity Details**  
-**Endpoint**: `GET /opportunities/get/:id`  
-**Description**: Retrieves details of a specific opportunity by ID.  
-
-## Category Management API Endpoints  
-
-### 1. **Create Category**  
-**Endpoint**: `POST /categories/create`  
-**Description**: Creates a new category for opportunities.  
-
-### 2. **Get All Categories**  
-**Endpoint**: `GET /categories/get`  
-**Description**: Retrieves all available categories.  
+### 3. **Last N opportunities for Volunteer where status is Accepted and End Date < Current Date**  
+**Endpoint**: `GET /opportunities/volunteer/:volunteer_id/accepted-expired`  
+**Description**: Retrieve the last 'n' opportunities for a volunteer where the application was accepted and end_date < current date.  
 
 ## Application Management API Endpoints  
 
@@ -258,22 +205,26 @@ These are the User Stories and their links which we planned to complete in sprin
 
 ### Successfully Completed Issues For Backend
 
-1. Implemented Model for -
-   
-       Organization
-       Volunteer
-       Application
-       Category
-       Opportunity 
+       
+1. API endpoint that retrieves available volunteer opportunities for the Opportunities page. This endpoint will be used by volunteers to browse and search for opportunities they can apply to.
+2.  API endpoint that retrieves all volunteer opportunities associated with a specific organization. This endpoint is already being called from the frontend Projects page but needs implementation on the backend.
+3. The system should provide an API endpoint to fetch the last N opportunities created by an organization where the end_date has already passed (i.e., end_date < current_date). This will help organizations track past opportunities easily.
+4. The system should provide an API endpoint to fetch the last N opportunities for which a volunteer's application was accepted and the end_date has already passed (i.e., end_date < current_date). This will help volunteers track their past accepted opportunities.
+5. The system should provide an API endpoint to fetch the total number of jobs a volunteer has participated in and the total hours worked across all accepted opportunities. This will help track a volunteer’s contribution over time.
+6. Refactor : Current model of opportunity field does not have start_date and end_date field. Add those fields and update opportunity end points.
+7. We need to implement Create, Read, Update, and Delete (CRUD) functionality for managing organizations in the system. This will allow users to create new organizations, retrieve organization details, update information, and delete organizations when necessary.
+8. Implement Create, Read, Update, and Delete (CRUD) operations for the Application model. This model represents applications submitted by volunteers for various opportunities. It allows volunteers to apply, update their applications, and check their statuses while ensuring organizations can review and manage applications.
 
-3. Implemented Unit tests for -
-   
-       Organization
-       Volunteer
-       Application
-       Category
-       Opportunity 
-        
+9. Implemented Unit tests for -
+```
+Organization
+Volunteer
+Application
+Category
+Opportunity 
+```     
+Task completed by Pratham: 1-8.
+Testing is completed by Nikhil. 
 
 ### Frontend Development
 
@@ -364,11 +315,15 @@ Tasks done by Akash : 6-8, 10-13
 ### Backend
 1. **Scheduling APIs**
      - Development of APIs for scheduling functionalities
+     - Specialized APIs are pending implementation, including:
+     - Fetching all recent jobs completed by a volunteer using `volunteer_id`.
+     - Retrieving the total number of jobs and hours worked for a volunteer.
+     - Displaying recent opportunities published by organizations.
 
-## Issues Not Completed in Sprint 2
+## Issues Not Completed in Sprint 3
 
 ### Reason for Incompletion
-The pending tasks from Sprint 2 were not completed due to **time constraints and prioritization of core features**. Initial efforts were focused on setting up fundamental functionalities, authentication flows, and ensuring backend stability. As a result, certain advanced features and integrations had to be deferred to the next sprint.
+The pending tasks from Sprint 3 were not completed due to **time constraints and prioritization of core features**. Initial efforts were focused on setting up fundamental functionalities, authentication flows, and ensuring backend stability. As a result, certain advanced features and integrations had to be deferred to the next sprint.
 
 ### Frontend
 - End-to-End (E2E) testing is not yet implemented.
@@ -377,10 +332,8 @@ The pending tasks from Sprint 2 were not completed due to **time constraints and
 - Dashboard for managing opportunities and applications is not yet built.
 
 ### Backend
-- Specialized APIs are pending implementation, including:
-  - Fetching all recent jobs completed by a volunteer using `volunteer_id`.
-  - Retrieving the total number of jobs and hours worked for a volunteer.
-  - Displaying recent opportunities published by organizations.
+- Testing for a few special API's are still left
+- Some changes in Opportunity model lead to some changes in the testing which are not completed in this sprint.
 
 ### Next Steps
 The pending features will be prioritized in **Sprint 4**, ensuring:
