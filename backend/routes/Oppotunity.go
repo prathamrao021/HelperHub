@@ -125,12 +125,12 @@ func getOpportunity(c *gin.Context, db *gorm.DB) {
 // @Tags opportunities
 // @Accept json
 // @Produce json
-// @Param organization_mail path string true "Organization Mail"
+// @Param organization_id path uint true "Organization ID"
 // @Param n query int true "Number of opportunities"
 // @Success 200 {array} models.Opportunity
-// @Router /opportunities/organization/{organization_mail}/expired [get]
+// @Router /opportunities/organization/{organization_id}/expired [get]
 func getLastNExpiredOpportunitiesByOrganization(c *gin.Context, db *gorm.DB) {
-	organizationMail := c.Param("organization_mail")
+	organizationID := c.Param("organization_id")
 	nStr := c.Query("n")
 	n, err := strconv.Atoi(nStr)
 	if err != nil {
@@ -141,7 +141,7 @@ func getLastNExpiredOpportunitiesByOrganization(c *gin.Context, db *gorm.DB) {
 	var opportunities []models.Opportunity
 	currentDate := time.Now()
 
-	if err := db.Where("organization_mail = ? AND end_date < ?", organizationMail, currentDate).
+	if err := db.Where("organization_mail = ? AND end_date < ?", organizationID, currentDate).
 		Order("end_date desc").
 		Limit(n).
 		Find(&opportunities).Error; err != nil {
@@ -245,43 +245,6 @@ func getAvailableOpportunities(c *gin.Context, db *gorm.DB) {
 		Where("opportunities.end_date >= ?", currentDate).
 		Order("opportunities.start_date ASC").
 		Find(&opportunities).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, opportunities)
-}
-
-// getLastNAcceptedOpportunitiesForVolunteer godoc
-// @Summary Retrieve the last 'n' opportunities for a volunteer where the application was accepted and end_date < current date
-// @Description Retrieve the last 'n' opportunities for a volunteer where the application was accepted and end_date < current date
-// @Tags opportunities
-// @Accept json
-// @Produce json
-// @Param volunteer_id path uint true "Volunteer ID"
-// @Param n query int true "Number of opportunities"
-// @Success 200 {array} models.Opportunity
-// @Router /opportunities/volunteer/{volunteer_id}/accepted-expired [get]
-func getLastNAcceptedOpportunitiesForVolunteer(c *gin.Context, db *gorm.DB) {
-	volunteerID := c.Param("volunteer_id")
-	nStr := c.Query("n")
-	n, err := strconv.Atoi(nStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid number of opportunities"})
-		return
-	}
-
-	var opportunities []models.Opportunity
-	currentDate := time.Now()
-
-	// Query to join Applications and Opportunities
-	if err := db.Table("applications").
-		Select("opportunities.*").
-		Joins("join opportunities on applications.opportunity_id = opportunities.id").
-		Where("applications.volunteer_id = ? AND applications.status = ? AND opportunities.end_date < ?", volunteerID, "Accepted", currentDate).
-		Order("opportunities.end_date desc").
-		Limit(n).
-		Scan(&opportunities).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

@@ -74,8 +74,41 @@ These are the User Stories and their links which we planned to complete in sprin
    - Improved component naming conventions
    - Fixed code style inconsistencies
    - Added proper comments for complex logic
+
+### Frontend Testing
+
+#### Unit Tests
+
+1. **OrganizationRegistration.test.tsx**  
+   - `renders the form with fields and submit button`: Ensures all input fields and the submit button are rendered properly.  
+   - `validates form fields and shows error message on invalid input`: Tests form validation by entering invalid inputs and checking for error messages.  
+   - `validates max length for organization name`: Ensures the organization name does not exceed 100 characters and displays an error if it does.  
+   - `submits form and calls registerOrganization on valid input`: Mocks a successful form submission and verifies that `registerOrganization` is called with the correct parameters, and the user is redirected to the dashboard.  
+
+2. **VolunteerRegistration.test.tsx**  
+   - `renders the form with fields and submit button`: Verifies that all input fields and the submit button are displayed.  
+   - `validates form fields and shows error message on invalid input`: Ensures form validation works by checking for error messages when invalid data is entered.  
+
+#### Cypress E2E Tests  
+
+1. **basic_spec.cy.tsx**  
+   - `should load the homepage and verify key elements`: Ensures the homepage loads correctly by verifying the title, navigation bar, and visibility of the "Register" and "Login" buttons.  
+
+2. **login_volunteer_spec.cy.tsx**  
+   - `should log in a volunteer and access the dashboard`: Simulates a volunteer logging in and verifies redirection to the dashboard with the expected elements.  
+
+3. **logout_volunteer_spec.cy.tsx**  
+   - `should log in as a volunteer, log out, and redirect to the homepage`: Logs in a volunteer, performs logout, and ensures redirection to the homepage with the login button visible.  
+
+4. **register_organization_spec.cy.tsx**  
+   - `should register an organization successfully`: Completes the organization registration form and verifies successful redirection to the dashboard.  
+
+5. **register_volunteer_spec.cy.tsx**  
+   - `should register a volunteer successfully`: Fills out the volunteer registration form, selects skills, and checks redirection to the dashboard upon successful registration.  
+
+
 ## Backend Development
-## Volunteer Management API Endpoints  
+### Volunteer Management API Endpoints  
 
 ### 1. **Volunteer Statistics API**  
 **Endpoint**: `GET /volunteers/:volunteer_id/stats`  
@@ -203,62 +236,6 @@ These are the User Stories and their links which we planned to complete in sprin
   - Tests creating an opportunity with a non-existent organization.  
   - Verifies foreign key constraint handling.  
 
-### Successfully Completed Issues For Backend
-
-       
-1. API endpoint that retrieves available volunteer opportunities for the Opportunities page. This endpoint will be used by volunteers to browse and search for opportunities they can apply to.
-2.  API endpoint that retrieves all volunteer opportunities associated with a specific organization. This endpoint is already being called from the frontend Projects page but needs implementation on the backend.
-3. The system should provide an API endpoint to fetch the last N opportunities created by an organization where the end_date has already passed (i.e., end_date < current_date). This will help organizations track past opportunities easily.
-4. The system should provide an API endpoint to fetch the last N opportunities for which a volunteer's application was accepted and the end_date has already passed (i.e., end_date < current_date). This will help volunteers track their past accepted opportunities.
-5. The system should provide an API endpoint to fetch the total number of jobs a volunteer has participated in and the total hours worked across all accepted opportunities. This will help track a volunteer’s contribution over time.
-6. Refactor : Current model of opportunity field does not have start_date and end_date field. Add those fields and update opportunity end points.
-7. We need to implement Create, Read, Update, and Delete (CRUD) functionality for managing organizations in the system. This will allow users to create new organizations, retrieve organization details, update information, and delete organizations when necessary.
-8. Implement Create, Read, Update, and Delete (CRUD) operations for the Application model. This model represents applications submitted by volunteers for various opportunities. It allows volunteers to apply, update their applications, and check their statuses while ensuring organizations can review and manage applications.
-
-9. Implemented Unit tests for -
-```
-Organization
-Volunteer
-Application
-Category
-Opportunity 
-```     
-Task completed by Pratham: 1-8.
-Testing is completed by Nikhil. 
-
-### Frontend Development
-
-### Frontend Testing
-
-#### Unit Tests
-
-1. **OrganizationRegistration.test.tsx**  
-   - `renders the form with fields and submit button`: Ensures all input fields and the submit button are rendered properly.  
-   - `validates form fields and shows error message on invalid input`: Tests form validation by entering invalid inputs and checking for error messages.  
-   - `validates max length for organization name`: Ensures the organization name does not exceed 100 characters and displays an error if it does.  
-   - `submits form and calls registerOrganization on valid input`: Mocks a successful form submission and verifies that `registerOrganization` is called with the correct parameters, and the user is redirected to the dashboard.  
-
-2. **VolunteerRegistration.test.tsx**  
-   - `renders the form with fields and submit button`: Verifies that all input fields and the submit button are displayed.  
-   - `validates form fields and shows error message on invalid input`: Ensures form validation works by checking for error messages when invalid data is entered.  
-
-#### Cypress E2E Tests  
-
-1. **basic_spec.cy.tsx**  
-   - `should load the homepage and verify key elements`: Ensures the homepage loads correctly by verifying the title, navigation bar, and visibility of the "Register" and "Login" buttons.  
-
-2. **login_volunteer_spec.cy.tsx**  
-   - `should log in a volunteer and access the dashboard`: Simulates a volunteer logging in and verifies redirection to the dashboard with the expected elements.  
-
-3. **logout_volunteer_spec.cy.tsx**  
-   - `should log in as a volunteer, log out, and redirect to the homepage`: Logs in a volunteer, performs logout, and ensures redirection to the homepage with the login button visible.  
-
-4. **register_organization_spec.cy.tsx**  
-   - `should register an organization successfully`: Completes the organization registration form and verifies successful redirection to the dashboard.  
-
-5. **register_volunteer_spec.cy.tsx**  
-   - `should register a volunteer successfully`: Fills out the volunteer registration form, selects skills, and checks redirection to the dashboard upon successful registration.  
-
 ## Successfully Completed Issues
 
 ### Frontend
@@ -302,6 +279,30 @@ so that user can efficiently interact with the platform based on my role, access
 Tasks done by Dhruv : 1-5, 9, 14-16
 Tasks done by Akash : 6-8, 10-13
 
+### Backend
+
+       
+1. API endpoint that retrieves available volunteer opportunities for the Opportunities page. This endpoint will be used by volunteers to browse and search for opportunities they can apply to.
+2.  API endpoint that retrieves all volunteer opportunities associated with a specific organization. This endpoint is already being called from the frontend Projects page but needs implementation on the backend.
+3. The system should provide an API endpoint to fetch the last N opportunities created by an organization where the end_date has already passed (i.e., end_date < current_date). This will help organizations track past opportunities easily.
+4. The system should provide an API endpoint to fetch the last N opportunities for which a volunteer's application was accepted and the end_date has already passed (i.e., end_date < current_date). This will help volunteers track their past accepted opportunities.
+5. The system should provide an API endpoint to fetch the total number of jobs a volunteer has participated in and the total hours worked across all accepted opportunities. This will help track a volunteer’s contribution over time.
+6. Refactor : Current model of opportunity field does not have start_date and end_date field. Add those fields and update opportunity end points.
+7. We need to implement Create, Read, Update, and Delete (CRUD) functionality for managing organizations in the system. This will allow users to create new organizations, retrieve organization details, update information, and delete organizations when necessary.
+8. Implement Create, Read, Update, and Delete (CRUD) operations for the Application model. This model represents applications submitted by volunteers for various opportunities. It allows volunteers to apply, update their applications, and check their statuses while ensuring organizations can review and manage applications.
+
+9. Implemented Unit tests for -
+```
+Organization
+Volunteer
+Application
+Category
+Opportunity 
+```     
+Task completed by Pratham: 1-8.
+Testing is completed by Nikhil. 
+        
+
 ## Backlogs that were cleared from sprint 2
 ### Frontend
 1. **E2E Testing**
@@ -327,9 +328,8 @@ The pending tasks from Sprint 3 were not completed due to **time constraints and
 
 ### Frontend
 - End-to-End (E2E) testing is not yet implemented.
-- Forms for creating an opportunity are incomplete.
-- Functionality to apply to an opportunity is missing.
-- Dashboard for managing opportunities and applications is not yet built.
+- Some parts of Opportunity and Application is still using mock not actual fetched data from backend.
+- Dashboard for managing opportunities and applications is not yet built. It lacks the graph for the recent jobs.
 
 ### Backend
 - Testing for a few special API's are still left
@@ -340,5 +340,6 @@ The pending features will be prioritized in **Sprint 4**, ensuring:
 - Complete E2E testing for all pages
 
 - Full API support for volunteer and organization dashboards.
-- Completion of opportunity-related forms and workflows.
+- Full integration and full coverage for testing in frontend.
 - E2E tests for ensuring app stability before deployment.
+- Containerization of the application for easy deployment.
