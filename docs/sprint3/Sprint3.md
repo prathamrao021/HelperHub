@@ -240,44 +240,22 @@ These are the User Stories and their links which we planned to complete in sprin
 
 ### Frontend
 
-1. Configured the project environment and dependencies to support the migration from Material UI to Shadcn, so that the team can seamlessly implement Shadcn components while maintaining code consistency, theming, and performance.
-   
-2. Implemented Theme Switcher in Navbar for Light/Dark/System Mode Toggles.
-   
-3. Refactored the Navbar component to use Shadcn instead of Material UI, so that the navigation aligns with the new design system, improves visual consistency, and enhances user experience.
-   
-4. Rebuilt the Hero section on the landing page using Shadcn components, so that it aligns with the modern design system, improves visual appeal, and ensures consistency with other migrated components.
-   
-5. Rebuilt the Register page using Shadcn components and Tailwind CSS, so that the registration flow aligns with the application’s modern design system, improves accessibility, and ensures a seamless user experience alongside the migrated Login page.
+1. Ingetrage opportunities/available with Opportunity page
+2. Implement API Endpoint for Volunteer Opportunities Listing
+3. Implement API Endpoint for Organization Opportunities List
+4. Change Opportunity model to include start_date, end_date field
+5. Fix routes for Manage Project Page
+6. Implement Project Detail Page with Application Management
+7. Organization Opportunity Management Implementation
+8. Role-Based Volunteer Management Platform Implementation
+9. Implement Volunteer Applications Page
+10. Implement Volunteer Applications Page
+11. Implement Volunteer Opportunities Page
+12. E2E Test Suites
+13. Implementing Test Suites for VolunteerRegistration and OrganizationRegistration
 
-6. Fixed all the Navigation Links and Button Functionality in Hero Section and Navigation Bar for a seamless experience for the user.
-    
-7. Implemented Volunteer Registration Page with Profile Details and Skill Selection so that the organization can review my profile and match me with relevant opportunities.
-    
-8. Implement Organization Registration Page with Essential Details and Logo Upload so that my organization can be onboarded to the platform and access relevant features.
-
-9. Migrated existing core components (Login, Register, Landing Page, Hero Page) from Material UI to Shadcn, so that the application achieves a more elegant, modern, and cohesive design system while improving maintainability and alignment with current design trends.
-    
-10. Developed a unified, secure, and visually consistent experience across registration, authentication, navigation, and dashboards,
-so that user can efficiently interact with the platform based on my role, access tailored features, and enjoy a modern, intuitive interface.
-
-11. Implement Authentication Context for Role-Based Access Control and Protected Routes so that the application can handle Organization/Volunteer logins, protect routes based on roles, and maintain consistent user sessions.
-    
-12. Integrated a component that allows for the following functionality:
-    
-        Editing details in organization profile
-        Saving the changes made and updating the same in the Database
-    
-13. Add Edit Organization Dialog in Organization Profile so that the Dashboard automatically updates the displayed information on dashboard.
-
-14. Refactored Navbar component to use consistent button naming and improve skill selection UI in EditVolunteerProfile
-    
-15. Implemented Delete Button for users to delete their account.
-
-16. Refactored the NavBar component to be more flexible to accomodate for seamless login and logout.
-
-Tasks done by Dhruv : 1-5, 9, 14-16
-Tasks done by Akash : 6-8, 10-13
+1 - 8 Dhruv Makwana 
+9 - 13 Akash Balaji
 
 ### Backend
 
