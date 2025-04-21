@@ -20,7 +20,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	volunteerRouter.DELETE("/delete/:volunteer_mail", func(c *gin.Context) { deleteVolunteer(c, db) })
 	volunteerRouter.PUT("/update/:volunteer_mail", func(c *gin.Context) { updateVolunteer(c, db) })
 	volunteerRouter.GET("/get/:volunteer_mail", func(c *gin.Context) { getVolunteer(c, db) })
-	volunteerRouter.GET("/get/stats/:volunteer_mail", func(c *gin.Context) { getVolunteerStats(c, db) })
+	volunteerRouter.GET("/:volunteer_id/stats", func(c *gin.Context) { getVolunteerStats(c, db) })
 	router.POST("/login/volunteer", func(c *gin.Context) { loginVolunteer(c, db) })
 
 	// Routes for organization management
