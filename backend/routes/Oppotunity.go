@@ -251,3 +251,63 @@ func getAvailableOpportunities(c *gin.Context, db *gorm.DB) {
 
 	c.JSON(http.StatusOK, opportunities)
 }
+
+// getOpportunityWithStats godoc
+// @Summary Get opportunity details with application statistics
+// @Description Retrieve details of a specific opportunity including counts of applications by status
+// @Tags opportunities
+// @Accept json
+// @Produce json
+// @Param id path uint true "Opportunity ID"
+// @Success 200 {object} map[string]interface{}
+// @Failure 404 {object} map[string]string
+// @Router /opportunities/{id} [get]
+func getOpportunityWithStats(c *gin.Context, db *gorm.DB) {
+	opportunityID := c.Param("id")
+
+	// Get the basic opportunity details
+	var opportunity models.Opportunity
+	if err := db.First(&opportunity, opportunityID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Opportunity not found"})
+		return
+	}
+
+	// Get application counts by status
+	var totalApplications int64
+	var pendingApplications int64
+	var acceptedApplications int64
+	var rejectedApplications int64
+
+	// Count total applications
+	db.Model(&models.Application{}).Where("opportunity_id = ?", opportunityID).Count(&totalApplications)
+
+	// Count pending applications
+	db.Model(&models.Application{}).Where("opportunity_id = ? AND status = ?", opportunityID, "Pending").Count(&pendingApplications)
+
+	// Count accepted applications
+	db.Model(&models.Application{}).Where("opportunity_id = ? AND status = ?", opportunityID, "Accepted").Count(&acceptedApplications)
+
+	// Count rejected applications
+	db.Model(&models.Application{}).Where("opportunity_id = ? AND status = ?", opportunityID, "Rejected").Count(&rejectedApplications)
+
+	// Create a map for the response
+	response := map[string]interface{}{
+		"id":                    opportunity.ID,
+		"organization_id":       opportunity.Organization_mail,
+		"title":                 opportunity.Title,
+		"description":           opportunity.Description,
+		"location":              opportunity.Location,
+		"hours_required":        opportunity.Hours_Required,
+		"start_date":            opportunity.Start_Date,
+		"end_date":              opportunity.End_Date,
+		"created_at":            opportunity.Created_At,
+		"updated_at":            opportunity.Updated_At,
+		"category":              opportunity.Category,
+		"total_applications":    totalApplications,
+		"pending_applications":  pendingApplications,
+		"accepted_applications": acceptedApplications,
+		"rejected_applications": rejectedApplications,
+	}
+
+	c.JSON(http.StatusOK, response)
+}
