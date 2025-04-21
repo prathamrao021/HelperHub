@@ -125,63 +125,26 @@ These are the User Stories and their links which we planned to complete in sprin
 
 
 ## Backend Development
-### Volunteer Management API Endpoints  
-
-### 1. **Volunteer Statistics API**  
-**Endpoint**: `GET /volunteers/:volunteer_id/stats`  
-**Description**: Retrieve the total number of jobs and hours worked for a volunteer based on accepted applications.  
-
-## Opportunity Management API Endpoints  
+### Opportunity Management API Endpoints  
 
 ### 1. **Last N opportunities for Organization where End Date < Current Date**  
 **Endpoint**: `GET /opportunities/organization/:organization_mail/expired`  
 **Description**: Retrieve the last 'n' opportunities where the end_date is less than the current date for a specific organization.  
 
-### 2. **Get all Opportunities with number of applications for each**  
+### 2. **Get all Opportunities with Application Counts**  
 **Endpoint**: `GET /opportunities`  
-**Description**: Retrieve all opportunities for a specific organization, including the number of applications each opportunity has received. 
+**Description**: Retrieve all opportunities for a specific organization, including the number of applications each opportunity has received.
 
-### 3. **Last N opportunities for Volunteer where status is Accepted and End Date < Current Date**  
-**Endpoint**: `GET /opportunities/volunteer/:volunteer_id/accepted-expired`  
-**Description**: Retrieve the last 'n' opportunities for a volunteer where the application was accepted and end_date < current date.  
+### Application Management API Endpoints
 
-## Application Management API Endpoints  
-
-### 1. **Create Application**  
-**Endpoint**: `POST /applications/`  
-**Description**: Submits a new application for an opportunity.  
-
-### 2. **Get All Applications**  
-**Endpoint**: `GET /applications/`  
-**Description**: Retrieves all applications.  
-
-### 3. **Get Application by ID**  
-**Endpoint**: `GET /applications/:id`  
-**Description**: Fetches details of a specific application using its ID.  
-
-### 4. **Get Applications by Volunteer ID**  
+### 1. **Get Applications by Volunteer with Details**  
 **Endpoint**: `GET /applications/volunteer/:volunteer_id`  
-**Description**: Retrieves all applications submitted by a specific volunteer.  
+**Description**: Retrieves all applications submitted by a specific volunteer, including opportunity titles and organization names through table joins. This provides volunteers with a comprehensive view of their application history.
 
-### 5. **Get Applications by Opportunity ID**  
+### 2. **Get Applications by Opportunity with Volunteer Details**  
 **Endpoint**: `GET /applications/opportunity/:opportunity_id`  
-**Description**: Retrieves all applications for a specific opportunity.  
+**Description**: Retrieves all applications for a specific opportunity with detailed volunteer information. Organizations can use this to review applicants efficiently.
 
-### 6. **Get Applications by Status**  
-**Endpoint**: `GET /applications/status/:status`  
-**Description**: Retrieves applications based on their status (e.g., pending, approved, rejected).  
-
-### 7. **Update Application**  
-**Endpoint**: `PUT /applications/:id`  
-**Description**: Updates the status or details of an application.  
-
-### 8. **Delete Application**  
-**Endpoint**: `DELETE /applications/:id`  
-**Description**: Deletes an application by its ID.  
-
-### 9. **Get Last N Approved Applications by Volunteer ID**  
-**Endpoint**: `GET /applications/volunteer/:volunteer_id/approved`  
-**Description**: Retrieves the last N approved applications of a volunteer.  
 
 ### Unit Tests  
 

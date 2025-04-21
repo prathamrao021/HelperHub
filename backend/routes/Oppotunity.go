@@ -263,7 +263,7 @@ func getAvailableOpportunities(c *gin.Context, db *gorm.DB) {
 // @Failure 404 {object} map[string]string
 // @Router /opportunities/{id} [get]
 func getOpportunityWithStats(c *gin.Context, db *gorm.DB) {
-	opportunityID := c.Param("id")
+	opportunityID := c.Param("opportunity_id")
 
 	// Get the basic opportunity details
 	var opportunity models.Opportunity
@@ -310,48 +310,4 @@ func getOpportunityWithStats(c *gin.Context, db *gorm.DB) {
 	}
 
 	c.JSON(http.StatusOK, response)
-}
-
-// getApplicationsByOpportunityWithVolunteerDetails godoc
-// @Summary Get applications for an opportunity with volunteer details
-// @Description Retrieve all applications for a specific opportunity with detailed volunteer information
-// @Tags applications
-// @Accept json
-// @Produce json
-// @Param opportunity_id path uint true "Opportunity ID"
-// @Success 200 {array} map[string]interface{}
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
-// @Router /opportunities/{opportunity_id}/applications [get]
-func getApplicationsByOpportunityWithVolunteerDetails(c *gin.Context, db *gorm.DB) {
-	opportunityID := c.Param("opportunity_id")
-	if opportunityID == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "opportunity_id is required"})
-		return
-	}
-
-	var results []map[string]interface{}
-
-	// Join applications table with volunteers table
-	if err := db.Table("applications").
-		Select(`
-            applications.id,
-            applications.volunteer_id,
-            volunteers.name AS volunteer_name,
-            volunteers.email AS volunteer_email,
-            applications.opportunity_id,
-            applications.status,
-            applications.cover_letter,
-            applications.created_at,
-            applications.updated_at
-        `).
-		Joins("INNER JOIN volunteers ON applications.volunteer_id = volunteers.id").
-		Where("applications.opportunity_id = ?", opportunityID).
-		Order("applications.created_at DESC").
-		Find(&results).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, results)
 }

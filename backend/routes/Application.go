@@ -77,47 +77,47 @@ func getApplicationByID(c *gin.Context, db *gorm.DB) {
 	c.JSON(http.StatusOK, application)
 }
 
-// getApplicationsByVolunteerID godoc
-// @Summary Retrieve applications by volunteer
-// @Description Retrieve applications by volunteer ID
-// @Tags applications
-// @Accept json
-// @Produce json
-// @Param volunteer_id path uint true "Volunteer ID"
-// @Success 200 {array} models.Application
-// @Router /applications/volunteer/{volunteer_id} [get]
-func getApplicationsByVolunteerID(c *gin.Context, db *gorm.DB) {
-	volunteerID := c.Param("volunteer_id")
-	var applications []models.Application
+// // getApplicationsByVolunteerID godoc
+// // @Summary Retrieve applications by volunteer
+// // @Description Retrieve applications by volunteer ID
+// // @Tags applications
+// // @Accept json
+// // @Produce json
+// // @Param volunteer_id path uint true "Volunteer ID"
+// // @Success 200 {array} models.Application
+// // @Router /applications/volunteer/{volunteer_id} [get]
+// func getApplicationsByVolunteerID(c *gin.Context, db *gorm.DB) {
+// 	volunteerID := c.Param("volunteer_id")
+// 	var applications []models.Application
 
-	if err := db.Where("volunteer_id = ?", volunteerID).Find(&applications).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+// 	if err := db.Where("volunteer_id = ?", volunteerID).Find(&applications).Error; err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	c.JSON(http.StatusOK, applications)
-}
+// 	c.JSON(http.StatusOK, applications)
+// }
 
-// getApplicationsByOpportunityID godoc
-// @Summary Retrieve applications by opportunity
-// @Description Retrieve applications by opportunity ID
-// @Tags applications
-// @Accept json
-// @Produce json
-// @Param opportunity_id path uint true "Opportunity ID"
-// @Success 200 {array} models.Application
-// @Router /applications/opportunity/{opportunity_id} [get]
-func getApplicationsByOpportunityID(c *gin.Context, db *gorm.DB) {
-	opportunityID := c.Param("opportunity_id")
-	var applications []models.Application
+// // getApplicationsByOpportunityID godoc
+// // @Summary Retrieve applications by opportunity
+// // @Description Retrieve applications by opportunity ID
+// // @Tags applications
+// // @Accept json
+// // @Produce json
+// // @Param opportunity_id path uint true "Opportunity ID"
+// // @Success 200 {array} models.Application
+// // @Router /applications/opportunity/{opportunity_id} [get]
+// func getApplicationsByOpportunityID(c *gin.Context, db *gorm.DB) {
+// 	opportunityID := c.Param("opportunity_id")
+// 	var applications []models.Application
 
-	if err := db.Where("opportunity_id = ?", opportunityID).Find(&applications).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+// 	if err := db.Where("opportunity_id = ?", opportunityID).Find(&applications).Error; err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	c.JSON(http.StatusOK, applications)
-}
+// 	c.JSON(http.StatusOK, applications)
+// }
 
 // getApplicationsByStatus godoc
 // @Summary Retrieve applications by status
@@ -286,7 +286,7 @@ func getApplicationsByVolunteerWithDetails(c *gin.Context, db *gorm.DB) {
             applications.volunteer_id,
             applications.opportunity_id,
             opportunities.title as opportunity_title,
-            organizations.name as organization_name,
+        	organizations.name as organization_name,
             applications.status,
             applications.cover_letter,
             applications.created_at,
@@ -295,6 +295,50 @@ func getApplicationsByVolunteerWithDetails(c *gin.Context, db *gorm.DB) {
 		Joins("INNER JOIN opportunities ON applications.opportunity_id = opportunities.id").
 		Joins("INNER JOIN organizations ON opportunities.organization_mail = organizations.email").
 		Where("applications.volunteer_id = ?", volunteerID).
+		Find(&results).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, results)
+}
+
+// getApplicationsByOpportunityWithVolunteerDetails godoc
+// @Summary Get applications for an opportunity with volunteer details
+// @Description Retrieve all applications for a specific opportunity with detailed volunteer information
+// @Tags applications
+// @Accept json
+// @Produce json
+// @Param opportunity_id path uint true "Opportunity ID"
+// @Success 200 {array} map[string]interface{}
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /applications/opportunity/{opportunity_id} [get]
+func getApplicationsByOpportunityWithVolunteerDetails(c *gin.Context, db *gorm.DB) {
+	opportunityID := c.Param("opportunity_id")
+	if opportunityID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "opportunity_id is required"})
+		return
+	}
+
+	var results []map[string]interface{}
+
+	// Join applications table with volunteers table
+	if err := db.Table("applications").
+		Select(`
+            applications.id,
+            applications.volunteer_id,
+            volunteers.name AS volunteer_name,
+            volunteers.email AS volunteer_email,
+            applications.opportunity_id,
+            applications.status,
+            applications.cover_letter,
+            applications.created_at,
+            applications.updated_at
+        `).
+		Joins("INNER JOIN volunteers ON applications.volunteer_id = volunteers.id").
+		Where("applications.opportunity_id = ?", opportunityID).
+		Order("applications.created_at DESC").
 		Find(&results).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
