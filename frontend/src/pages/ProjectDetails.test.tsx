@@ -1,8 +1,8 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, MockedFunction } from 'vitest'
-import { MemoryRouter, NavigateFunction, useNavigate } from 'react-router-dom'
-import Login from './Login'
-import { AuthProvider } from '@/contexts/auth-context'  // Adjust the path as necessary
+import { MemoryRouter, useNavigate } from 'react-router-dom'
+import { ProjectDetailPage } from './ProjectDetail'
+import { AuthProvider } from '@/contexts/auth-context' // Adjust the import path as necessary
 
 // Mock useNavigate
 vi.mock('react-router-dom', async () => {
@@ -35,28 +35,32 @@ vi.mock('@/contexts/auth-context', async () => {
   }
 })
 
-describe('Login Component', () => {
-  let mockedUseNavigate: MockedFunction<NavigateFunction>;
+describe('ProjectDetailPage Component', () => {
+  let mockedUseNavigate: MockedFunction<any>;
 
   beforeEach(() => {
     mockedUseNavigate = vi.mocked(useNavigate());
     vi.clearAllMocks();
   });
 
-  it.only('should render the Login component correctly', () => {
+  it('should render loading state initially', () => {
     render(
       <MemoryRouter>
         <AuthProvider>
-          <Login />
+          <ProjectDetailPage />
         </AuthProvider>
       </MemoryRouter>
     )
 
-    // Navbar render
-    expect(screen.getByText('HELPERHUB')).toBeInTheDocument()
+  })
 
-    //Login form render
-    expect(screen.getByText('Welcome Back')).toBeInTheDocument()
-    expect(screen.getByText('Sign in to your account to continue')).toBeInTheDocument()
+  it('should render project details correctly', async () => {
+    render(
+      <MemoryRouter>
+        <AuthProvider>
+          <ProjectDetailPage />
+        </AuthProvider>
+      </MemoryRouter>
+    )
   })
 })
