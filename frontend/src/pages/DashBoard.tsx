@@ -15,14 +15,14 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Navbar } from "@/components/Navbar"
 import { useAuth } from "@/contexts/auth-context"
-import { 
-  Calendar, Clock, Users, Briefcase, 
+import {
+  Calendar, Clock, Users, Briefcase,
   Building, Award
 } from "lucide-react"
 import { EditOrganizationProfile } from "@/components/EditOrganizationProfile"
 import { EditVolunteerProfile } from "@/components/EditVolunteerProfile"
 import { DeleteOrganizationProfile } from "@/components/DeleteOrganizationProfile"
-import Overview from "@components/Overview"
+import Overview from "@/components/Overview"
 // Dummy chart component - replace with a real chart library like recharts
 // const Overview: React.FC<{ userRole: string }> = ({ userRole }) => {
 //   return (
@@ -45,11 +45,11 @@ type JobProps = {
   avatarSrc?: string;
 }
 
-const JobItem: React.FC<JobProps> = ({ 
-  name, organization, volunteer, date, hours, avatarSrc 
+const JobItem: React.FC<JobProps> = ({
+  name, organization, volunteer, date, hours, avatarSrc
 }) => {
   const displayName = organization || volunteer || "";
-  
+
   return (
     <div className="flex items-center">
       <Avatar className="h-9 w-9">
@@ -210,9 +210,9 @@ const VolunteerProfile: React.FC<{ user: any }> = ({ user }) => {
           <p>{user?.bio_Data || "Passionate about making a difference through volunteer work. Experienced in community outreach and event organization. Looking to connect with nonprofits that focus on education and environmental issues."}</p>
         </CardContent>
       </Card>
-      
+
       <div className="flex justify-end">
-      <EditVolunteerProfile />
+        <EditVolunteerProfile />
       </div>
     </div>
   )
@@ -270,11 +270,11 @@ const OrganizationProfile: React.FC<{ user: any }> = ({ user }) => {
           <p>{user?.description || "Our organization is dedicated to improving local communities through various outreach programs, educational initiatives, and environmental projects. We work with volunteers to create meaningful impact and sustainable change."}</p>
         </CardContent>
       </Card>
-      
+
       <div className="flex justify-end">
         <EditOrganizationProfile />
-      {/* <Button variant="destructive" className="mx-5" onClick={}>Delete Profile</Button> */}
-      <DeleteOrganizationProfile />
+        {/* <Button variant="destructive" className="mx-5" onClick={}>Delete Profile</Button> */}
+        <DeleteOrganizationProfile />
       </div>
     </div>
   )
@@ -283,19 +283,19 @@ const OrganizationProfile: React.FC<{ user: any }> = ({ user }) => {
 export function Dashboard() {
   const { user, logout } = useAuth();
   const isOrganization = user?.userRole === "ORGANIZATION_ADMIN";
-  
+
   // Set default menu items based on user role
   const menuItems = isOrganization
     ? [
-        { title: "Dashboard", href: "/dashboard" },
-        { title: "Manage Projects", href: "/projects" },
-      ]
+      { title: "Dashboard", href: "/dashboard" },
+      { title: "Manage Projects", href: "/projects" },
+    ]
     : [
-        { title: "Dashboard", href: "/dashboard" },
-        { title: "Find Opportunities", href: "/opportunities" },
-        { title: "My Applications", href: "/applications" },
-      ];
-  
+      { title: "Dashboard", href: "/dashboard" },
+      { title: "Find Opportunities", href: "/opportunities" },
+      { title: "My Applications", href: "/applications" },
+    ];
+
   return (
     <div className="min-h-screen bg-background mt-20">
       <Navbar
@@ -305,7 +305,7 @@ export function Dashboard() {
         buttonDisplay="Logout"
         onLogClick={() => logout()}
       />
-      
+
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col space-y-6">
           <div className="flex items-center justify-between">
@@ -319,7 +319,7 @@ export function Dashboard() {
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="profile">Profile</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="overview" className="space-y-6">
               {/* Stat Cards - Different for each role */}
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -340,7 +340,7 @@ export function Dashboard() {
                         </p>
                       </CardContent>
                     </Card>
-                    
+
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">
@@ -355,7 +355,7 @@ export function Dashboard() {
                         </p>
                       </CardContent>
                     </Card>
-                    
+
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">
@@ -370,7 +370,7 @@ export function Dashboard() {
                         </p>
                       </CardContent>
                     </Card>
-                    
+
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">
@@ -403,7 +403,7 @@ export function Dashboard() {
                         </p>
                       </CardContent>
                     </Card>
-                    
+
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">
@@ -418,7 +418,7 @@ export function Dashboard() {
                         </p>
                       </CardContent>
                     </Card>
-                    
+
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">
@@ -433,7 +433,7 @@ export function Dashboard() {
                         </p>
                       </CardContent>
                     </Card>
-                    
+
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">
@@ -460,18 +460,18 @@ export function Dashboard() {
                       {isOrganization ? "Project Activity" : "Volunteer Activity"}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="p-0">
                     <Overview userRole={user?.userRole || "VOLUNTEER"} />
                   </CardContent>
                 </Card>
-                
+
                 <Card className="col-span-3">
                   <CardHeader>
                     <CardTitle>
                       {isOrganization ? "Recent Project Activity" : "Recent Volunteer Jobs"}
                     </CardTitle>
                     <CardDescription>
-                      {isOrganization 
+                      {isOrganization
                         ? "Recent volunteer contributions to your projects"
                         : "You've completed 5 jobs this month"}
                     </CardDescription>
@@ -482,10 +482,10 @@ export function Dashboard() {
                 </Card>
               </div>
             </TabsContent>
-            
+
             <TabsContent value="profile">
-              {isOrganization 
-                ? <OrganizationProfile user={user} /> 
+              {isOrganization
+                ? <OrganizationProfile user={user} />
                 : <VolunteerProfile user={user} />
               }
             </TabsContent>
