@@ -1110,3 +1110,379 @@ func TestGetApplicationsByOpportunityWithVolunteerDetailsDatabaseError(t *testin
 	json.Unmarshal(w.Body.Bytes(), &response)
 	assert.Contains(t, response, "error")
 }
+
+
+func TestGetOpportunityWithStats(t *testing.T) {
+	// Setup test database
+	db := setupTestDBOpportunity()
+	defer cleanupTestOpportunities(db)
+	
+	// Get an existing organization
+	var org models.Organization
+	result := db.First(&org)
+	if result.Error != nil {
+		t.Fatalf("Failed to find an existing organization: %v", result.Error)
+	}
+	t.Logf("Using existing organization with email: %s", org.Email)
+	
+	// Create test opportunity
+	opportunity := models.Opportunity{
+		Organization_mail: org.Email,
+		Category:          "Education",
+		Title:             "Test Opportunity with Stats",
+		Description:       "Test Description",
+		Location:          "Test Location",
+		Hours_Required:    10,
+		Created_At:        time.Now(),
+		Updated_At:        time.Now(),
+	}
+	result = db.Create(&opportunity)
+	if result.Error != nil {
+		t.Fatalf("Failed to create test opportunity: %v", result.Error)
+	}
+	t.Logf("Created test opportunity with ID: %d", opportunity.ID)
+	
+	// Count existing volunteers
+	var volunteerCount int64
+	db.Model(&models.Volunteer{}).Count(&volunteerCount)
+	t.Logf("Found %d existing volunteers", volunteerCount)
+	
+	// Create volunteers if needed
+	var existingVolunteers []models.Volunteer
+	if volunteerCount < 3 {
+		t.Log("Creating new volunteers for the test")
+		
+		// Create first volunteer
+		volunteer1 := models.Volunteer{
+			Email:            fmt.Sprintf("teststats1_%d@example.com", time.Now().UnixNano()),
+			Password:         "hashed_password",
+			Name:             "Stats Test Volunteer 1",
+			Phone:            fmt.Sprintf("1%d", time.Now().UnixNano()%1000000000), // Ensure unique phone
+			Location:         "Test Location 1",
+			Bio_Data:         "Test Bio 1",
+			Category_List:    models.StringList{"Education"},
+			Availabile_Hours: 5,
+			Created_At:       time.Now(),
+			Updated_At:       time.Now(),
+		}
+		result = db.Create(&volunteer1)
+		if result.Error != nil {
+			t.Fatalf("Failed to create volunteer 1: %v", result.Error)
+		}
+		existingVolunteers = append(existingVolunteers, volunteer1)
+		
+		// Create second volunteer
+		volunteer2 := models.Volunteer{
+			Email:            fmt.Sprintf("teststats2_%d@example.com", time.Now().UnixNano()),
+			Password:         "hashed_password",
+			Name:             "Stats Test Volunteer 2",
+			Phone:            fmt.Sprintf("2%d", time.Now().UnixNano()%1000000000), // Ensure unique phone
+			Location:         "Test Location 2",
+			Bio_Data:         "Test Bio 2",
+			Category_List:    models.StringList{"Environment"},
+			Availabile_Hours: 10,
+			Created_At:       time.Now(),
+			Updated_At:       time.Now(),
+		}
+		result = db.Create(&volunteer2)
+		if result.Error != nil {
+			t.Fatalf("Failed to create volunteer 2: %v", result.Error)
+		}
+		existingVolunteers = append(existingVolunteers, volunteer2)
+		
+		// Create third volunteer
+		volunteer3 := models.Volunteer{
+			Email:            fmt.Sprintf("teststats3_%d@example.com", time.Now().UnixNano()),
+			Password:         "hashed_password",
+			Name:             "Stats Test Volunteer 3",
+			Phone:            fmt.Sprintf("3%d", time.Now().UnixNano()%1000000000), // Ensure unique phone
+			Location:         "Test Location 3",
+			Bio_Data:         "Test Bio 3",
+			Category_List:    models.StringList{"Health"},
+			Availabile_Hours: 15,
+			Created_At:       time.Now(),
+			Updated_At:       time.Now(),
+		}
+		result = db.Create(&volunteer3)
+		if result.Error != nil {
+			t.Fatalf("Failed to create volunteer 3: %v", result.Error)
+		}
+		existingVolunteers = append(existingVolunteers, volunteer3)
+	} else {
+		// Get existing volunteers
+		db.Limit(3).Find(&existingVolunteers)
+	}
+	
+	// Log volunteer information
+	for i, v := range existingVolunteers {
+		t.Logf("Volunteer %d: ID=%d, Name=%s", i+1, v.ID, v.Name)
+	}
+	
+	// Create applications with different statuses
+	// 1. Pending application
+	pendingApp := models.Application{
+		Volunteer_ID:   existingVolunteers[0].ID,
+		Opportunity_ID: opportunity.ID,
+		Status:         "Pending", // Note the capitalization to match the function logic
+		Cover_Letter:   "Pending application cover letter",
+		Created_At:     time.Now(),
+		Updated_At:     time.Now(),
+	}
+	result = db.Create(&pendingApp)
+	if result.Error != nil {
+		t.Fatalf("Failed to create pending application: %v", result.Error)
+	}
+	
+	// 2. Accepted application
+	acceptedApp := models.Application{
+		Volunteer_ID:   existingVolunteers[1].ID,
+		Opportunity_ID: opportunity.ID,
+		Status:         "Accepted", // Note the capitalization to match the function logic
+		Cover_Letter:   "Accepted application cover letter",
+		Created_At:     time.Now(),
+		Updated_At:     time.Now(),
+	}
+	result = db.Create(&acceptedApp)
+	if result.Error != nil {
+		t.Fatalf("Failed to create accepted application: %v", result.Error)
+	}
+	
+	// 3. Rejected application
+	rejectedApp := models.Application{
+		Volunteer_ID:   existingVolunteers[2].ID,
+		Opportunity_ID: opportunity.ID,
+		Status:         "Rejected", // Note the capitalization to match the function logic
+		Cover_Letter:   "Rejected application cover letter",
+		Created_At:     time.Now(),
+		Updated_At:     time.Now(),
+	}
+	result = db.Create(&rejectedApp)
+	if result.Error != nil {
+		t.Fatalf("Failed to create rejected application: %v", result.Error)
+	}
+	
+	// Verify applications were created correctly
+	var applications []models.Application
+	db.Where("opportunity_id = ?", opportunity.ID).Find(&applications)
+	t.Logf("Created %d applications for opportunity ID %d", len(applications), opportunity.ID)
+	
+	// Setup router with our test endpoint
+	gin.SetMode(gin.TestMode)
+	router := gin.Default()
+	router.GET("/opportunities/:id", func(c *gin.Context) {
+		getOpportunityWithStats(c, db)
+	})
+	
+	// Create request
+	req, _ := http.NewRequest("GET", fmt.Sprintf("/opportunities/%d", opportunity.ID), nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	
+	// Log the response for debugging
+	t.Logf("Response Status: %d", w.Code)
+	t.Logf("Response Body: %s", w.Body.String())
+	
+	// Assertions
+	assert.Equal(t, http.StatusOK, w.Code)
+	
+	// Parse response
+	var response map[string]interface{}
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(t, err, "Response should be valid JSON")
+	
+	// Verify opportunity details
+	assert.Equal(t, float64(opportunity.ID), response["id"])
+	assert.Equal(t, opportunity.Organization_mail, response["organization_id"])
+	assert.Equal(t, opportunity.Title, response["title"])
+	assert.Equal(t, opportunity.Description, response["description"])
+	assert.Equal(t, opportunity.Location, response["location"])
+	assert.Equal(t, float64(opportunity.Hours_Required), response["hours_required"])
+	assert.Equal(t, opportunity.Category, response["category"])
+	
+	// Verify application statistics
+	assert.Equal(t, float64(3), response["total_applications"])
+	assert.Equal(t, float64(1), response["pending_applications"])
+	assert.Equal(t, float64(1), response["accepted_applications"])
+	assert.Equal(t, float64(1), response["rejected_applications"])
+}
+
+
+func TestGetOpportunityWithStatsNoApplications(t *testing.T) {
+	// Setup test database
+	db := setupTestDBOpportunity()
+	defer cleanupTestOpportunities(db)
+	
+	// Get an existing organization
+	var org models.Organization
+	result := db.First(&org)
+	if result.Error != nil {
+		t.Fatalf("Failed to find an existing organization: %v", result.Error)
+	}
+	
+	// Create test opportunity with no applications
+	opportunity := models.Opportunity{
+		Organization_mail: org.Email,
+		Category:          "Health",
+		Title:             "Test Opportunity with No Applications",
+		Description:       "Test Description",
+		Location:          "Test Location",
+		Hours_Required:    5,
+		Created_At:        time.Now(),
+		Updated_At:        time.Now(),
+	}
+	result = db.Create(&opportunity)
+	if result.Error != nil {
+		t.Fatalf("Failed to create test opportunity: %v", result.Error)
+	}
+	
+	// Setup router with our test endpoint
+	gin.SetMode(gin.TestMode)
+	router := gin.Default()
+	router.GET("/opportunities/:id", func(c *gin.Context) {
+		getOpportunityWithStats(c, db)
+	})
+	
+	// Create request
+	req, _ := http.NewRequest("GET", fmt.Sprintf("/opportunities/%d", opportunity.ID), nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	
+	// Log the response for debugging
+	t.Logf("Response Status: %d", w.Code)
+	t.Logf("Response Body: %s", w.Body.String())
+	
+	// Assertions
+	assert.Equal(t, http.StatusOK, w.Code)
+	
+	// Parse response
+	var response map[string]interface{}
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(t, err, "Response should be valid JSON")
+	
+	// Verify opportunity details are present
+	assert.Equal(t, float64(opportunity.ID), response["id"])
+	assert.Equal(t, opportunity.Title, response["title"])
+	
+	// Verify application statistics are all zero
+	assert.Equal(t, float64(0), response["total_applications"])
+	assert.Equal(t, float64(0), response["pending_applications"])
+	assert.Equal(t, float64(0), response["accepted_applications"])
+	assert.Equal(t, float64(0), response["rejected_applications"])
+}
+
+func TestGetOpportunityWithStatsNonExistent(t *testing.T) {
+	// Setup test database
+	db := setupTestDBOpportunity()
+	defer cleanupTestOpportunities(db)
+	
+	// Setup router with our test endpoint
+	gin.SetMode(gin.TestMode)
+	router := gin.Default()
+	router.GET("/opportunities/:id", func(c *gin.Context) {
+		getOpportunityWithStats(c, db)
+	})
+	
+	// Create request with non-existent ID
+	req, _ := http.NewRequest("GET", "/opportunities/9999", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	
+	// Log the response for debugging
+	t.Logf("Response Status: %d", w.Code)
+	t.Logf("Response Body: %s", w.Body.String())
+	
+	// Assertions
+	assert.Equal(t, http.StatusNotFound, w.Code)
+	
+	// Parse response
+	var response map[string]interface{}
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(t, err, "Response should be valid JSON")
+	
+	// Verify error message
+	assert.Contains(t, response, "error")
+	assert.Equal(t, "Opportunity not found", response["error"])
+}
+
+func TestGetOpportunityWithStatsMixedCaseStatus(t *testing.T) {
+	// Setup test database
+	db := setupTestDBOpportunity()
+	defer cleanupTestOpportunities(db)
+	
+	// Get an existing organization
+	var org models.Organization
+	result := db.First(&org)
+	if result.Error != nil {
+		t.Fatalf("Failed to find an existing organization: %v", result.Error)
+	}
+	
+	// Create test opportunity
+	opportunity := models.Opportunity{
+		Organization_mail: org.Email,
+		Category:          "Education",
+		Title:             "Test Opportunity with Mixed Case Status",
+		Description:       "Test Description",
+		Location:          "Test Location",
+		Hours_Required:    10,
+		Created_At:        time.Now(),
+		Updated_At:        time.Now(),
+	}
+	result = db.Create(&opportunity)
+	if result.Error != nil {
+		t.Fatalf("Failed to create test opportunity: %v", result.Error)
+	}
+	
+	// Get an existing volunteer
+	var volunteer models.Volunteer
+	result = db.First(&volunteer)
+	if result.Error != nil {
+		t.Fatalf("Failed to find an existing volunteer: %v", result.Error)
+	}
+	
+	// Create application with mixed case status
+	mixedCaseApp := models.Application{
+		Volunteer_ID:   volunteer.ID,
+		Opportunity_ID: opportunity.ID,
+		Status:         "pending", // lowercase instead of "Pending"
+		Cover_Letter:   "Mixed case status cover letter",
+		Created_At:     time.Now(),
+		Updated_At:     time.Now(),
+	}
+	result = db.Create(&mixedCaseApp)
+	if result.Error != nil {
+		t.Fatalf("Failed to create mixed case status application: %v", result.Error)
+	}
+	
+	// Setup router with our test endpoint
+	gin.SetMode(gin.TestMode)
+	router := gin.Default()
+	router.GET("/opportunities/:id", func(c *gin.Context) {
+		getOpportunityWithStats(c, db)
+	})
+	
+	// Create request
+	req, _ := http.NewRequest("GET", fmt.Sprintf("/opportunities/%d", opportunity.ID), nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	
+	// Log the response for debugging
+	t.Logf("Response Status: %d", w.Code)
+	t.Logf("Response Body: %s", w.Body.String())
+	
+	// Assertions
+	assert.Equal(t, http.StatusOK, w.Code)
+	
+	// Parse response
+	var response map[string]interface{}
+	json.Unmarshal(w.Body.Bytes(), &response)
+	
+	// Verify opportunity details
+	assert.Equal(t, float64(opportunity.ID), response["id"])
+	
+	// Verify application statistics
+	// Note: The function checks for "Pending" with capital P,
+	// so if the application has "pending" (lowercase), it won't be counted in pending_applications
+	assert.Equal(t, float64(1), response["total_applications"])
+	assert.Equal(t, float64(0), response["pending_applications"], 
+		"Status check appears to be case-sensitive, lowercase 'pending' shouldn't be counted as 'Pending'")
+}
