@@ -1,16 +1,13 @@
-import React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from "recharts"
-import { ChartContainer } from "@/components/ui/chart"
-import type { ChartConfig } from "@/components/ui/chart" // Import the type
-import { Circle } from "lucide-react";
+import React from "react";
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from "recharts";
 
 // Mock data for the charts
 const volunteerData = [
-  { name: "Jan", hours: 12 },
-  { name: "Feb", hours: 19 },
-  { name: "Mar", hours: 15 },
+  { name: "Jan", hours: 8 },
+  { name: "Feb", hours: 16 },
+  { name: "Mar", hours: 12 },
   { name: "Apr", hours: 22 },
-  { name: "May", hours: 28 },
+  { name: "May", hours: 30 },
   { name: "Jun", hours: 20 },
   { name: "Jul", hours: 24 },
 ];
@@ -25,148 +22,123 @@ const organizationData = [
   { name: "Jul", volunteers: 25, hours: 125 },
 ];
 
-// Create chart configurations
-// Create correct chart configurations
-const organizationConfig: ChartConfig = {
-    // Based on the error, it seems the config only accepts legend properties
-    // Remove the y property that's causing issues
-    legend: {
-      label: "Organization Data",
-      icon: Circle
-    }
-  };
-  
-  const volunteerConfig: ChartConfig = {
-    // Only include valid properties
-    legend: {
-      label: "Volunteer Hours",
-      icon: Circle
-    }
-  };
+interface OverviewProps {
+  userRole: string;
+}
 
-  const Overview: React.FC<{ userRole: string }> = ({ userRole }) => {
-    const isOrganization = userRole === "ORGANIZATION_ADMIN";
-    
-    if (isOrganization) {
-      return (
-        <div className="h-[240px]">
-          <ChartContainer config={organizationConfig}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={organizationData}>
-                <XAxis 
-                  dataKey="name" 
-                  stroke="#888888" 
-                  fontSize={12} 
-                  tickLine={false} 
-                  axisLine={false}
-                />
-                <YAxis 
-                  stroke="#888888" 
-                  fontSize={12} 
-                  tickLine={false} 
-                  axisLine={false}
-                  domain={[0, 130]} // Set min/max directly on YAxis instead of in config
-                  tickFormatter={(value) => `${value}`}
-                />
-                <Tooltip 
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      return (
-                        <div className="rounded-lg border bg-background p-2 shadow-sm">
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="flex flex-col">
-                              <span className="text-[0.70rem] uppercase text-muted-foreground">
-                                Volunteers
-                              </span>
-                              <span className="font-bold text-muted-foreground">
-                                {payload[0].value}
-                              </span>
-                            </div>
-                            <div className="flex flex-col">
-                              <span className="text-[0.70rem] uppercase text-muted-foreground">
-                                Hours
-                              </span>
-                              <span className="font-bold text-muted-foreground">
-                                {payload[1].value}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      )
-                    }
-                    return null
-                  }}
-                />
-                <Legend />
-                <Bar 
-                  dataKey="volunteers" 
-                  fill="hsl(var(--primary))" 
-                  radius={4} 
-                  className="fill-primary" 
-                />
-                <Bar 
-                  dataKey="hours" 
-                  fill="hsl(var(--secondary))" 
-                  radius={4} 
-                  className="fill-secondary" 
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartContainer>
-        </div>
-      )
-    }
-    
+const Overview: React.FC<OverviewProps> = ({ userRole }) => {
+  const isOrganization = userRole === "ORGANIZATION_ADMIN";
+  
+  if (isOrganization) {
     return (
-      <div className="h-[240px]">
-        <ChartContainer config={volunteerConfig}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={volunteerData}>
-              <XAxis 
-                dataKey="name" 
-                stroke="#888888" 
-                fontSize={12} 
-                tickLine={false} 
-                axisLine={false}
-              />
-              <YAxis 
-                stroke="#888888" 
-                fontSize={12} 
-                tickLine={false} 
-                axisLine={false}
-                domain={[0, 30]} // Set min/max directly on YAxis instead of in config
-                tickFormatter={(value) => `${value}`}
-              />
-              <Tooltip 
-                content={({ active, payload }) => {
-                  if (active && payload && payload.length) {
-                    return (
-                      <div className="rounded-lg border bg-background p-2 shadow-sm">
-                        <div className="flex flex-col">
-                          <span className="text-[0.70rem] uppercase text-muted-foreground">
-                            Hours
-                          </span>
-                          <span className="font-bold text-muted-foreground">
-                            {payload[0].value}
-                          </span>
-                        </div>
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={organizationData}>
+          <XAxis 
+            dataKey="name" 
+            stroke="#888888" 
+            fontSize={12} 
+            tickLine={false} 
+            axisLine={false}
+          />
+          <YAxis 
+            stroke="#888888" 
+            fontSize={12} 
+            tickLine={false} 
+            axisLine={false}
+            tickFormatter={(value) => `${value}`}
+          />
+          <Tooltip 
+            content={({ active, payload }) => {
+              if (active && payload && payload.length) {
+                return (
+                  <div className="rounded-lg border bg-background p-2 shadow-sm">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="flex flex-col">
+                        <span className="text-[0.70rem] uppercase text-muted-foreground">
+                          Volunteers
+                        </span>
+                        <span className="font-bold text-foreground">
+                          {payload[0].value}
+                        </span>
                       </div>
-                    )
-                  }
-                  return null
-                }}
-              />
-              <Bar 
-                dataKey="hours" 
-                fill="hsl(var(--primary))" 
-                radius={4} 
-                className="fill-primary" 
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartContainer>
-      </div>
-    )
+                      <div className="flex flex-col">
+                        <span className="text-[0.70rem] uppercase text-muted-foreground">
+                          Hours
+                        </span>
+                        <span className="font-bold text-foreground">
+                          {payload[1].value}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            }}
+          />
+          <Legend />
+          <Bar 
+            dataKey="volunteers" 
+            fill="var(--chart-1)" 
+            radius={4} 
+            className="fill-primary" 
+          />
+          <Bar 
+            dataKey="hours" 
+            fill="var(--chart-2)" 
+            radius={4} 
+            className="fill-secondary" 
+          />
+        </BarChart>
+      </ResponsiveContainer>
+    );
   }
   
+  return (
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={volunteerData}>
+        <XAxis 
+          dataKey="name" 
+          stroke="#888888" 
+          fontSize={12} 
+          tickLine={false} 
+          axisLine={false}
+        />
+        <YAxis 
+          stroke="#888888" 
+          fontSize={12} 
+          tickLine={false} 
+          axisLine={false}
+          tickFormatter={(value) => `${value}`}
+        />
+        <Tooltip 
+          content={({ active, payload }) => {
+            if (active && payload && payload.length) {
+              return (
+                <div className="rounded-lg border bg-background p-2 shadow-sm">
+                  <div className="flex flex-col">
+                    <span className="text-[0.70rem] uppercase text-muted-foreground">
+                      Hours
+                    </span>
+                    <span className="font-bold text-foreground">
+                      {payload[0].value}
+                    </span>
+                  </div>
+                </div>
+              );
+            }
+            return null;
+          }}
+        />
+        <Bar 
+          dataKey="hours" 
+          fill="var(--chart-1)" 
+          radius={4} 
+          className="fill-primary" 
+        />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+};
+
 export default Overview;
