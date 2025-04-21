@@ -21,7 +21,7 @@ These are the User Stories and their links which we planned to complete in sprin
 | Akash Balaji | 73539997 | Frontend Developer |
 | Nikhil Dinesan | 23060474 | Backend Developer |
 
-## Sprint 3 Accomplishments
+## Sprint 4 Accomplishments
 
 ## Frontend Development Accomplishments
 
@@ -79,32 +79,49 @@ These are the User Stories and their links which we planned to complete in sprin
 
 #### Unit Tests
 
-1. **OrganizationRegistration.test.tsx**  
-   - `renders the form with fields and submit button`: Ensures all input fields and the submit button are rendered properly.  
-   - `validates form fields and shows error message on invalid input`: Tests form validation by entering invalid inputs and checking for error messages.  
-   - `validates max length for organization name`: Ensures the organization name does not exceed 100 characters and displays an error if it does.  
-   - `submits form and calls registerOrganization on valid input`: Mocks a successful form submission and verifies that `registerOrganization` is called with the correct parameters, and the user is redirected to the dashboard.  
+#### Tests for `Projects.test.tsx`
 
-2. **VolunteerRegistration.test.tsx**  
-   - `renders the form with fields and submit button`: Verifies that all input fields and the submit button are displayed.  
-   - `validates form fields and shows error message on invalid input`: Ensures form validation works by checking for error messages when invalid data is entered.  
+- **Rendering:**
+  - Verify the initial rendering of the `Projects` component.
+- **Form Validation:**
+  - Test the form validation logic.
+- **API Calls:**
+  - Mock API calls and ensure data fetching and state updates.
+- **Event Handling:**
+  - Simulate user interactions and verify outcomes.
 
-#### Cypress E2E Tests  
 
-1. **basic_spec.cy.tsx**  
-   - `should load the homepage and verify key elements`: Ensures the homepage loads correctly by verifying the title, navigation bar, and visibility of the "Register" and "Login" buttons.  
+#### Tests for `Home.test.tsx`
 
-2. **login_volunteer_spec.cy.tsx**  
-   - `should log in a volunteer and access the dashboard`: Simulates a volunteer logging in and verifies redirection to the dashboard with the expected elements.  
+- **Rendering:**
+  - Verify the rendering of `Navbar` and `HeroSection`.
+- **Navigation:**
+  - Ensure navigation to the login page works correctly.
 
-3. **logout_volunteer_spec.cy.tsx**  
-   - `should log in as a volunteer, log out, and redirect to the homepage`: Logs in a volunteer, performs logout, and ensures redirection to the homepage with the login button visible.  
 
-4. **register_organization_spec.cy.tsx**  
-   - `should register an organization successfully`: Completes the organization registration form and verifies successful redirection to the dashboard.  
+#### Tests for `Login.test.tsx`
 
-5. **register_volunteer_spec.cy.tsx**  
-   - `should register a volunteer successfully`: Fills out the volunteer registration form, selects skills, and checks redirection to the dashboard upon successful registration.  
+- **Rendering:**
+  - Verify the rendering of `Navbar` and `LoginForm`.
+- **Navigation:**
+  - Ensure navigation to the login page works correctly.
+
+#### Tests for `ProjectDetails.test.tsx`
+
+- **Loading State:**
+  - Ensure the component displays the loading state correctly.
+- **Rendering:**
+  - Verify that project details are rendered correctly.
+- **Navigation:**
+  - Ensure navigation back to the projects list works correctly.
+
+
+#### Write Tests for `UnauthorizedPage.test.tsx`
+
+- **Rendering:**
+  - Verify the rendering of the unauthorized message.
+- **Navigation:**
+  - Ensure navigation to the home page works correctly.
 
 
 ## Backend Development
@@ -236,6 +253,7 @@ These are the User Stories and their links which we planned to complete in sprin
   - Tests creating an opportunity with a non-existent organization.  
   - Verifies foreign key constraint handling.  
 
+<!-- NEED TO CHANGE THE BELOW -->
 ## Successfully Completed Issues
 
 ### Frontend
@@ -281,15 +299,15 @@ Task completed by Pratham: 1-8.
 Testing is completed by Nikhil. 
         
 
-## Backlogs that were cleared from sprint 2
+## Backlogs that were cleared from sprint 3
 ### Frontend
-1. **E2E Testing**
-     - Implemented E2E testing for registration, sign in, sign out
-1. **User Dashboard**
-     - 
+1. **Comprehensive testing**
+     - Implemented more comprehensive testing for all componenets that could not be done in previous sprints.
+2. **User Dashboard**
+     - Completion of dashboard for opportunity and application.
 
-2. **Authentication Integration**
-     - Integration of Auth0 for authentication
+<!-- 2. **Authentication Integration**
+     - Integration of Auth0 for authentication -->
 
 ### Backend
 1. **Scheduling APIs**
@@ -299,7 +317,7 @@ Testing is completed by Nikhil.
      - Retrieving the total number of jobs and hours worked for a volunteer.
      - Displaying recent opportunities published by organizations.
 
-## Issues Not Completed in Sprint 3
+<!-- ## Issues Not Completed in Sprint 3
 
 ### Reason for Incompletion
 The pending tasks from Sprint 3 were not completed due to **time constraints and prioritization of core features**. Initial efforts were focused on setting up fundamental functionalities, authentication flows, and ensuring backend stability. As a result, certain advanced features and integrations had to be deferred to the next sprint.
@@ -320,4 +338,4 @@ The pending features will be prioritized in **Sprint 4**, ensuring:
 - Full API support for volunteer and organization dashboards.
 - Full integration and full coverage for testing in frontend.
 - E2E tests for ensuring app stability before deployment.
-- Containerization of the application for easy deployment.
+- Containerization of the application for easy deployment. -->

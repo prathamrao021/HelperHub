@@ -600,3 +600,283 @@ func TestInvalidApplicationData(t *testing.T) {
 	// Assertions
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
+
+// TestGetApplicationsByVolunteerWithDetails tests the endpoint that retrieves applications
+// for a specific volunteer with opportunity title and organization name details
+func TestGetApplicationsByVolunteerWithDetails(t *testing.T) {
+	// Setup test database and router
+	db := setupTestDBForApplication()
+	defer cleanupTestApplications(db)
+	
+	// Get first volunteer and organization IDs
+	var volunteer models.Volunteer
+	var organization models.Organization
+	db.First(&volunteer)
+	db.First(&organization)
+	
+	// Create test opportunity with the organization email
+	opportunity := models.Opportunity{
+		Organization_mail: organization.Email,
+		Category:          "Education",
+		Title:             "Special Test Opportunity",
+		Description:       "Test Description for Detailed Query",
+		Location:          "Test Location",
+		Hours_Required:    10,
+		Created_At:        time.Now(),
+		Updated_At:        time.Now(),
+	}
+	db.Create(&opportunity)
+	
+	// Create test application
+	application := models.Application{
+		Volunteer_ID:   volunteer.ID,
+		Opportunity_ID: opportunity.ID,
+		Status:         "pending",
+		Cover_Letter:   "Test cover letter for detailed query",
+		Created_At:     time.Now(),
+		Updated_At:     time.Now(),
+	}
+	db.Create(&application)
+	
+	// Print debug information
+	t.Logf("Created application with ID=%d, VolunteerID=%d, OpportunityID=%d", 
+		application.ID, application.Volunteer_ID, application.Opportunity_ID)
+	t.Logf("Opportunity title: %s, Organization email: %s", opportunity.Title, opportunity.Organization_mail)
+	
+	// Setup router for this specific test
+	router := gin.Default()
+	router.GET("/applications/volunteer/:volunteer_id", func(c *gin.Context) {
+		getApplicationsByVolunteerWithDetails(c, db)
+	})
+	
+	// Create request
+	req, _ := http.NewRequest("GET", fmt.Sprintf("/applications/volunteer/%d", volunteer.ID), nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	
+	// Log the response for debugging
+	t.Logf("Response Status: %d", w.Code)
+	t.Logf("Response Body: %s", w.Body.String())
+	
+	// Assertions
+	assert.Equal(t, http.StatusOK, w.Code)
+	
+	// Parse response
+	var response []map[string]interface{}
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(t, err, "Response should be valid JSON")
+	
+	// Verify we got at least one application that matches our test data
+	assert.GreaterOrEqual(t, len(response), 1, "Expected at least one application in the response")
+	
+	// Find our specific test application in the response
+	var found bool
+	for _, app := range response {
+		// Convert IDs to appropriate types for comparison
+		appID, _ := app["id"].(float64)
+		oppID, _ := app["opportunity_id"].(float64)
+		
+		if int(appID) == int(application.ID) && int(oppID) == int(opportunity.ID) {
+			found = true
+			
+			// Verify all required fields are present and have the correct values
+			assert.Equal(t, float64(volunteer.ID), app["volunteer_id"])
+			assert.Equal(t, opportunity.Title, app["opportunity_title"])
+			assert.Equal(t, organization.Name, app["organization_name"])
+			assert.Equal(t, application.Status, app["status"])
+			assert.Equal(t, application.Cover_Letter, app["cover_letter"])
+			assert.NotNil(t, app["created_at"])
+			assert.NotNil(t, app["updated_at"])
+			break
+		}
+	}
+	
+	assert.True(t, found, "Could not find the test application in the response")
+}
+
+// TestGetApplicationsByVolunteerWithDetailsInvalidID tests the endpoint with an invalid volunteer ID
+func TestGetApplicationsByVolunteerWithDetailsInvalidID(t *testing.T) {
+	// Setup test database and router
+	db := setupTestDBForApplication()
+	defer cleanupTestApplications(db)
+	
+	// Setup router for this specific test
+	router := gin.Default()
+	router.GET("/applications/volunteer/:volunteer_id", func(c *gin.Context) {
+		getApplicationsByVolunteerWithDetails(c, db)
+	})
+	
+	// Create request with non-existent volunteer ID
+	req, _ := http.NewRequest("GET", "/applications/volunteer/9999", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	
+	// Log the response for debugging
+	t.Logf("Response Status: %d", w.Code)
+	t.Logf("Response Body: %s", w.Body.String())
+	
+	// Assertions
+	assert.Equal(t, http.StatusOK, w.Code) // Should still return 200 with empty array
+	
+	// Parse response - should be an empty array
+	var response []map[string]interface{}
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(t, err, "Response should be valid JSON")
+	
+	// Verify we got no applications
+	assert.Equal(t, 0, len(response), "Expected no applications for non-existent volunteer ID")
+}
+
+// TestGetApplicationsByVolunteerWithDetailsMultipleApplications tests retrieving multiple applications
+func TestGetApplicationsByVolunteerWithDetailsMultipleApplications(t *testing.T) {
+	// Setup test database and router
+	db := setupTestDBForApplication()
+	defer cleanupTestApplications(db)
+	
+	// Get first volunteer and organization
+	var volunteer models.Volunteer
+	var organization models.Organization
+	db.First(&volunteer)
+	db.First(&organization)
+	
+	// Create multiple opportunities
+	opportunity1 := models.Opportunity{
+		Organization_mail: organization.Email,
+		Category:          "Education",
+		Title:             "First Test Opportunity",
+		Description:       "First test description",
+		Location:          "Test Location 1",
+		Hours_Required:    10,
+		Created_At:        time.Now(),
+		Updated_At:        time.Now(),
+	}
+	db.Create(&opportunity1)
+	
+	opportunity2 := models.Opportunity{
+		Organization_mail: organization.Email,
+		Category:          "Environment",
+		Title:             "Second Test Opportunity",
+		Description:       "Second test description",
+		Location:          "Test Location 2",
+		Hours_Required:    15,
+		Created_At:        time.Now(),
+		Updated_At:        time.Now(),
+	}
+	db.Create(&opportunity2)
+	
+	// Create applications for both opportunities
+	application1 := models.Application{
+		Volunteer_ID:   volunteer.ID,
+		Opportunity_ID: opportunity1.ID,
+		Status:         "pending",
+		Cover_Letter:   "First test cover letter",
+		Created_At:     time.Now(),
+		Updated_At:     time.Now(),
+	}
+	db.Create(&application1)
+	
+	application2 := models.Application{
+		Volunteer_ID:   volunteer.ID,
+		Opportunity_ID: opportunity2.ID,
+		Status:         "accepted",
+		Cover_Letter:   "Second test cover letter",
+		Created_At:     time.Now().Add(time.Hour), // Create a bit later to test ordering
+		Updated_At:     time.Now(),
+	}
+	db.Create(&application2)
+	
+	// Print debug information
+	t.Logf("Created applications with IDs=%d and %d for volunteer ID=%d", 
+		application1.ID, application2.ID, volunteer.ID)
+	
+	// Setup router for this specific test
+	router := gin.Default()
+	router.GET("/applications/volunteer/:volunteer_id", func(c *gin.Context) {
+		getApplicationsByVolunteerWithDetails(c, db)
+	})
+	
+	// Create request
+	req, _ := http.NewRequest("GET", fmt.Sprintf("/applications/volunteer/%d", volunteer.ID), nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	
+	// Log the response for debugging
+	t.Logf("Response Status: %d", w.Code)
+	t.Logf("Response Body: %s", w.Body.String())
+	
+	// Assertions
+	assert.Equal(t, http.StatusOK, w.Code)
+	
+	// Parse response
+	var response []map[string]interface{}
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(t, err, "Response should be valid JSON")
+	
+	// Verify we got at least two applications
+	assert.GreaterOrEqual(t, len(response), 2, "Expected at least two applications in the response")
+	
+	// Verify both opportunity titles are present in the response
+	opportunityTitles := []string{}
+	for _, app := range response {
+		if title, ok := app["opportunity_title"].(string); ok {
+			opportunityTitles = append(opportunityTitles, title)
+		}
+	}
+	
+	assert.Contains(t, opportunityTitles, "First Test Opportunity")
+	assert.Contains(t, opportunityTitles, "Second Test Opportunity")
+	
+	// Find and verify details of each test application
+	var foundFirstApp, foundSecondApp bool
+	for _, app := range response {
+		appID, _ := app["id"].(float64)
+		
+		if int(appID) == int(application1.ID) {
+			foundFirstApp = true
+			assert.Equal(t, "First Test Opportunity", app["opportunity_title"])
+			assert.Equal(t, "pending", app["status"])
+		} else if int(appID) == int(application2.ID) {
+			foundSecondApp = true
+			assert.Equal(t, "Second Test Opportunity", app["opportunity_title"])
+			assert.Equal(t, "accepted", app["status"])
+		}
+	}
+	
+	assert.True(t, foundFirstApp, "Could not find the first test application in the response")
+	assert.True(t, foundSecondApp, "Could not find the second test application in the response")
+}
+
+// TestGetApplicationsByVolunteerWithDetailsDatabaseError tests database error handling
+func TestGetApplicationsByVolunteerWithDetailsDatabaseError(t *testing.T) {
+	// Setup test database
+	db := setupTestDBForApplication()
+	defer cleanupTestApplications(db)
+	
+	// Setup router with a mock function that simulates a database error
+	router := gin.Default()
+	router.GET("/applications/volunteer/:volunteer_id", func(c *gin.Context) {
+		// Close the database connection to force an error
+		sqlDB, _ := db.DB()
+		sqlDB.Close()
+		
+		// Now try to use the closed database
+		getApplicationsByVolunteerWithDetails(c, db)
+	})
+	
+	// Create request
+	req, _ := http.NewRequest("GET", "/applications/volunteer/1", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	
+	// Log the response for debugging
+	t.Logf("Response Status: %d", w.Code)
+	t.Logf("Response Body: %s", w.Body.String())
+	
+	// Assertions
+	assert.Equal(t, http.StatusInternalServerError, w.Code)
+	
+	// Verify response contains an error message
+	var response map[string]interface{}
+	json.Unmarshal(w.Body.Bytes(), &response)
+	assert.Contains(t, response, "error")
+}
