@@ -22,19 +22,19 @@ import {
 import { EditOrganizationProfile } from "@/components/EditOrganizationProfile"
 import { EditVolunteerProfile } from "@/components/EditVolunteerProfile"
 import { DeleteOrganizationProfile } from "@/components/DeleteOrganizationProfile"
-
+import Overview from "@components/Overview"
 // Dummy chart component - replace with a real chart library like recharts
-const Overview: React.FC<{ userRole: string }> = ({ userRole }) => {
-  return (
-    <div className="h-[200px] flex items-center justify-center bg-muted/20 rounded-md">
-      <p className="text-muted-foreground">
-        {userRole === "ORGANIZATION_ADMIN" 
-          ? "Organization Activity Chart" 
-          : "Volunteer Hours Chart"}
-      </p>
-    </div>
-  )
-}
+// const Overview: React.FC<{ userRole: string }> = ({ userRole }) => {
+//   return (
+//     <div className="h-[200px] flex items-center justify-center bg-muted/20 rounded-md">
+//       <p className="text-muted-foreground">
+//         {userRole === "ORGANIZATION_ADMIN" 
+//           ? "Organization Activity Chart" 
+//           : "Volunteer Hours Chart"}
+//       </p>
+//     </div>
+//   )
+// }
 
 type JobProps = {
   name: string;

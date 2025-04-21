@@ -22,7 +22,6 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Progress } from "@/components/ui/progress"
 
 // Mock data for a single opportunity
 const mockOpportunity = {
