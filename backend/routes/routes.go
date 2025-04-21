@@ -45,18 +45,20 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	opportunityRouter.GET("/get/expired", func(c *gin.Context) { getLastNExpiredOpportunitiesByOrganization(c, db) })
 	opportunityRouter.GET("/", func(c *gin.Context) { getOpportunitiesByOrganization(c, db) })
 	opportunityRouter.GET("/available", func(c *gin.Context) { getAvailableOpportunities(c, db) })
+	opportunityRouter.GET("/:opportunity_id", func(c *gin.Context) { getOpportunityWithStats(c, db) })
 
 	// Routes for application management
 	applicationRouter := router.Group("/applications")
 	applicationRouter.POST("/", func(c *gin.Context) { createApplication(c, db) })
 	applicationRouter.GET("/", func(c *gin.Context) { getAllApplications(c, db) })
 	applicationRouter.GET("/:id", func(c *gin.Context) { getApplicationByID(c, db) })
-	applicationRouter.GET("/volunteer/:volunteer_id", func(c *gin.Context) { getApplicationsByVolunteerID(c, db) })
-	applicationRouter.GET("/opportunity/:opportunity_id", func(c *gin.Context) { getApplicationsByOpportunityID(c, db) })
+	// applicationRouter.GET("/volunteer/:volunteer_id", func(c *gin.Context) { getApplicationsByVolunteerID(c, db) })
+	// applicationRouter.GET("/opportunity/:opportunity_id", func(c *gin.Context) { getApplicationsByOpportunityID(c, db) })
 	applicationRouter.GET("/status/:status", func(c *gin.Context) { getApplicationsByStatus(c, db) })
 	applicationRouter.PUT("/:id", func(c *gin.Context) { updateApplication(c, db) })
 	applicationRouter.DELETE("/:id", func(c *gin.Context) { deleteApplication(c, db) })
 	applicationRouter.GET("/volunteer/:volunteer_id/approved", func(c *gin.Context) { getLastNApprovedApplications(c, db) })
 	applicationRouter.GET("/volunteer/:volunteer_id/completed", func(c *gin.Context) { getLastNAcceptedOpportunitiesForVolunteer(c, db) })
-
+	applicationRouter.GET("/volunteer/:volunteer_id", func(c *gin.Context) { getApplicationsByVolunteerWithDetails(c, db) })
+	applicationRouter.GET("/opportunity/:opportunity_id", func(c *gin.Context) { getApplicationsByOpportunityWithVolunteerDetails(c, db) })
 }
