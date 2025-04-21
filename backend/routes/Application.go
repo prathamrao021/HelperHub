@@ -264,3 +264,41 @@ func getLastNAcceptedOpportunitiesForVolunteer(c *gin.Context, db *gorm.DB) {
 
 	c.JSON(http.StatusOK, opportunities)
 }
+
+// getApplicationsByVolunteerWithDetails godoc
+// @Summary Retrieve applications by volunteer with opportunity and organization details
+// @Description Retrieve all applications for a volunteer with opportunity title and organization name
+// @Tags applications
+// @Accept json
+// @Produce json
+// @Param volunteer_id path uint true "Volunteer ID"
+// @Success 200 {array} map[string]interface{}
+// @Router /applications/volunteer/{volunteer_id} [get]
+func getApplicationsByVolunteerWithDetails(c *gin.Context, db *gorm.DB) {
+	volunteerID := c.Param("volunteer_id")
+
+	var results []map[string]interface{}
+
+	// Query with inner joins to get data from all three tables and filter by volunteer ID
+	if err := db.Table("applications").
+		Select(`
+            applications.id,
+            applications.volunteer_id,
+            applications.opportunity_id,
+            opportunities.title as opportunity_title,
+            organizations.name as organization_name,
+            applications.status,
+            applications.cover_letter,
+            applications.created_at,
+            applications.updated_at
+        `).
+		Joins("INNER JOIN opportunities ON applications.opportunity_id = opportunities.id").
+		Joins("INNER JOIN organizations ON opportunities.organization_mail = organizations.email").
+		Where("applications.volunteer_id = ?", volunteerID).
+		Find(&results).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, results)
+}
