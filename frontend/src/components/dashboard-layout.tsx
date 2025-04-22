@@ -3,7 +3,7 @@ import { Navbar } from "@/components/Navbar"
 import { useAuth } from "@/contexts/auth-context"
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
-    const { user } = useAuth()
+    const { user, logout } = useAuth()
 
     let menuItems: { title: string; href: string }[] = []
 
@@ -25,7 +25,8 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                 menuItems={menuItems}
                 showThemeToggle={true}
                 showLogButton={true}
-                buttonDisplay="Profile"
+                buttonDisplay="Logout"
+                onLogClick={() => logout()}
             />
             <main className="pt-16">
                 {children}
