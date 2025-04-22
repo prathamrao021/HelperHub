@@ -162,9 +162,9 @@ For E2E testing with Cypress:
 
 ```bash
 cd frontend
-npm run cypress:open  # Interactive UI
+npm cypress run  # Interactive UI
 # OR
-npm run cypress:run   # Headless mode
+npm cypress open   # Headless mode
 ```
 
 ## 👥 Team Members
@@ -187,6 +187,9 @@ HELPERHUB/
 │   ├── routes/           # API routes
 │   └── main.go           # Entry point
 ├── frontend/             # React frontend code
+│   ├── cypress/          # cypress files
+│   │   ├── e2e/          # e2e test modules
+│   │   ├── support/      # config files
 │   ├── src/              # Source files
 │   │   ├── assets/       # Static assets
 │   │   ├── components/   # Reusable components
