@@ -60,7 +60,6 @@ These are the User Stories and their links which we planned to complete in sprin
 
 6. **Testing Implementation**
    - Added unit tests for critical components
-   - Implemented E2E tests for core user flows
    - Created test utilities for component testing
    - Added snapshot testing for UI components
 
@@ -209,16 +208,14 @@ All tests follow best practices for Go unit testing:
 - Detailed logging for troubleshooting
 - Explicit assertions for expected outcomes
 - Testing of both success and failure scenarios
-<!-- NEED TO CHANGE THE BELOW -->
-## Successfully Completed Issues
 
 ## Successfully Completed Issues
 
 ### Frontend
 
 1. **Integrated & implemented opportunities/available API with Opportunity page** - Linked backend endpoint to frontend for volunteer opportunity discovery
-2. **Created GitHub issues for API endpoints for Volunteer Opportunities Listing** - Documented requirements for backend team
-3. **Created GitHub issues for API endpoints for Organization Opportunities List** - Provided detailed specifications for implementation
+2. **Integrated API endpoints for Volunteer Opportunities Listing** - Documented requirements for backend team
+3. **Integrated for API endpoints for Organization Opportunities List** - Provided detailed specifications for implementation
 4. **Added support for start_date and end_date fields in Opportunity components** - Enhanced date filtering capabilities
 5. **Fixed routing issues for Manage Project Page** - Resolved navigation and path handling problems
 6. **Implemented Project Detail Page with Application Management** - Built comprehensive interface for reviewing and managing applications
@@ -226,11 +223,10 @@ All tests follow best practices for Go unit testing:
 8. **Implemented Role-Based Volunteer Management Platform** - Added proper authorization for different user roles
 9. **Created Volunteer Applications Page** - Developed interface for volunteers to track their applications
 10. **Implemented Volunteer Opportunities Discovery Page** - Built search and filtering system for available opportunities
-11. **Developed E2E Test Suites** - Created comprehensive tests for critical user flows
-12. **Implemented Test Suites for Registration Components** - Added tests for VolunteerRegistration and OrganizationRegistration
+11. **Implemented Test Suites for Registration Components** - Added tests for VolunteerRegistration and OrganizationRegistration
 
-Tasks 1-8 completed by Dhruv Makwana
-Tasks 9-12 completed by Akash Balaji
+Tasks 1-7 completed by Dhruv Makwana
+Tasks 8-11 completed by Akash Balaji
 
 ### Backend
 
