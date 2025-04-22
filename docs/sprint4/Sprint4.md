@@ -148,74 +148,53 @@ These are the User Stories and their links which we planned to complete in sprin
 
 ### Unit Tests  
 
-#### **Volunteer**  
-- **TestGetVolunteerStats**  
-  - Tests the API for retrieving volunteer statistics (total jobs and hours worked).  
-  - Creates test volunteers, opportunities, and applications with different statuses.  
-  - Verifies that only "Accepted" applications are counted in stats.  
-  - Checks the correct summing of hours worked.  
+### Endpoint: GET /applications/volunteer/{volunteer_id}
+### Description: Retrieves all applications submitted by a specific volunteer, enriched with opportunity title and organization name.
+Test Cases Implemented:
 
-- **TestGetVolunteerStatsNonExistentVolunteer**  
-  - Tests stats retrieval for a non-existent volunteer ID.  
-  - Verifies the API returns appropriate zero values rather than errors.  
-  - Ensures the endpoint gracefully handles missing data.  
+Successful retrieval of applications with complete details
+Handling of invalid/non-existent volunteer IDs
+Testing with multiple applications from a single volunteer
+Database error handling
+Data validation to ensure all required fields are present
 
-- **TestInvalidUpdateVolunteerData**  
-  - Tests updating a volunteer with invalid JSON data.  
-  - Verifies proper error handling and status code (400).  
+The tests verify that the endpoint correctly joins data across the applications, opportunities, and organizations tables to provide a comprehensive view of a volunteer's engagement history.
 
-- **TestInvalidLoginRequest**  
-  - Tests login endpoint with malformed JSON.  
-  - Verifies proper error response and status code.  
+### Endpoint: GET /opportunities/{opportunity_id}/applications
+### Description: Fetches all applications for a specific opportunity with detailed volunteer information.
+Test Cases Implemented:
 
-#### **Organization**  
-- **TestUpdateNonExistentOrganization**  
-  - Tests attempting to update an organization that doesn't exist.  
-  - Verifies correct error code and message.  
-  - Ensures the system properly checks existence before updates.  
+Successful retrieval of applications with volunteer details
+Empty/invalid opportunity ID handling
+Testing with multiple volunteers applying to the same opportunity
+Verification of correct sorting (most recent first)
+Database error handling
+Response field validation
 
-- **TestInvalidLoginData**  
-  - Tests the login endpoint with invalid JSON format.  
-  - Verifies proper error handling and status code (400).  
-  - Ensures robust input validation.  
+These tests ensure the endpoint properly connects volunteer information with applications and correctly orders the results by creation time.
 
-#### **Opportunity**  
-- **TestGetLastNExpiredOpportunitiesByOrganization**  
-  - Tests the API for retrieving expired opportunities for an organization.  
-  - Creates both expired and active test opportunities.  
-  - Verifies correct filtering by expiration date.  
-  - Checks that the correct number of results is returned.  
 
-- **TestGetOpportunitiesByOrganization**  
-  - Tests retrieving opportunities with application counts.  
-  - Sets up opportunities with different numbers of applications.  
-  - Verifies correct counting of applications per opportunity.  
+### Endpoint: GET /opportunities/{id}
+### Description: Retrieves comprehensive details of a specific opportunity, including statistics about applications by status.
+Test Cases Implemented:
 
-- **TestGetAvailableOpportunities**  
-  - Tests filtering active (non-expired) opportunities.  
-  - Verifies that expired opportunities are excluded.  
-  - Checks that organization names are included in the response.  
+Successful retrieval of opportunity details with accurate application counts
+Testing with opportunities having no applications
+Non-existent opportunity ID handling
+Case sensitivity in application status counting
+Complete field validation
 
-- **TestInvalidRequestGetLastNExpiredOpportunities**  
-  - Tests error handling when required parameters are missing or invalid.  
-  - Verifies proper error codes and messages.  
+These tests verify that the endpoint correctly calculates application statistics (total, pending, accepted, rejected) while returning all necessary opportunity details.
 
-- **TestInvalidRequestGetOpportunitiesByOrganization**  
-  - Tests error handling when `organization_mail` parameter is missing.  
-  - Verifies proper error response.  
+### Implementation Approach
+All tests follow best practices for Go unit testing:
 
-- **TestUpdateNonExistentOpportunity**  
-  - Tests updating an opportunity that doesn't exist.  
-  - Verifies correct 404 response.  
-
-- **TestDeleteNonExistentOpportunity**  
-  - Tests deleting a non-existent opportunity.  
-  - Verifies proper error handling.  
-
-- **TestCreateOpportunityWithInvalidOrganization**  
-  - Tests creating an opportunity with a non-existent organization.  
-  - Verifies foreign key constraint handling.  
-
+- Clean database setup and teardown
+- Dynamic test data creation to avoid constraint violations
+- Comprehensive error handling
+- Detailed logging for troubleshooting
+- Explicit assertions for expected outcomes
+- Testing of both success and failure scenarios
 <!-- NEED TO CHANGE THE BELOW -->
 ## Successfully Completed Issues
 
