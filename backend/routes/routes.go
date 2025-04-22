@@ -42,7 +42,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	opportunityRouter.DELETE("/delete/:id", func(c *gin.Context) { deleteOpportunity(c, db) })
 	opportunityRouter.PUT("/update/:id", func(c *gin.Context) { updateOpportunity(c, db) })
 	opportunityRouter.GET("/get/:id", func(c *gin.Context) { getOpportunity(c, db) })
-	opportunityRouter.GET("/get/expired", func(c *gin.Context) { getLastNExpiredOpportunitiesByOrganization(c, db) })
+	opportunityRouter.GET("/organization/:organization_mail/expired", func(c *gin.Context) { getLastNExpiredOpportunitiesByOrganization(c, db) })
 	opportunityRouter.GET("/", func(c *gin.Context) { getOpportunitiesByOrganization(c, db) })
 	opportunityRouter.GET("/available", func(c *gin.Context) { getAvailableOpportunities(c, db) })
 	opportunityRouter.GET("/:opportunity_id", func(c *gin.Context) { getOpportunityWithStats(c, db) })

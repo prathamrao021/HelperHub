@@ -125,12 +125,12 @@ func getOpportunity(c *gin.Context, db *gorm.DB) {
 // @Tags opportunities
 // @Accept json
 // @Produce json
-// @Param organization_id path uint true "Organization ID"
+// @Param organization_mail path uint true "Organization ID"
 // @Param n query int true "Number of opportunities"
 // @Success 200 {array} models.Opportunity
-// @Router /opportunities/organization/{organization_id}/expired [get]
+// @Router /opportunities/organization/{organization_mail}/expired [get]
 func getLastNExpiredOpportunitiesByOrganization(c *gin.Context, db *gorm.DB) {
-	organizationID := c.Param("organization_id")
+	organizationMail := c.Param("organizaion_mail")
 	nStr := c.Query("n")
 	n, err := strconv.Atoi(nStr)
 	if err != nil {
@@ -141,7 +141,7 @@ func getLastNExpiredOpportunitiesByOrganization(c *gin.Context, db *gorm.DB) {
 	var opportunities []models.Opportunity
 	currentDate := time.Now()
 
-	if err := db.Where("organization_mail = ? AND end_date < ?", organizationID, currentDate).
+	if err := db.Where("organization_mail = ? AND end_date < ?", organizationMail, currentDate).
 		Order("end_date desc").
 		Limit(n).
 		Find(&opportunities).Error; err != nil {
