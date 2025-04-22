@@ -230,25 +230,53 @@ Tasks 8-11 completed by Akash Balaji
 
 ### Backend
 
-       
-1. API endpoint that retrieves available volunteer opportunities for the Opportunities page. This endpoint will be used by volunteers to browse and search for opportunities they can apply to.
-2.  API endpoint that retrieves all volunteer opportunities associated with a specific organization. This endpoint is already being called from the frontend Projects page but needs implementation on the backend.
-3. The system should provide an API endpoint to fetch the last N opportunities created by an organization where the end_date has already passed (i.e., end_date < current_date). This will help organizations track past opportunities easily.
-4. The system should provide an API endpoint to fetch the last N opportunities for which a volunteer's application was accepted and the end_date has already passed (i.e., end_date < current_date). This will help volunteers track their past accepted opportunities.
-5. The system should provide an API endpoint to fetch the total number of jobs a volunteer has participated in and the total hours worked across all accepted opportunities. This will help track a volunteer’s contribution over time.
-6. Refactor : Current model of opportunity field does not have start_date and end_date field. Add those fields and update opportunity end points.
-7. We need to implement Create, Read, Update, and Delete (CRUD) functionality for managing organizations in the system. This will allow users to create new organizations, retrieve organization details, update information, and delete organizations when necessary.
-8. Implement Create, Read, Update, and Delete (CRUD) operations for the Application model. This model represents applications submitted by volunteers for various opportunities. It allows volunteers to apply, update their applications, and check their statuses while ensuring organizations can review and manage applications.
+1. **Get Applications by Volunteer with Details API**
+   - **Endpoint**: `GET /applications/volunteer/:volunteer_id`
+   - **Implementation**: Created a specialized endpoint that performs complex JOIN queries across applications, opportunities, and organizations tables
+   - **Features**: 
+     - Returns comprehensive application data including opportunity titles and organization names
+     - Properly handles error cases and returns appropriate status codes
+     - Implemented efficient query optimization for better performance
+     - Added proper field selection to minimize data transfer
+   - This API enables volunteers to view their complete application history with contextual information about opportunities and organizations in a single request.
 
-9. Implemented Unit tests for -
+2. **Get Applications by Opportunity with Volunteer Details API**
+   - **Endpoint**: `GET /applications/opportunity/:opportunity_id` 
+   - **Implementation**: Developed an endpoint that joins application data with volunteer information
+   - **Features**:
+     - Returns application details enhanced with volunteer names and contact information
+     - Implements sorting by creation date (newest first) for better user experience
+     - Handles empty result sets and invalid IDs properly
+     - Validates request parameters before database operations
+   - This API allows organizations to efficiently review all applications for a specific opportunity with essential volunteer details.
+
+3. **Expired Opportunities for Organization API**
+   - **Endpoint**: `GET /opportunities/organization/:organization_mail/expired`
+   - **Implementation**: Created an endpoint that filters opportunities based on end date and organization
+   - **Features**:
+     - Supports limit parameter to control the number of results returned
+     - Implements proper date comparison logic using CustomDate type
+     - Orders results by end date for better usability
+     - Optimizes query performance for large datasets
+   - This API enables organizations to track and analyze their past opportunities, helping them make data-driven decisions for future planning.
+
+4. **Opportunity Details with Application Statistics API**
+   - **Endpoint**: `GET /opportunities/:id`
+   - **Implementation**: Developed a comprehensive endpoint that provides opportunity details with application metrics
+   - **Features**:
+     - Returns detailed opportunity information including dates, requirements and location
+     - Includes application statistics broken down by status (total, pending, accepted, rejected)
+     - Handles non-existent opportunities with proper error responses
+     - Optimizes database operations by using appropriate indexes
+   - This API provides organizations with a complete view of an opportunity including its popularity and application status distribution.
+
+5. Implemented Unit tests for -
 ```
 Organization
-Volunteer
 Application
-Category
 Opportunity 
 ```     
-Task completed by Pratham: 1-8.
+Task completed by Pratham: 1-4.
 Testing is completed by Nikhil. 
         
 
@@ -263,12 +291,25 @@ Testing is completed by Nikhil.
      - Integration of Auth0 for authentication -->
 
 ### Backend
+### Backend
 1. **Scheduling APIs**
-     - Development of APIs for scheduling functionalities
-     - Specialized APIs are pending implementation, including:
-     - Fetching all recent jobs completed by a volunteer using `volunteer_id`.
-     - Retrieving the total number of jobs and hours worked for a volunteer.
-     - Displaying recent opportunities published by organizations.
+   - Implemented APIs for managing opportunity scheduling and volunteer time tracking:
+     - `GET /opportunities/volunteer/:volunteer_id/accepted-expired`: Successfully implemented API to fetch all recent completed opportunities by a volunteer
+     - `GET /volunteers/:volunteer_id/stats`: Created endpoint to retrieve the total number of jobs and hours worked for a volunteer
+     - `GET /opportunities/organization/:organization_mail/expired`: Developed endpoint to display recent expired opportunities published by organizations
+
+2. **Application Workflow APIs**
+   - Implemented comprehensive APIs for handling the application lifecycle:
+     - Submission: Enhanced the application creation API with validation
+     - Status Updates: Added status transition handling (pending → accepted/rejected)
+     - Retrieval: Improved application retrieval with detailed information through JOINs
+   - Ensured proper data integrity with database constraints and validation
+
+3. **Comprehensive Error Handling**
+   - Added structured error responses with appropriate HTTP status codes
+   - Implemented validation for request parameters before database operations
+   - Added graceful handling of database connectivity issues
+   - Created consistent error message format across all APIs
 
 <!-- ## Issues Not Completed in Sprint 3
 
