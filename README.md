@@ -17,7 +17,7 @@
 
 ## 📋 About the Project
 
-HelperHub streamlines the volunteering process by matching passionate individuals with causes that matter to them. This project was developed as part of the CEN5035 - Software Engineering course at Florida State University, focusing on creating an intuitive platform that connects volunteers with organizations based on skills, interests, and location.
+HelperHub streamlines the volunteering process by matching passionate individuals with causes that matter to them. This project was focusing on creating an intuitive platform that connects volunteers with organizations based on skills, interests, and location.
 
 ## ✨ Features
 
